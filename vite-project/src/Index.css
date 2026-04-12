@@ -1,0 +1,273 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* :root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9ca3af;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-border: rgba(192, 132, 252, 0.5);
+    --social-bg: rgba(47, 48, 58, 0.5);
+    --shadow:
+      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  }
+
+  #social .button-icon {
+    filter: invert(1) brightness(2);
+  }
+}
+
+#root {
+  width: 1126px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  border-inline: 1px solid var(--border);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+} */
+
+html, body {
+    overflow-x: hidden;
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", "Kantumruy Pro", sans-serif;
+    box-sizing: border-box;
+}
+
+.landing-page {
+    /* background: linear-gradient(#1d4f8f, #d1d1d1); */
+    background: url('/landing_page.png') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.landing-page-header {
+    padding-top: 80px;
+}
+
+.header-logo-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-landing-page {
+    width: 100px;
+}
+
+.station-title {
+    color: white;
+    margin-top: 3px;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.header-line {
+    width: 300px;
+    height: 1px;
+    background: rgba(255,255,255,0.4);
+    margin: 15px auto 50px auto;
+}
+
+.welcome-title {
+    color: white;
+    font-size: 42px;
+    margin-bottom: 90px;
+    font-weight: 300;
+    padding-top: 15px;
+}
+
+.welcome-title span {
+    font-weight: 700;
+}
+
+.continue h1 {
+    font-weight: 400;
+    font-size: 22px;
+    color: #222;
+    margin-bottom: 50px;
+    margin-top: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); 
+}
+
+.admin-section {
+    padding: 0 40px 30px 40px;
+}
+
+.admin-section h1 {
+    margin-top: 15px;
+    margin-bottom: 35px;
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+.admin-form label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    padding-top: 5px;
+}
+
+.admin-form input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    font-size: 15px;
+    background: white;
+}
+
+.login-button {
+    margin-top: 30px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    width: 50%;
+    background: #a3c2dc;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login {
+    text-align: center;
+}
+
+.forgot-password {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 13px;
+}
+
+#forgot-password, #request-access {
+    width: 20px;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+.request-access {
+    padding-top: 5px;
+    text-align: center;
+    font-size: 13px;
+}
+
+#forgot-password:hover, #request-access:hover {
+    font-weight: bold;
+}
+
+.continue {
+    margin: 0 auto;
+    width: 520px;
+    height: 240px; /* this is overriden using the JS file */
+    border-radius: 15px;
+    background: rgba(255,255,255,0.45);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    backdrop-filter: blur(6px);
+    padding-top: 30px;
+    transition: height 0.4s ease;
+    overflow: hidden;
+    padding-bottom: 80px;
+}

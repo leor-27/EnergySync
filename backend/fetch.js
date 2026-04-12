@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const app = express();
+const path = require('path');
 const port = 3000;
 
 const connection = require('./db'); 
@@ -8,10 +10,16 @@ const connection = require('./db');
 // Middleware to parse JSON requests
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Define a GET route for the homepage
+// app.get('/', (req, res) => {
+//   res.send('Hello from Express.js Server!');
+// });
+
 app.get('/', (req, res) => {
-  res.send('Hello from Express.js Server!');
+  res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
 
 // Define a POST route for an API endpoint
