@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
+
 useEffect(() => {
   const forgotWrapper = document.getElementById("forgot-wrapper") as HTMLElement | null;
   const form = document.getElementById("admin-form") as HTMLFormElement | null;
@@ -102,7 +104,7 @@ useEffect(() => {
       .then(res => res.text())
       .then(response => {
         if (response === "success") {
-          window.location.href = "admin-home.php";
+
         } else if (response === "reset_success") {
           alert("Password reset successful.");
           window.location.replace("index.php");
@@ -124,41 +126,45 @@ useEffect(() => {
     step = "set";
     stepField.value = "set";
 
-    formTitle!.innerText = "Set Your Credentials";
-    inputLabel!.innerText = "Username";
+    if (formTitle) formTitle.innerText = "Set Your Credentials";
+    if (inputLabel) inputLabel.innerText = "Username";
 
     inputField.value = "";
     passwordField.value = "";
 
     passwordField.style.display = "block";
     passwordField.disabled = false;
-    passwordLabel!.style.display = "block";
+    if (passwordLabel) passwordLabel.style.display = "block";
 
     button.innerText = "Save Credentials";
 
     forgotWrapper.style.display = "none";
-    requestAccessWrapper!.style.display = "none";
+    if (requestAccessWrapper) {
+      requestAccessWrapper.style.display = "none";
+    }
   };
 
   (window as any).showResetPassword = () => {
     step = "reset";
     stepField.value = "reset";
 
-    formTitle!.innerText = "Reset Password";
+    if (formTitle) formTitle.innerText = "Reset Password";
 
     inputField.value = "";
     inputField.style.display = "none";
-    inputLabel!.style.display = "none";
+    if (inputLabel) inputLabel.style.display = "none";
 
     passwordField.value = "";
     passwordField.style.display = "block";
     passwordField.disabled = false;
-    passwordLabel!.style.display = "block";
+    if (passwordLabel) passwordLabel.style.display = "block";
 
     button.innerText = "Save New Password";
 
     forgotWrapper.style.display = "none";
-    requestAccessWrapper!.style.display = "none";
+    if (requestAccessWrapper) {
+      requestAccessWrapper.style.display = "none";
+    }
   };
 
   // =========================
@@ -174,20 +180,23 @@ useEffect(() => {
     step = "request";
     stepField.value = "request";
 
-    formTitle!.innerText = "Admin Sign In";
-    inputLabel!.innerText = "Email Address";
+    if (formTitle) formTitle.innerText = "Admin Sign In";
+    if (inputLabel) inputLabel.innerText = "Email Address";
 
     inputField.value = "";
     passwordField.value = "";
 
     passwordField.style.display = "none";
     passwordField.disabled = true;
-    passwordLabel!.style.display = "none";
+    if (passwordLabel) passwordLabel.style.display = "none";
 
     button.innerText = "Request Access Link";
 
     forgotWrapper.style.display = "none";
-    requestAccessWrapper!.style.display = "none";
+
+    if (requestAccessWrapper) {
+      requestAccessWrapper.style.display = "none";
+    }
   };
 
   const handleForgot = (e: Event) => {
@@ -196,20 +205,22 @@ useEffect(() => {
     step = "forgot";
     stepField.value = "forgot";
 
-    formTitle!.innerText = "Reset Password";
-    inputLabel!.innerText = "Email / Username";
+    if (formTitle) formTitle.innerText = "Reset Password";
+    if (inputLabel) inputLabel.innerText = "Email / Username";
 
     inputField.value = "";
     passwordField.value = "";
 
     passwordField.style.display = "none";
     passwordField.disabled = true;
-    passwordLabel!.style.display = "none";
+    if (passwordLabel) passwordLabel.style.display = "none";
 
     button.innerText = "Send Reset Link";
 
     forgotWrapper.style.display = "none";
-    requestAccessWrapper!.style.display = "none";
+    if (requestAccessWrapper) {
+      requestAccessWrapper.style.display = "none";
+    }
   };
 
   requestBtn?.addEventListener("click", handleRequest);
@@ -230,13 +241,13 @@ useEffect(() => {
     <div className="landing-page">
       <div className="landing-page-header">
         <div className="header-logo-row">
-          <a href="/">
+          <Link to="/admin-home">
             <img
               src="/logo.png"
               alt="Energy FM 106.3 Naga Logo"
               className="logo-landing-page"
             />
-          </a>
+          </Link>
           <h2 className="station-title">Energy FM Naga</h2>
         </div>
 

@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from './assets/vite.svg'
+// import heroImg from './assets/hero.png'
 import './App.css'
 import LandingPage from "./components/LandingPage"
 import AdminHome from './components/AdminHome';
@@ -16,6 +17,18 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
+    <BrowserRouter>
+    <Routes>
+      <Route path = "/" element={<LandingPage />} />
+      <Route path = "/admin-home" element={<AdminHome />} />
+      <Route path = "/admin-profile" element={<AdminProfile />}/>
+      <Route path = "/admin-schedule" element={<AdminSchedule />}/>
+      <Route path = "/superadmin-home" element={<SuperadminHome />}/>
+      <Route path = "/superadmin-profile" element={<SuperadminProfile />}/>
+      <Route path = "/superadmin-program" element={<SuperadminProgram />}/>
+      <Route path = "/superadmin-schedule" element={<SuperadminSchedule />}/>
+      </Routes>
+  </BrowserRouter>
     // <>
     //   <section id="center">
     //     <div className="hero">
@@ -127,7 +140,6 @@ function App() {
 //     <h1 className="text-3xl font-bold text-blue-500">
 //   Tailwind is working 🚀
 // </h1>
-  <LandingPage />
 );
 }
 
