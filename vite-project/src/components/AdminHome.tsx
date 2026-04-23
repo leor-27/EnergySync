@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Home, User, Calendar, LogOut } from "lucide-react"; 
+import { Button } from "@/components/ui/button"
 
 export default function AdminHome() {
     useEffect(() => {
@@ -27,25 +28,25 @@ export default function AdminHome() {
                     <ul className="nav-links">
                         <li className="nav-item active">
                             <Link to="/admin-home">
-                                <Home size={22} />
+                                <Home size={20} />
                                 <span>Home</span>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link to="/admin-profile">
-                                <User size={22} />
+                                <User size={20} />
                                 <span>Profile</span>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link to="/admin-schedule">
-                                <Calendar size={22} />
+                                <Calendar size={20} />
                                 <span>Schedule</span>
                             </Link>
                         </li>
                         <li className="nav-item logout">
                             <a href="/backend/logout.js">
-                                <LogOut size={22} />
+                                <LogOut size={20} />
                                 <span>Logout</span>
                             </a>
                         </li>
@@ -57,6 +58,21 @@ export default function AdminHome() {
                          <h1 className="welcome-text">Welcome, DJ Makisig!</h1>
                     </div>
                 </main> */}
+
+                <main className="main-content">
+                    <div className="welcome-section">
+                         <h1 className="welcome-text">Welcome, DJ Makisig!</h1>
+
+                                             <Button onClick={() => alert("Button clicked!")}>
+      Test Button
+    </Button>
+
+    <Button variant="secondary" size="lg">
+      Secondary Button
+    </Button>
+                    </div>
+                </main> 
+
             </div>
 
             <footer>

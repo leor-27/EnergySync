@@ -18,17 +18,17 @@ function App() {
 
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path = "/" element={<LandingPage />} />
-      <Route path = "/admin-home" element={<AdminHome />} />
-      <Route path = "/admin-profile" element={<AdminProfile />}/>
-      <Route path = "/admin-schedule" element={<AdminSchedule />}/>
-      <Route path = "/superadmin-home" element={<SuperadminHome />}/>
-      <Route path = "/superadmin-profile" element={<SuperadminProfile />}/>
-      <Route path = "/superadmin-program" element={<SuperadminProgram />}/>
-      <Route path = "/superadmin-schedule" element={<SuperadminSchedule />}/>
-      </Routes>
-  </BrowserRouter>
+      <Routes>
+        <Route path = "/" element={<LandingPage />} /> {/* add <ProtectedRoute> later */}
+        <Route path = "/admin-home" element={<AdminHome />} />
+        <Route path = "/admin-profile" element={<AdminProfile />}/>
+        <Route path = "/admin-schedule" element={<AdminSchedule />}/>
+        <Route path = "/superadmin-home" element={<SuperadminHome />}/>
+        <Route path = "/superadmin-profile" element={<SuperadminProfile />}/>
+        <Route path = "/superadmin-program" element={<SuperadminProgram />}/>
+        <Route path = "/superadmin-schedule" element={<SuperadminSchedule />}/>
+        </Routes>
+    </BrowserRouter>
     // <>
     //   <section id="center">
     //     <div className="hero">

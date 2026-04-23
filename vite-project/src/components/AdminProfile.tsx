@@ -27,25 +27,25 @@ export default function AdminProfile() {
                     <ul className="nav-links">
                         <li className="nav-item">
                             <Link to="/admin-home">
-                                <Home size={22} />
+                                <Home size={20} />
                                 <span>Home</span>
                             </Link>
                         </li>
                         <li className="nav-item active">
                             <Link to="/admin-profile">
-                                <User size={22} />
+                                <User size={20} />
                                 <span>Profile</span>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link to="/admin-schedule">
-                                <Calendar size={22} />
+                                <Calendar size={20} />
                                 <span>Schedule</span>
                             </Link>
                         </li>
                         <li className="nav-item logout">
                             <a href="/backend/logout.js">
-                                <LogOut size={22} />
+                                <LogOut size={20} />
                                 <span>Logout</span>
                             </a>
                         </li>
