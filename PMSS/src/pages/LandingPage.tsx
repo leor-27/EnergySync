@@ -1,252 +1,270 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import LoginForm from "@/components/auth/LoginForm"
 
 export default function LandingPage() {
 
-useEffect(() => {
-  const forgotWrapper = document.getElementById("forgot-wrapper") as HTMLElement | null;
-  const form = document.getElementById("admin-form") as HTMLFormElement | null;
-  const stepField = document.getElementById("step") as HTMLInputElement | null;
-  const inputField = document.getElementById("email") as HTMLInputElement | null;
-  const passwordField = document.getElementById("password") as HTMLInputElement | null;
-  const button = document.getElementById("login-btn") as HTMLButtonElement | null;
-  const inputLabel = document.getElementById("input-label") as HTMLElement | null;
-  const formTitle = document.getElementById("form-title") as HTMLElement | null;
-  const requestAccessWrapper = document.querySelector(".request-access") as HTMLElement | null;
-  const adminBox = document.getElementById("admin-login") as HTMLElement | null;
-  const passwordLabel = document.getElementById("password-label") as HTMLElement | null;
+// useEffect(() => {
+//   const forgotWrapper = document.getElementById("forgot-wrapper") as HTMLElement | null;
+//   const form = document.getElementById("admin-form") as HTMLFormElement | null;
+//   const stepField = document.getElementById("step") as HTMLInputElement | null;
+//   const inputField = document.getElementById("email") as HTMLInputElement | null;
+//   const passwordField = document.getElementById("password") as HTMLInputElement | null;
+//   const button = document.getElementById("login-btn") as HTMLButtonElement | null;
+//   const inputLabel = document.getElementById("input-label") as HTMLElement | null;
+//   const formTitle = document.getElementById("form-title") as HTMLElement | null;
+//   const requestAccessWrapper = document.querySelector(".request-access") as HTMLElement | null;
+//   const adminBox = document.getElementById("admin-login") as HTMLElement | null;
+//   const passwordLabel = document.getElementById("password-label") as HTMLElement | null;
 
-  if (!form || !forgotWrapper || !passwordField || !button || !inputField || !stepField) return;
+//   if (!form || !forgotWrapper || !passwordField || !button || !inputField || !stepField) return;
 
-  let step = "login";
+//   let step = "login";
 
-  // Initial UI
-  stepField.value = "login";
-  passwordField.style.display = "block";
-  passwordField.disabled = false;
+//   if (step === "login") {
+//   const email = inputField.value;
+//   const password = passwordField.value;
 
-  if (passwordLabel) passwordLabel.style.display = "block";
+//   // ✅ HARDCODED USERS
+//   if (email === "admin@test.com" && password === "1234") {
+//     localStorage.setItem("auth", "admin");
+//     navigate("/admin-home");
+//   } 
+//   else if (email === "super@test.com" && password === "1234") {
+//     localStorage.setItem("auth", "superadmin");
+//     navigate("/superadmin-home");
+//   } 
+//   else {
+//     alert("Invalid credentials");
+//   }
 
-  button.innerText = "Continue";
-  forgotWrapper.style.display = "block";
-  if (requestAccessWrapper) requestAccessWrapper.style.display = "block";
+//   return;
+// }
 
-  if (adminBox) {
-    adminBox.style.display = "block";
-  }
+//   // Initial UI
+//   stepField.value = "login";
+//   passwordField.style.display = "block";
+//   passwordField.disabled = false;
 
-  // =========================
-  // FORM SUBMIT
-  // =========================
-  const handleSubmit = (e: Event) => {
-    e.preventDefault();
+//   if (passwordLabel) passwordLabel.style.display = "block";
 
-    const formData = new FormData(form);
-    let emailTab: Window | null = null;
+//   button.innerText = "Continue";
+//   forgotWrapper.style.display = "block";
+//   if (requestAccessWrapper) requestAccessWrapper.style.display = "block";
 
-    if (step === "request" || step === "forgot") {
-      emailTab = window.open("", "_blank");
-    }
+//   if (adminBox) {
+//     adminBox.style.display = "block";
+//   }
 
-    // REQUEST ACCESS
-    if (step === "request") {
-      fetch("request-invite.php", {
-        method: "POST",
-        body: formData
-      })
-        .then(res => res.text())
-        .then(response => {
-          if (!response.startsWith("http")) {
-            emailTab?.close();
-            alert(response);
-            return;
-          }
+//   // =========================
+//   // FORM SUBMIT
+//   // =========================
+//   const handleSubmit = (e: Event) => {
+//     e.preventDefault();
 
-          emailTab!.document.write(`
-            <h2>Admin Invite</h2>
-            <a href="${response}">${response}</a>
-          `);
-          emailTab!.document.close();
-        });
+//     const formData = new FormData(form);
+//     let emailTab: Window | null = null;
 
-      return;
-    }
+//     if (step === "request" || step === "forgot") {
+//       emailTab = window.open("", "_blank");
+//     }
 
-    // FORGOT PASSWORD
-    if (step === "forgot") {
-      fetch("request-reset.php", {
-        method: "POST",
-        body: formData
-      })
-        .then(res => res.text())
-        .then(response => {
-          if (!response.startsWith("http")) {
-            emailTab?.close();
-            alert(response);
-            return;
-          }
+//     // REQUEST ACCESS
+//     if (step === "request") {
+//       fetch("request-invite.php", {
+//         method: "POST",
+//         body: formData
+//       })
+//         .then(res => res.text())
+//         .then(response => {
+//           if (!response.startsWith("http")) {
+//             emailTab?.close();
+//             alert(response);
+//             return;
+//           }
 
-          emailTab!.document.write(`
-            <h2>Password Reset</h2>
-            <a href="${response}">${response}</a>
-          `);
-          emailTab!.document.close();
-        });
+//           emailTab!.document.write(`
+//             <h2>Admin Invite</h2>
+//             <a href="${response}">${response}</a>
+//           `);
+//           emailTab!.document.close();
+//         });
 
-      return;
-    }
+//       return;
+//     }
 
-    // LOGIN / SET / RESET
-    fetch("backend/admin-auth.php", {
-      method: "POST",
-      body: formData
-    })
-      .then(res => res.text())
-      .then(response => {
-        if (response === "success") {
+//     // FORGOT PASSWORD
+//     if (step === "forgot") {
+//       fetch("request-reset.php", {
+//         method: "POST",
+//         body: formData
+//       })
+//         .then(res => res.text())
+//         .then(response => {
+//           if (!response.startsWith("http")) {
+//             emailTab?.close();
+//             alert(response);
+//             return;
+//           }
 
-        } else if (response === "reset_success") {
-          alert("Password reset successful.");
-          window.location.replace("index.php");
-        } else if (response === "setup") {
-          (window as any).showSetCredentials();
-        } else {
-          alert(response);
-        }
-      });
-  };
+//           emailTab!.document.write(`
+//             <h2>Password Reset</h2>
+//             <a href="${response}">${response}</a>
+//           `);
+//           emailTab!.document.close();
+//         });
 
-  form.addEventListener("submit", handleSubmit);
+//       return;
+//     }
 
-  // =========================
-  // UI FUNCTIONS
-  // =========================
+//     // LOGIN / SET / RESET
+//     fetch("backend/admin-auth.php", {
+//       method: "POST",
+//       body: formData
+//     })
+//       .then(res => res.text())
+//       .then(response => {
+//         if (response === "success") {
 
-  (window as any).showSetCredentials = () => {
-    step = "set";
-    stepField.value = "set";
+//         } else if (response === "reset_success") {
+//           alert("Password reset successful.");
+//           window.location.replace("index.php");
+//         } else if (response === "setup") {
+//           (window as any).showSetCredentials();
+//         } else {
+//           alert(response);
+//         }
+//       });
+//   };
 
-    if (formTitle) formTitle.innerText = "Set Your Credentials";
-    if (inputLabel) inputLabel.innerText = "Username";
+//   form.addEventListener("submit", handleSubmit);
 
-    inputField.value = "";
-    passwordField.value = "";
+//   // =========================
+//   // UI FUNCTIONS
+//   // =========================
 
-    passwordField.style.display = "block";
-    passwordField.disabled = false;
-    if (passwordLabel) passwordLabel.style.display = "block";
+//   (window as any).showSetCredentials = () => {
+//     step = "set";
+//     stepField.value = "set";
 
-    button.innerText = "Save Credentials";
+//     if (formTitle) formTitle.innerText = "Set Your Credentials";
+//     if (inputLabel) inputLabel.innerText = "Username";
 
-    forgotWrapper.style.display = "none";
-    if (requestAccessWrapper) {
-      requestAccessWrapper.style.display = "none";
-    }
-  };
+//     inputField.value = "";
+//     passwordField.value = "";
 
-  (window as any).showResetPassword = () => {
-    step = "reset";
-    stepField.value = "reset";
+//     passwordField.style.display = "block";
+//     passwordField.disabled = false;
+//     if (passwordLabel) passwordLabel.style.display = "block";
 
-    if (formTitle) formTitle.innerText = "Reset Password";
+//     button.innerText = "Save Credentials";
 
-    inputField.value = "";
-    inputField.style.display = "none";
-    if (inputLabel) inputLabel.style.display = "none";
+//     forgotWrapper.style.display = "none";
+//     if (requestAccessWrapper) {
+//       requestAccessWrapper.style.display = "none";
+//     }
+//   };
 
-    passwordField.value = "";
-    passwordField.style.display = "block";
-    passwordField.disabled = false;
-    if (passwordLabel) passwordLabel.style.display = "block";
+//   (window as any).showResetPassword = () => {
+//     step = "reset";
+//     stepField.value = "reset";
 
-    button.innerText = "Save New Password";
+//     if (formTitle) formTitle.innerText = "Reset Password";
 
-    forgotWrapper.style.display = "none";
-    if (requestAccessWrapper) {
-      requestAccessWrapper.style.display = "none";
-    }
-  };
+//     inputField.value = "";
+//     inputField.style.display = "none";
+//     if (inputLabel) inputLabel.style.display = "none";
 
-  // =========================
-  // CLICK HANDLERS
-  // =========================
+//     passwordField.value = "";
+//     passwordField.style.display = "block";
+//     passwordField.disabled = false;
+//     if (passwordLabel) passwordLabel.style.display = "block";
 
-  const requestBtn = document.getElementById("request-access");
-  const forgotBtn = document.getElementById("forgot-password");
+//     button.innerText = "Save New Password";
 
-  const handleRequest = (e: Event) => {
-    e.preventDefault();
+//     forgotWrapper.style.display = "none";
+//     if (requestAccessWrapper) {
+//       requestAccessWrapper.style.display = "none";
+//     }
+//   };
 
-    step = "request";
-    stepField.value = "request";
+//   // =========================
+//   // CLICK HANDLERS
+//   // =========================
 
-    if (formTitle) formTitle.innerText = "Admin Sign In";
-    if (inputLabel) inputLabel.innerText = "Email Address";
+//   const requestBtn = document.getElementById("request-access");
+//   const forgotBtn = document.getElementById("forgot-password");
 
-    inputField.value = "";
-    passwordField.value = "";
+//   const handleRequest = (e: Event) => {
+//     e.preventDefault();
 
-    passwordField.style.display = "none";
-    passwordField.disabled = true;
-    if (passwordLabel) passwordLabel.style.display = "none";
+//     step = "request";
+//     stepField.value = "request";
 
-    button.innerText = "Request Access Link";
+//     if (formTitle) formTitle.innerText = "Admin Sign In";
+//     if (inputLabel) inputLabel.innerText = "Email Address";
 
-    forgotWrapper.style.display = "none";
+//     inputField.value = "";
+//     passwordField.value = "";
 
-    if (requestAccessWrapper) {
-      requestAccessWrapper.style.display = "none";
-    }
-  };
+//     passwordField.style.display = "none";
+//     passwordField.disabled = true;
+//     if (passwordLabel) passwordLabel.style.display = "none";
 
-  const handleForgot = (e: Event) => {
-    e.preventDefault();
+//     button.innerText = "Request Access Link";
 
-    step = "forgot";
-    stepField.value = "forgot";
+//     forgotWrapper.style.display = "none";
 
-    if (formTitle) formTitle.innerText = "Reset Password";
-    if (inputLabel) inputLabel.innerText = "Email / Username";
+//     if (requestAccessWrapper) {
+//       requestAccessWrapper.style.display = "none";
+//     }
+//   };
 
-    inputField.value = "";
-    passwordField.value = "";
+//   const handleForgot = (e: Event) => {
+//     e.preventDefault();
 
-    passwordField.style.display = "none";
-    passwordField.disabled = true;
-    if (passwordLabel) passwordLabel.style.display = "none";
+//     step = "forgot";
+//     stepField.value = "forgot";
 
-    button.innerText = "Send Reset Link";
+//     if (formTitle) formTitle.innerText = "Reset Password";
+//     if (inputLabel) inputLabel.innerText = "Email / Username";
 
-    forgotWrapper.style.display = "none";
-    if (requestAccessWrapper) {
-      requestAccessWrapper.style.display = "none";
-    }
-  };
+//     inputField.value = "";
+//     passwordField.value = "";
 
-  requestBtn?.addEventListener("click", handleRequest);
-  forgotBtn?.addEventListener("click", handleForgot);
+//     passwordField.style.display = "none";
+//     passwordField.disabled = true;
+//     if (passwordLabel) passwordLabel.style.display = "none";
 
-  // =========================
-  // CLEANUP (IMPORTANT)
-  // =========================
-  return () => {
-    form.removeEventListener("submit", handleSubmit);
-    requestBtn?.removeEventListener("click", handleRequest);
-    forgotBtn?.removeEventListener("click", handleForgot);
-  };
+//     button.innerText = "Send Reset Link";
 
-}, []);
+//     forgotWrapper.style.display = "none";
+//     if (requestAccessWrapper) {
+//       requestAccessWrapper.style.display = "none";
+//     }
+//   };
+
+//   requestBtn?.addEventListener("click", handleRequest);
+//   forgotBtn?.addEventListener("click", handleForgot);
+
+//   // =========================
+//   // CLEANUP (IMPORTANT)
+//   // =========================
+//   return () => {
+//     form.removeEventListener("submit", handleSubmit);
+//     requestBtn?.removeEventListener("click", handleRequest);
+//     forgotBtn?.removeEventListener("click", handleForgot);
+//   };
+
+// }, []);
 
   return (
-    <div className="landing-page">
+    <div className="landing-page  flex flex-col items-center">
       <div className="landing-page-header">
         <div className="header-logo-row">
-          <Link to="/admin-home">
-            <img
-              src="/logo.png"
-              alt="Energy FM 106.3 Naga Logo"
-              className="logo-landing-page"
-            />
+          <Link to="/">
+            <img src="/logo.png" alt="Energy FM 106.3 Naga Logo"
+              className="logo-landing-page" />
           </Link>
           <h2 className="station-title">Energy FM Naga</h2>
         </div>
@@ -258,7 +276,7 @@ useEffect(() => {
         Welcome to <span>ENERGYSYNC</span>
       </h1>
 
-      <div className="continue">
+      {/* <div className="continue">
         <section id="admin-login" className="admin-section">
           <h1 id="form-title">Login</h1>
 
@@ -286,7 +304,10 @@ useEffect(() => {
             </p>
           </form>
         </section>
-      </div>
+      </div> */}
+        <div className="continue flex justify-center items-center">
+          <LoginForm />
+       </div>
     </div>
   );
 }

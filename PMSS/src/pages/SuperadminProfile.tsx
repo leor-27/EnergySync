@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Home, User, Tv, Calendar, LogOut } from "lucide-react"; 
 
 export default function SuperadminProfile() {
+    const navigate = useNavigate();
+
     useEffect(() => {
 
     }, []);
@@ -25,35 +27,38 @@ export default function SuperadminProfile() {
             <div className="app-body">
                 <nav className="sidebar">
                     <ul className="nav-links">
-                        <li className="nav-item">
-                            <Link to="/superadmin-home">
+                        <li>
+                            <NavLink to="/superadmin-home" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Home size={20} />
                                 <span>Home</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item active">
-                            <Link to="/superadmin-profile">
+                        <li>
+                            <NavLink to="/superadmin-profile" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <User size={20} />
                                 <span>Profile</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/superadmin-program">
+                        <li>
+                            <NavLink to="/superadmin-program" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Tv size={20} />
-                                <span>Program</span>
-                            </Link>
+                                <span>Profile</span>
+                            </NavLink>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/superadmin-schedule">
+                        <li>
+                            <NavLink to="/superadmin-schedule" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Calendar size={20} />
                                 <span>Schedule</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item logout">
-                            <a href="/backend/logout.js">
+                        <li>
+                            <button className="nav-item logout" onClick={() => {
+                                localStorage.removeItem("auth")
+                                navigate("/")
+                            }}>
                                 <LogOut size={20} />
                                 <span>Logout</span>
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </nav>

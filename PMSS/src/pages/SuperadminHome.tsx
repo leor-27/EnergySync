@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Home, User, Tv, Calendar, LogOut } from "lucide-react"; 
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Home, User, Tv, Calendar, LogOut, Search, SlidersHorizontal, Bell } from "lucide-react"; 
 
 export default function SuperadminHome() {
+    const navigate = useNavigate();
+
     useEffect(() => {
 
     }, []);
@@ -25,44 +27,103 @@ export default function SuperadminHome() {
             <div className="app-body">
                 <nav className="sidebar">
                     <ul className="nav-links">
-                        <li className="nav-item active">
-                            <Link to="/superadmin-home">
+                        <li>
+                            <NavLink to="/superadmin-home" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Home size={20} />
                                 <span>Home</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/superadmin-profile">
+                        <li>
+                            <NavLink to="/superadmin-profile" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <User size={20} />
                                 <span>Profile</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/superadmin-program">
+                        <li>
+                            <NavLink to="/superadmin-program" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Tv size={20} />
-                                <span>Program</span>
-                            </Link>
+                                <span>Profile</span>
+                            </NavLink>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/superadmin-schedule">
+                        <li>
+                            <NavLink to="/superadmin-schedule" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Calendar size={20} />
                                 <span>Schedule</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item logout">
-                            <a href="/backend/logout.js">
+                        <li>
+                            <button className="nav-item logout" onClick={() => {
+                                localStorage.removeItem("auth")
+                                navigate("/")
+                            }}>
                                 <LogOut size={20} />
                                 <span>Logout</span>
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </nav>
 
-                {/* <main className="main-content">
+                <main className="main-content">
                     <div className="welcome-section">
                          <h1 className="welcome-text">Welcome, DJ Makisig!</h1>
                     </div>
-                </main> */}
+
+                    <div className="dashboard-grid">
+                        <section className="search-container">
+                            <div className="search-bar">
+                                <Search size={18} className="search-icon" />
+                                <input type="text" placeholder="Search" />
+                                <SlidersHorizontal size={18} className="filter-icon" />
+                            </div>
+
+                            <div className="program-card">
+                                <div className="program-info">
+                                    <h3>Energy sa Hapon</h3>
+                                    <p><Calendar size={14} /> 3:00 PM - 5:00 PM</p>
+                                </div>
+                                <div className="assigned-dj-badge">
+                                    DJ Apple
+                                </div>
+                            </div>
+                        </section>
+
+                        <aside className="notifications-panel">
+                            <div className="notifications-header">
+                                <div className="notif-title">
+                                    <Bell size={18} />
+                                    <span>Notifications</span>
+                                </div>
+                                <div className="notif-search">
+                                    <input type="text" placeholder="Search..." />
+                                    <Search size={14} />
+                                </div>
+                            </div>
+                            <div className="notif-list">
+                                <div className="notif-item">
+                                    <div className="notif-dot red"></div>
+                                    <div className="notif-content">
+                                        <p>DJ Apple confirmed her attendance to ho...</p>
+                                        <span className="notif-time">2:00 PM</span>
+                                    </div>
+                                </div>
+                                <div className="notif-item">
+                                    <div className="notif-dot pink"></div>
+                                    <div className="notif-content">
+                                        <p>DJ Barbie is not available to host "Energy sa...</p>
+                                        <span className="notif-time">Mar 13</span>
+                                    </div>
+                                </div>
+                                <div className="notif-item">
+                                    <div className="notif-dot green"></div>
+                                    <div className="notif-content">
+                                        <p>Papa Gats confirmed his attendance</p>
+                                        <span className="notif-time">Mar 13</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </main>
             </div>
 
             <footer>

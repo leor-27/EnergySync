@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useNavigate} from "react-router-dom";
 import { Home, User, Calendar, LogOut } from "lucide-react"; 
 
 export default function AdminProfile() {
+    const navigate = useNavigate();
+
     useEffect(() => {
 
     }, []);
@@ -25,29 +27,32 @@ export default function AdminProfile() {
             <div className="app-body">
                 <nav className="sidebar">
                     <ul className="nav-links">
-                        <li className="nav-item">
-                            <Link to="/admin-home">
+                        <li>
+                            <NavLink to="/admin-home" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Home size={20} />
                                 <span>Home</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item active">
-                            <Link to="/admin-profile">
+                        <li>
+                            <NavLink to="/admin-profile" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <User size={20} />
                                 <span>Profile</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item">
-                            <Link to="/admin-schedule">
+                        <li>
+                            <NavLink to="/admin-schedule" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                                 <Calendar size={20} />
                                 <span>Schedule</span>
-                            </Link>
+                            </NavLink>
                         </li>
-                        <li className="nav-item logout">
-                            <a href="/backend/logout.js">
+                        <li>
+                            <button className="nav-item logout" onClick={() => {
+                                localStorage.removeItem("auth")
+                                navigate("/")
+                            }}>
                                 <LogOut size={20} />
                                 <span>Logout</span>
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </nav>

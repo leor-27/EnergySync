@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
+import { AuthProvider } from "@/contexts/useAuth"
+import { Toaster } from "@/components/ui/sonner"
 import LandingPage from "./pages/LandingPage"
 import AdminHome from './pages/AdminHome';
 import SuperadminHome from './pages/SuperadminHome'
@@ -14,18 +16,19 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <BrowserRouter>
+    <AuthProvider>
       <Routes>
-        <Route path = "/" element={<ProtectedRoute> <LandingPage /> </ProtectedRoute>}/>
-        <Route path = "/admin-home" element={<ProtectedRoute> <AdminHome /> </ProtectedRoute>}/>
-        <Route path = "/admin-profile" element={<ProtectedRoute> <AdminProfile /> </ProtectedRoute>}/>
-        <Route path = "/admin-schedule" element={<ProtectedRoute> <AdminSchedule /> </ProtectedRoute>}/>
-        <Route path = "/superadmin-home" element={ <SuperadminHome /> }/> { /* add <ProtectedRoute> later */ }
-        <Route path = "/superadmin-profile" element={<ProtectedRoute> <SuperadminProfile /> </ProtectedRoute>}/>
-        <Route path = "/superadmin-program" element={<ProtectedRoute> <SuperadminProgram /> </ProtectedRoute>}/>
-        <Route path = "/superadmin-schedule" element={<ProtectedRoute> <SuperadminSchedule /> </ProtectedRoute>}/>
-        </Routes>
-    </BrowserRouter>
+        <Route path = "/" element={ <LandingPage /> }/>
+        <Route path = "/admin-home" element={<ProtectedRoute role="admin"> <AdminHome /> </ProtectedRoute>}/>
+        <Route path = "/admin-profile" element={<ProtectedRoute role="admin"> <AdminProfile /> </ProtectedRoute>}/>
+        <Route path = "/admin-schedule" element={<ProtectedRoute role="admin"> <AdminSchedule /> </ProtectedRoute>}/>
+        <Route path = "/superadmin-home" element={<ProtectedRoute role="superadmin"> <SuperadminHome /> </ProtectedRoute>}/>
+        <Route path = "/superadmin-profile" element={<ProtectedRoute role="superadmin"> <SuperadminProfile /> </ProtectedRoute>}/>
+        <Route path = "/superadmin-program" element={<ProtectedRoute role="superadmin"> <SuperadminProgram /> </ProtectedRoute>}/>
+        <Route path = "/superadmin-schedule" element={<ProtectedRoute role="superadmin"> <SuperadminSchedule /> </ProtectedRoute>}/>
+      </Routes>
+      <Toaster />
+    </AuthProvider>
     // <>
     // </>
 );

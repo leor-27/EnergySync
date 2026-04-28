@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import './Index.css'
 import './AdminHome.css'
 import './SuperadminHome.css'
@@ -11,7 +12,9 @@ import './SuperadminSchedule.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode> {/* add daa digdi c browserrouter amp */}
-    <App />
+  <StrictMode> 
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 )
