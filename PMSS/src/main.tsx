@@ -8,6 +8,7 @@ import './AdminProfile.css'
 import './SuperadminProfile.css'
 import './SuperadminProgram.css'
 import './AdminSchedule.css'
+import 'react-day-picker/dist/style.css'
 import './SuperadminSchedule.css'
 import App from './App.tsx'
 
