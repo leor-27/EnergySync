@@ -14,7 +14,7 @@
 .admin-layout {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .main-header {
@@ -100,12 +100,7 @@
     background-color: #F8F9FA;
     padding: 40px;
     overflow-y: auto;
-}
-
-.admin-layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    padding-bottom: 80px;
 }
 
 .profile-grid {
@@ -288,5 +283,8 @@ footer {
     }
     footer {
         width: 100%;
+    }
+    .profile-grid {
+        grid-template-columns: 1fr;
     }
 }

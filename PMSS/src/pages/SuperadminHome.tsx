@@ -134,8 +134,8 @@
 // }
 
 import { useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Home, User, Tv, Calendar, LogOut, Search, SlidersHorizontal, Bell } from "lucide-react"; 
+import { useNavigate } from "react-router-dom";
+import { Calendar, Search, SlidersHorizontal, Bell } from "lucide-react"; 
 
 export default function SuperadminHome() {
     const navigate = useNavigate();

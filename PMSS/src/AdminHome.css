@@ -55,7 +55,8 @@
     width: var(--sidebar-width);
     background: white;
     border-right: 1px solid #e0e0e0;
-    padding-top: 80px;
+    /* padding-top: 80px; */
+    padding-top: var(--header-height);
 }
 
 .nav-links {
@@ -99,6 +100,7 @@
     flex: 1;
     padding: 20px;
     overflow-y: auto;
+    padding-bottom: 80px; /* prevent overlap */
 }
 
 .dashboard-grid {

@@ -134,3 +134,369 @@ footer {
         width: 100%;
     }
 }
+
+/* SUPERADMIN SCHEDULE PAGE STYLES */
+
+.ss-page-container {
+    flex: 1;
+    height: 100%;
+    min-height: 0; 
+    min-width: 0;
+    padding: 0rem 0rem; 
+    padding-bottom: 2rem; 
+    width: 100%;
+    background-color: transparent;
+    box-sizing: border-box;
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+}
+
+.ss-page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #111827;
+    flex-shrink: 0; 
+}
+
+/* Grid Layout */
+.ss-grid {
+   display: grid;
+    grid-template-columns: 2.8fr 9.2fr; 
+    gap: 3rem;
+    width: 100%;
+    flex: 1; 
+    min-height: 0;
+}
+
+.ss-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+/* LEFT COLUMN */
+.ss-left-col {
+   display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+    min-height: 0; 
+}
+
+/* CUSTOM CALENDAR STYLING */
+
+.ss-calendar-widget {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding-top: 0.5rem;
+}
+
+.ss-custom-calendar {
+    margin: 0 auto; 
+}
+
+.ss-custom-calendar .rdp-caption_label {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+}
+
+.ss-custom-calendar th {
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: #1C5186 !important;
+    text-transform: capitalize !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.ss-custom-calendar button {
+    border-radius: 50% !important; 
+    outline: none !important;      
+    box-shadow: none !important;   
+    border: none !important;
+}
+.ss-custom-calendar .rdp-day_button {
+    width: 34px !important;
+    height: 34px !important;
+    margin: 0 auto !important; 
+}
+
+.ss-custom-calendar .rdp-selected .rdp-day_button {
+    background-color: #1C5186 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.ss-custom-calendar .rdp-selected .rdp-day_button:hover,
+.ss-custom-calendar .rdp-selected .rdp-day_button:focus {
+    background-color: #1C5186 !important; 
+    color: white !important;
+}
+
+.ss-custom-calendar .rdp-button_previous,
+.ss-custom-calendar .rdp-button_next {
+    color: #6b7280 !important;
+    background-color: transparent !important;
+}
+
+.ss-custom-calendar .rdp-chevron {
+    fill: #6b7280 !important;
+}
+
+.ss-custom-calendar .rdp-button_previous:hover,
+.ss-custom-calendar .rdp-button_next:hover {
+    background-color: #f3f4f6 !important;
+}
+
+.ss-custom-calendar .rdp-day:not(.rdp-selected) .rdp-day_button:hover {
+    background-color: #f3f4f6 !important;
+}
+
+.ss-custom-calendar .rdp-today:not(.rdp-selected) .rdp-day_button {
+    font-weight: bold !important;
+    color: #1C5186 !important;
+}
+
+/* Availability List */
+.ss-availability-widget {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.ss-avail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1; 
+    overflow-y: auto; 
+    padding-right: 0.5rem;
+}
+
+/* Custom Scrollbar for the availability list */
+.ss-avail-list::-webkit-scrollbar { width: 6px; }
+.ss-avail-list::-webkit-scrollbar-track { background: transparent; }
+.ss-avail-list::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+
+.ss-avail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #e5e7eb;
+    border: 1px solid #e1e1e1;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.ss-avail-info h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--energy-blue);
+}
+
+.ss-avail-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--energy-blue);
+}
+
+.ss-badge {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 600;
+}
+
+.ss-badge-yellow { background-color: #fef08a; color: #854d0e; }
+.ss-badge-blue { background-color: #3b82f6; color: white; }
+
+
+/* RIGHT COLUMN */
+.ss-right-col {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; 
+}
+
+.ss-timeline-card {
+    background-color: #e5e7eb; 
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.ss-timeline-header {
+    background-color: #2b5a8c; 
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ss-btn-create {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ss-btn-create:hover { background-color: rgba(255,255,255,0.3); }
+
+.ss-btn-date {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.ss-timeline-body {
+    display: flex;
+    flex: 1;
+    overflow-y: auto; 
+    position: relative;
+    background-color: white;
+}
+
+.ss-timeline-body::-webkit-scrollbar { width: 6px; }
+.ss-timeline-body::-webkit-scrollbar-track { background: transparent; }
+.ss-timeline-body::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+
+/* Left side of timeline */
+.ss-time-gutter {
+    width: 100px;
+    flex-shrink: 0;
+    border-right: 1px solid #d1d5db;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+}
+
+.ss-time-gutter span {
+    height: 90px; 
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 1rem;
+    font-size: 0.90rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Schedule Content Area */
+.ss-schedule-content {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.ss-schedule-item {
+    background-color: #e5e7eb;
+    border: 1px solid;
+    border-color: #e1e1e1;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.ss-sched-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.ss-sched-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+.ss-sched-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ss-sched-actions button {
+    background: none;
+    border: none;
+    color: var(--energy-blue);
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.ss-sched-actions button:hover {
+    color: #153c63;
+}
+
+.ss-sched-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #111827;
+    margin-bottom: 1.5rem;
+}
+
+.ss-sched-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ss-dj-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #111827;
+}
+
+.ss-btn-outline {
+    background-color: white;
+    border: 1px solid #004d9f;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem; 
+    font-weight: 600;
+    color: #004d9f;
+    cursor: pointer;
+}
+
+.ss-btn-outline:hover {
+    background-color: #f8fafc;
+}
+
+@media (max-width: 1024px) {
+    .ss-page-container { height: auto; overflow: visible; }
+    .ss-grid { grid-template-columns: 1fr; overflow: visible; }
+    .ss-left-col { height: auto; overflow: visible; }
+    .ss-timeline-body { max-height: 600px; }
+}

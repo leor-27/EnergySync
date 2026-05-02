@@ -28,27 +28,21 @@ function App() {
         <Route path = "/superadmin-program" element={<ProtectedRoute role="superadmin"> <SuperadminProgram /> </ProtectedRoute>}/>
         <Route path = "/superadmin-schedule" element={<ProtectedRoute role="superadmin"> <SuperadminSchedule /> </ProtectedRoute>}/>
       </Routes> */}
-<Routes>
-  <Route path = "/" element={ <LandingPage /> }/>
-<Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+      <Routes>
+        <Route path = "/" element={ <LandingPage /> }/>
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route path="/admin-home" element={<AdminHome />} />
+          <Route path="/admin-profile" element={<AdminProfile />} />
+          <Route path="/admin-schedule" element={<AdminSchedule />} />
 
-  {/* ADMIN */}
-  <Route path="/admin-home" element={<AdminHome />} />
-  <Route path="/admin-profile" element={<AdminProfile />} />
-  <Route path="/admin-schedule" element={<AdminSchedule />} />
-
-  {/* SUPERADMIN */}
-  <Route path="/superadmin-home" element={<SuperadminHome />} />
-  <Route path="/superadmin-profile" element={<SuperadminProfile />} />
-  <Route path="/superadmin-program" element={<SuperadminProgram />} />
-  <Route path="/superadmin-schedule" element={<SuperadminSchedule />} />
-
-</Route>
-</Routes>
+          <Route path="/superadmin-home" element={<SuperadminHome />} />
+          <Route path="/superadmin-profile" element={<SuperadminProfile />} />
+          <Route path="/superadmin-program" element={<SuperadminProgram />} />
+          <Route path="/superadmin-schedule" element={<SuperadminSchedule />} />
+        </Route>
+      </Routes>
       <Toaster />
     </AuthProvider>
-    // <>
-    // </>
 );
 }
 

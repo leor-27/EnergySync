@@ -10,7 +10,6 @@ export default function AppLayout() {
 
   return (
     <div className="admin-layout">
-      {/* HEADER (UNCHANGED) */}
       <header className="main-header">
         <div className="header-content">
           <section className="header-image">
@@ -25,74 +24,55 @@ export default function AppLayout() {
       </header>
 
       <div className="app-body">
-        {/* SIDEBAR (DYNAMIC LINKS) */}
         <nav className="sidebar">
           <ul className="nav-links">
-
-            {/* HOME */}
             <li>
-              <NavLink
-                to={isAdmin ? "/admin-home" : "/superadmin-home"}
-                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              >
+              <NavLink to={isAdmin ? "/admin-home" : "/superadmin-home"}
+                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <Home size={20} />
                 <span>Home</span>
               </NavLink>
             </li>
 
-            {/* PROFILE */}
             <li>
-              <NavLink
-                to={isAdmin ? "/admin-profile" : "/superadmin-profile"}
-                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              >
+              <NavLink to={isAdmin ? "/admin-profile" : "/superadmin-profile"}
+                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <User size={20} />
                 <span>Profile</span>
               </NavLink>
             </li>
 
-            {/* PROGRAM (SUPERADMIN ONLY) */}
             {!isAdmin && (
               <li>
-                <NavLink
-                  to="/superadmin-program"
-                  className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-                >
+                <NavLink to="/superadmin-program"
+                  className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                   <Tv size={20} />
                   <span>Program</span>
                 </NavLink>
               </li>
             )}
 
-            {/* SCHEDULE */}
             <li>
-              <NavLink
-                to={isAdmin ? "/admin-schedule" : "/superadmin-schedule"}
-                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              >
+              <NavLink to={isAdmin ? "/admin-schedule" : "/superadmin-schedule"}
+                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
                 <Calendar size={20} />
                 <span>Schedule</span>
               </NavLink>
             </li>
 
-            {/* LOGOUT */}
             <li>
-              <button
-                className="nav-item logout"
+              <button className="nav-item logout"
                 onClick={() => {
                   logout()
                   navigate("/")
-                }}
-              >
+                }}>
                 <LogOut size={20} />
                 <span>Logout</span>
               </button>
             </li>
-
           </ul>
         </nav>
 
-        {/* CONTENT */}
         <main className="main-content">
           <Outlet />
         </main>
