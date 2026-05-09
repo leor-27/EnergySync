@@ -1,85 +1,11 @@
-// import { useEffect } from "react";
-// import { Link, NavLink, useNavigate } from "react-router-dom";
-// import { Home, User, Tv, Calendar, LogOut } from "lucide-react"; 
-
-// export default function SuperadminProgram() {
-//     const navigate = useNavigate();
-
-//     useEffect(() => {
-
-//     }, []);
-
-//     return (
-//         <div className="superadmin-layout">
-//             <header className="main-header">
-//                 <div className="header-content">
-//                     <section className="header-image">
-//                         <Link to="/superadmin-home">
-//                             <img src="/logo.png" className="logo" alt="Energy FM 106.3 Naga Logo" />
-//                         </Link>
-//                     </section>
-//                     <div className="title"> 
-//                         <h1>EnergySync</h1>
-//                     </div>
-//                 </div>
-//             </header>
-
-//             <div className="app-body">
-//                 <nav className="sidebar">
-//                     <ul className="nav-links">
-//                         <li>
-//                             <NavLink to="/superadmin-home" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <Home size={20} />
-//                                 <span>Home</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink to="/superadmin-profile" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <User size={20} />
-//                                 <span>Profile</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink to="/superadmin-program" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <Tv size={20} />
-//                                 <span>Program</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink to="/superadmin-schedule" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <Calendar size={20} />
-//                                 <span>Schedule</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <button className="nav-item logout" onClick={() => {
-//                                 localStorage.removeItem("auth")
-//                                 navigate("/")
-//                             }}>
-//                                 <LogOut size={20} />
-//                                 <span>Logout</span>
-//                             </button>
-//                         </li>
-//                     </ul>
-//                 </nav>
-
-//                 {/* <main className="main-content">
-//                     <div className="welcome-section">
-//                          <h1 className="welcome-text">Welcome, DJ Makisig!</h1>
-//                     </div>
-//                 </main> */}
-//             </div>
-
-//             <footer>
-//                 Privacy Policy | Energy FM © 2026
-//             </footer>
-//         </div>
-//     );
-// }
-
 import { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Home, User, Tv, Calendar, LogOut, Search, Edit, Trash2, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search, Edit, Trash2, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 type Program = {
     id: string;
@@ -208,59 +134,74 @@ export default function SuperadminProgram() {
 
                 {/* LEFT COLUMN: PROGRAM CREATION FORM */}
                 <div className="sp-form-col">
-                    <div className="sp-card sp-form-wrapper">
-                        <h2>{editingId ? "Edit Program" : "New Program"}</h2>
+                    <Card className="sp-card sp-form-wrapper border-0 shadow-none">
+                        <CardHeader className="p-0 mb-6">
+                            <CardTitle>
+                                <h2>{editingId ? "Edit Program" : "New Program"}</h2>
+                            </CardTitle>
+                        </CardHeader>
 
-                        <div className="sp-form-row">
-                            <div className="sp-input-group">
-                                <label>Program Title</label>
-                                <input 
-                                    type="text" 
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                />
+                         <CardContent className="p-0">
+                            <div className="sp-form-row">
+
+                                <div className="sp-input-group">
+                                    <label>Program Title</label>
+
+                                    <Input className="h-auto shadow-none" type="text" value={formData.title} onChange={(e) =>
+                                            setFormData({...formData, title: e.target.value})} />
+                                </div>
+
+                                <div className="sp-input-group">
+                                    <label>Program Type</label>
+
+                                    <Select value={formData.type} onValueChange={(value) =>
+                                            setFormData({...formData, type: value })}>
+                                        <SelectTrigger className="sp-select-trigger">
+                                            <SelectValue placeholder="Select program type" />
+                                        </SelectTrigger>
+
+                                        <SelectContent>
+                                            <SelectItem value="Music Only">
+                                                Music Only
+                                            </SelectItem>
+
+                                            <SelectItem value="Talk Show">
+                                                Talk Show
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
+
                             <div className="sp-input-group">
-                                <label>Program Type</label>
-                                <select 
-                                    value={formData.type}
-                                    onChange={(e) => setFormData({...formData, type: e.target.value})}>
-                                    <option value=""></option>
-                                    <option value="Music Only">Music Only</option>
-                                    <option value="Talk Show">Talk Show</option>
-                                </select>
+                                <label>Program Description</label>
+
+                                <Textarea className="shadow-none resize-none focus-visible:ring-0" value={formData.description} onChange={(e) =>
+                                        setFormData({...formData, description: e.target.value})} />
                             </div>
-                        </div>
 
-                        <div className="sp-input-group">
-                            <label>Program Description</label>
-                            <textarea 
-                                value={formData.description}
-                                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                            ></textarea>
-                        </div>
+                            <div className="sp-form-actions">
+                                <Button className="sp-btn-cancel focus-visible:ring-0" onClick={handleCancel}>Cancel</Button>
 
-                        <div className="sp-form-actions">
-                            <button className="sp-btn-cancel" onClick={handleCancel}>
-                                Cancel
-                            </button>
-                            <button className="sp-btn-create" onClick={handleSubmit}>
-                                {editingId ? "Update Program" : "Create Program"}
-                            </button>
-                        </div>
-                    </div>
+                                <Button className="sp-btn-create border-0 shadow-none focus-visible:ring-0" onClick={handleSubmit}>
+                                    {editingId ? "Update Program" : "Create Program"}
+                                </Button>
+                            </div>
 
-                 </div>
+                        </CardContent>
+                    </Card>
+                </div>
 
                 {/* RIGHT COLUMN: PROGRAM LIST */}
                 <div className="sp-list-col">
-                    <div className="sp-card sp-list-wrapper">
+                    <Card className="sp-card sp-list-wrapper border-0 shadow-none">
 
                         {/* Search Bar */}
                         <div className="sp-search-row">
                             <div className="sp-search-input-wrapper">
                                 <Search className="sp-search-icon" size={16} />
-                                <input 
+                                <Input 
+                                    className="h-auto shadow-none"
                                     type="text" 
                                     placeholder="Search" 
                                     value={searchTerm}
@@ -283,51 +224,33 @@ export default function SuperadminProgram() {
                                 <div className="sp-no-msg">No programs found.</div>
                             ) : (
                                 filteredPrograms.map((program) => (
-                                    <div key={program.id} className="sp-item-card">
-                                        <div className="sp-item-header">
-                                            <div className="sp-item-title-row">
-                                                <h3>{program.title}</h3>
-                                                <span className={`sp-status-badge ${program.status === 'ON AIR' ? 'sp-status-on-air' : 'sp-status-offline'}`}>
-                                                    {program.status}
-                                                </span>
-                                            </div>
-                                            <div className="sp-actions">
-                                                <button 
-                                                    className="sp-icon-btn sp-edit-btn" 
-                                                    title="Edit"
-                                                    onClick={() => handleEditClick(program)}
-                                                >
-                                                    <button 
-                                                        className="sp-icon-btn sp-edit-btn" 
-                                                        title="Edit"
-                                                        onClick={() => handleEditClick(program)}
-                                                    >
+                                    <Card key={program.id} className="sp-item-card border-0 shadow-none">
+                                        <CardContent className="p-0">
+                                            <div className="sp-item-header">
+                                                <div className="sp-item-title-row">
+                                                    <h3>{program.title}</h3>
+                                                    <span className={`sp-status-badge ${program.status === 'ON AIR' ? 'sp-status-on-air' : 'sp-status-offline'}`}>
+                                                        {program.status}
+                                                    </span>
+                                                </div>
+                                                <div className="sp-actions">
+                                                    <Button className="sp-icon-btn sp-edit-btn focus-visible:ring-0" title="Edit" onClick={() => handleEditClick(program)}>
                                                         <Edit size={20} />
-                                                    </button>
-                                                </button>
-                                                <button 
-                                                    className="sp-icon-btn sp-delete-btn" 
-                                                    title="Delete" 
-                                                    onClick={() => handleDelete(program.id)}
-                                                >
-                                                    <button 
-                                                        className="sp-icon-btn sp-delete-btn" 
-                                                        title="Delete" 
-                                                        onClick={() => handleDelete(program.id)}
-                                                    >
+                                                    </Button>
+                                                    <Button className="sp-icon-btn sp-delete-btn focus-visible:ring-0" title="Delete" onClick={() => handleDelete(program.id)}>
                                                         <Trash2 size={20} />
-                                                    </button>
-                                                </button>
+                                                    </Button>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <p className="sp-timeslot">{program.timeSlot}</p>
-                                        <p className="sp-type-dj">{program.type} {program.dj && `• ${program.dj}`}</p>
-                                        <p className="sp-description">{program.description}</p>
-                                    </div>
+                                            <p className="sp-timeslot">{program.timeSlot}</p>
+                                            <p className="sp-type-dj">{program.type} {program.dj && `• ${program.dj}`}</p>
+                                            <p className="sp-description">{program.description}</p>
+                                        </CardContent>
+                                    </Card>
                                 ))
                             )}
                         </div>
-                    </div>
+                    </Card>
                 </div>
             </div>
         </div>

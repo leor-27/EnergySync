@@ -1,86 +1,13 @@
-// import { useEffect } from "react";
-// import { Link, NavLink, useNavigate } from "react-router-dom";
-// import { Home, User, Tv, Calendar, LogOut } from "lucide-react"; 
-
-// export default function SuperadminSchedule() {
-//     const navigate = useNavigate();
-
-//     useEffect(() => {
-
-//     }, []);
-
-//     return (
-//         <div className="superadmin-layout">
-//             <header className="main-header">
-//                 <div className="header-content">
-//                     <section className="header-image">
-//                         <Link to="/superadmin-home">
-//                             <img src="/logo.png" className="logo" alt="Energy FM 106.3 Naga Logo" />
-//                         </Link>
-//                     </section>
-//                     <div className="title"> 
-//                         <h1>EnergySync</h1>
-//                     </div>
-//                 </div>
-//             </header>
-
-//             <div className="app-body">
-//                 <nav className="sidebar">
-//                     <ul className="nav-links">
-//                         <li>
-//                             <NavLink to="/superadmin-home" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <Home size={20} />
-//                                 <span>Home</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink to="/superadmin-profile" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <User size={20} />
-//                                 <span>Profile</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink to="/superadmin-program" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <Tv size={20} />
-//                                 <span>Program</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <NavLink to="/superadmin-schedule" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-//                                 <Calendar size={20} />
-//                                 <span>Schedule</span>
-//                             </NavLink>
-//                         </li>
-//                         <li>
-//                             <button className="nav-item logout" onClick={() => {
-//                                 localStorage.removeItem("auth")
-//                                 navigate("/")
-//                             }}>
-//                                 <LogOut size={20} />
-//                                 <span>Logout</span>
-//                             </button>
-//                         </li>
-//                     </ul>
-//                 </nav>
-
-//                 {/* <main className="main-content">
-//                     <div className="welcome-section">
-//                          <h1 className="welcome-text">Welcome, DJ Makisig!</h1>
-//                     </div>
-//                 </main> */}
-//             </div>
-
-//             <footer>
-//                 Privacy Policy | Energy FM © 2026
-//             </footer>
-//         </div>
-//     );
-// }
-
 import { useState, useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Home, User, Tv, Calendar, LogOut, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Edit, Trash2, Plus, Clock } from "lucide-react"; 
-import { DayPicker } from 'react-day-picker';
+import { useNavigate } from "react-router-dom";
+import { Calendar as CalendarIcon, Edit, Trash2, Plus, Clock } from "lucide-react"; 
+import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 type ScheduledProgram = {
     id: string;
@@ -95,7 +22,6 @@ type ScheduledProgram = {
 export default function SuperadminSchedule() {
     const navigate = useNavigate();
 
-    
     const [schedule, setSchedule] = useState<ScheduledProgram[]>([
     { 
         id: "1", 
@@ -120,6 +46,17 @@ export default function SuperadminSchedule() {
     // 2. UPDATE STATE TO USE REAL DATE OBJECTS (Defaults to today)
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const [newProgram, setNewProgram] = useState({
+        title: "", 
+        dj: "",
+        timeSlot: "",
+    })
+
+    const [openEditDialog, setOpenEditDialog] = useState(false);
+    const [editingProgram, setEditingProgram] = useState<ScheduledProgram | null>(null);
+
        // Formats the Date object
     const formattedDate = selectedDate 
         ? selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) 
@@ -133,7 +70,15 @@ export default function SuperadminSchedule() {
     }, [selectedDate]);
 
     const handleCreate = () => alert("Open Create Schedule Form");
-    const handleEdit = (id: string) => console.log("Editing schedule ID:", id);
+    const handleEdit = (id: string) => {
+        const selectedProgram = schedule.find((prog) => prog.id === id);
+
+        if (selectedProgram) {
+            setEditingProgram(selectedProgram);
+            setOpenEditDialog(true);
+        }
+    };
+
     const handleDelete = (id: string) => {
         if(window.confirm("Remove this program?")) setSchedule(schedule.filter(s => s.id !== id));
     };
@@ -141,7 +86,7 @@ export default function SuperadminSchedule() {
     
     return (
         <>
-                 <div className="ss-page-container">
+            <div className="ss-page-container">
             <h1 className="ss-page-title">Program Scheduling</h1>
 
             <div className="ss-grid">
@@ -149,91 +94,321 @@ export default function SuperadminSchedule() {
                 {/* LEFT COLUMN */}
                 <div className="ss-left-col">
 
-                    <div className="ss-card ss-calendar-widget">
-
-                        <DayPicker 
-                            mode="single"
-                            selected={selectedDate}
-                            onSelect={setSelectedDate}
-                            className="ss-custom-calendar" 
-                        />
-                    </div>
+                    <Card className="ss-calendar-widget">
+                        <CardContent className="p-0">
+                            <Calendar 
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={setSelectedDate}
+                                className="ss-custom-calendar" 
+                            />
+                        </CardContent>
+                    </Card>
 
                     {/* DJ AVAILABILITY LIST */}
-                    <div className="ss-card ss-availability-widget">
-                        <div className="ss-avail-list">
-                            {schedule.map(prog => (
-                                <div key={`avail-${prog.id}`} className="ss-avail-item">
-                                    <div className="ss-avail-info">
-                                        <h4>{prog.title}</h4>
-                                        <p>Assigned DJ: <strong>{prog.dj}</strong></p>
-                                    </div>
-                                    <span className={`ss-badge ${prog.status === 'Available' ? 'ss-badge-blue' : 'ss-badge-yellow'}`}>
-                                        {prog.status}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <Card className="ss-availability-widget">
+                        <CardContent>
+                            <div className="ss-avail-list">
+                                {schedule.map(prog => (
+                                    <Card key={prog.id} className="ss-avail-item">
+                                        <CardContent className="p-4">
+                                            <div className="ss-avail-info">
+                                                <h4>{prog.title}</h4>
+                                                <p>Assigned DJ: <strong>{prog.dj}</strong></p>
+                                            </div>
+                                            <span className={`ss-badge ${prog.status === 'Available' ? 'ss-badge-blue' : 'ss-badge-yellow'}`}>
+                                                {prog.status}
+                                            </span>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 {/* RIGHT COLUMN */}
                 <div className="ss-right-col">
-                    <div className="ss-timeline-card">
+                    <Card className="ss-timeline-card">
+                        <CardHeader>
+                            <div className="ss-timeline-header">
+                                <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
+                                    <DialogContent className="ss-dialog-content sm:max-w-[500px]">
+                                        <DialogHeader>
+                                            <DialogTitle>Edit Program Schedule</DialogTitle>
+                                        </DialogHeader>
 
-                        <div className="ss-timeline-header">
-                            <button className="ss-btn-create" onClick={handleCreate}>
-                                Create <Plus size={16} />
-                            </button>
+                                        {editingProgram && (
+                                            <div className="ss-dialog-form">
 
-                            <button className="ss-btn-date">
-                                <CalendarIcon size={16} /> {formattedDate}
-                            </button>
-                        </div>
+                                                {/* PROGRAM TITLE (READ ONLY) */}
+                                                <div className="ss-form-group">
+                                                    <Label>Program Title</Label>
+                                                    <Input value={editingProgram.title} disabled className="ss-disabled-input" />
+                                                </div>
 
-                        <div className="ss-timeline-body">
-                            <div className="ss-time-gutter">
-                                <span>8:00 AM</span><span>9:00 AM</span><span>10:00 AM</span>
-                                <span>11:00 AM</span><span>12:00 PM</span><span>1:00 PM</span>
-                                <span>2:00 PM</span><span>3:00 PM</span><span>4:00 PM</span>
-                                <span>5:00 PM</span><span>6:00 PM</span>
-                            </div>
+                                                <div className="ss-form-group">
+                                                    <Label>Assign a DJ</Label>
+                                                    <Input value={editingProgram.dj} onChange={(e) =>
+                                                        setEditingProgram({...editingProgram, dj: e.target.value, })} />
+                                                </div>
 
-                            <div className="ss-schedule-content">
-                                {schedule.map(prog => (
-                                    <div key={prog.id} className="ss-schedule-item">
-                                        <div className="ss-sched-header">
-                                            <h3>{prog.title}</h3>
-                                            <div className="ss-sched-actions">
-                                                <button onClick={() => handleEdit(prog.id)}><Edit size={18} /></button>
-                                                <button onClick={() => handleDelete(prog.id)}><Trash2 size={18} /></button>
+                                                <div className="ss-form-group">
+                                                    <Label>Time</Label>
+                                                        <div className="ss-time-slot-row">
+                                                            <Input placeholder="9:00" className="ss-time-input" />
+
+                                                            <select className="ss-time-select">
+                                                                <option>AM</option>
+                                                                <option>PM</option>
+                                                            </select>
+
+                                                            <span className="ss-time-dash">-</span>
+
+                                                            <Input placeholder="11:00" className="ss-time-input" />
+
+                                                            <select className="ss-time-select">
+                                                                <option>AM</option>
+                                                                <option>PM</option>
+                                                            </select>
+                                                        </div>
+                                                </div>
+
+                                                <div className="ss-form-group">
+                                                    <Label>Day</Label>
+
+                                                    <select className="ss-day-select">
+                                                        <option>WEEKDAYS</option>
+                                                        <option>SATURDAY</option>
+                                                        <option>SUNDAY</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        )}
+
+                                        <DialogFooter>
+                                            <Button variant="outline" onClick={() => setOpenEditDialog(false)}>Cancel</Button>
+                                            <Button onClick={() => {
+                                                    if (!editingProgram) return;
+
+                                                    setSchedule(schedule.map((prog) =>
+                                                            prog.id === editingProgram.id ? editingProgram : prog));
+
+                                                    setOpenEditDialog(false);
+                                                }}
+                                            >
+                                               Edit Schedule 
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+
+                                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                                    <DialogTrigger asChild>
+                                        <Button className="ss-btn-create">
+                                            Create <Plus size={16} />
+                                        </Button>
+                                    </DialogTrigger>
+
+                                    <DialogContent className="ss-dialog-content sm:max-w-[500px]">
+                                        <DialogHeader>
+                                            <DialogTitle>New Program Schedule</DialogTitle>
+                                        </DialogHeader>
+
+                                        <div className="ss-dialog-form">
+                                            <div className="ss-form-group">
+                                                <Label>Program</Label>
+                                                <Input value={newProgram.title} onChange={(e) =>
+                                                        setNewProgram({...newProgram, title: e.target.value, })} />
+                                            </div>
+
+                                            <div className="ss-form-group">
+                                                <Label>Assign a DJ</Label>
+                                                <Input
+                                                    value={newProgram.dj} onChange={(e) =>
+                                                        setNewProgram({...newProgram, dj: e.target.value, })} />
+                                            </div>
+
+                                            <div className="ss-form-group">
+                                                <Label>Time Slot</Label>
+
+                                                <div className="ss-time-slot-row">
+                                                    <Input placeholder="9:00" className="ss-time-input"/>
+
+                                                    <select className="ss-time-select">
+                                                        <option>AM</option>
+                                                        <option>PM</option>
+                                                    </select>
+
+                                                    <span className="ss-time-dash">-</span>
+
+                                                    {/* END TIME */}
+                                                    <Input placeholder="11:00" className="ss-time-input"/>
+
+                                                    <select className="ss-time-select">
+                                                        <option>AM</option>
+                                                        <option>PM</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div className="ss-form-group">
+                                                <Label>Day</Label>
+
+                                                <select className="ss-day-select">
+                                                    <option>WEEKDAYS</option>
+                                                    <option>SATURDAY</option>
+                                                    <option>SUNDAY</option>
+                                                </select>
                                             </div>
                                         </div>
 
-                                        <div className="ss-sched-time">
-                                            <Clock size={14} /> {prog.timeSlot}
-                                        </div>
+                                        <DialogFooter>
+                                            <Button variant="outline" onClick={() => setOpenDialog(false)}>
+                                                Cancel
+                                            </Button>
 
-                                        <div className="ss-sched-footer">
-                                            <div className="ss-dj-info">
-                                                <strong>{prog.dj}</strong>
-                                                <span className={`ss-badge ${prog.status === 'Available' ? 'ss-badge-blue' : 'ss-badge-yellow'}`}>
-                                                    {prog.status}
-                                                </span>
-                                            </div>
-                                            {prog.status === 'Unavailable' && (
-                                                <button className="ss-btn-outline" onClick={() => handleAssignSub(prog.id)}>
-                                                    Assign Substitute DJ
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
+                                            <Button onClick={() => {
+                                                    const newItem: ScheduledProgram = {
+                                                        id: Date.now().toString(),
+                                                        title: newProgram.title,
+                                                        dj: newProgram.dj,
+                                                        timeSlot: newProgram.timeSlot,
+                                                        start: 9,
+                                                        end: 11,
+                                                        status: "Available",
+                                                    };
+
+                                                    setSchedule([...schedule, newItem]);
+
+                                                    setOpenDialog(false);
+
+                                                    setNewProgram({
+                                                        title: "",
+                                                        dj: "",
+                                                        timeSlot: "",
+                                                    });
+                                                }}
+                                            >
+                                                Create Schedule
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+
+                                <Button className="ss-btn-date">
+                                    <CalendarIcon size={16} /> {formattedDate}
+                                </Button>
                             </div>
-                        </div>
-                        </div>
-                                   </div>
+                        </CardHeader>
 
+                        <CardContent>
+                            <div className="ss-timeline-body">
+                                <div className="ss-time-gutter">
+                                    <span>8:00 AM</span>
+                                    <span>9:00 AM</span>
+                                    <span>10:00 AM</span>
+                                    <span>11:00 AM</span>
+                                    <span>12:00 PM</span>
+                                    <span>1:00 PM</span>
+                                    <span>2:00 PM</span>
+                                    <span>3:00 PM</span>
+                                    <span>4:00 PM</span>
+                                    <span>5:00 PM</span>
+                                    <span>6:00 PM</span>
+                                </div>
+
+                                <div className="ss-schedule-content">
+                                    {schedule.map(prog => (
+                                        <div key={prog.id} className="ss-schedule-item">
+
+                                            <div className="ss-sched-header">
+                                                <h3>{prog.title}</h3>
+
+                                                <div className="ss-sched-actions">
+                                                    <button onClick={() => handleEdit(prog.id)}>
+                                                        <Edit size={18} />
+                                                    </button>
+
+                                                    <button onClick={() => handleDelete(prog.id)}>
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div className="ss-sched-time">
+                                                <Clock size={14} /> {prog.timeSlot}
+                                            </div>
+
+                                            <div className="ss-sched-footer">
+                                                <div className="ss-dj-info">
+                                                    <strong>{prog.dj}</strong>
+
+                                                    <span className={`ss-badge ${
+                                                            prog.status === 'Available' ? 'ss-badge-blue' : 'ss-badge-yellow' }`}>
+                                                        {prog.status}
+                                                    </span>
+                                                </div>
+
+                                                {prog.status === 'Unavailable' && (
+                                                    <button className="ss-btn-outline" onClick={() => handleAssignSub(prog.id)}>
+                                                        Assign Substitute DJ
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* ADD THE TABLE HERE */}
+                            <div className="ss-table-wrapper">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Program</TableHead>
+                                            <TableHead>DJ</TableHead>
+                                            <TableHead>Time Slot</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+
+                                    <TableBody>
+                                        {schedule.map((prog) => (
+                                            <TableRow key={prog.id}>
+                                                <TableCell>{prog.title}</TableCell>
+                                                <TableCell>{prog.dj}</TableCell>
+                                                <TableCell>{prog.timeSlot}</TableCell>
+
+                                                <TableCell>
+                                                    <span className={`ss-badge ${
+                                                            prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow" }`} >
+                                                        {prog.status}
+                                                    </span>
+                                                </TableCell>
+
+                                                <TableCell>
+                                                    <div className="ss-table-actions">
+                                                        <button onClick={() => handleEdit(prog.id)}>
+                                                            <Edit size={16} />
+                                                        </button>
+
+                                                        <button onClick={() => handleDelete(prog.id)}>
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
         </>

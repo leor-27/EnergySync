@@ -377,10 +377,15 @@ footer {
 
 .ss-timeline-body {
     display: flex;
-    flex: 1;
-    overflow-y: auto; 
+    height: 500px;
+    overflow-y: auto;
     position: relative;
     background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ss-table-wrapper {
+    flex-shrink: 0;
 }
 
 .ss-timeline-body::-webkit-scrollbar { width: 6px; }
@@ -494,9 +499,98 @@ footer {
     background-color: #f8fafc;
 }
 
+.ss-calendar-widget,
+.ss-availability-widget,
+.ss-timeline-card,
+.ss-avail-item {
+    border: none !important;
+    box-shadow: none !important;
+}
+
 @media (max-width: 1024px) {
     .ss-page-container { height: auto; overflow: visible; }
     .ss-grid { grid-template-columns: 1fr; overflow: visible; }
     .ss-left-col { height: auto; overflow: visible; }
     .ss-timeline-body { max-height: 600px; }
+}
+
+/* DIALOG */
+
+.ss-dialog {
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.ss-dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ss-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* TABLE */
+
+.ss-table-wrapper {
+    margin-top: 1.5rem;
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.ss-table-wrapper table {
+    width: 100%;
+}
+
+.ss-table-wrapper th {
+    background: #f9fafb;
+    color: #1C5186;
+    font-weight: 700;
+}
+
+.ss-table-wrapper td,
+.ss-table-wrapper th {
+    padding: 1rem;
+}
+
+.ss-table-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ss-table-actions button {
+    background: none;
+    border: none;
+    color: #1C5186;
+    cursor: pointer;
+}
+
+.ss-table-actions button:hover {
+    color: #153c63;
+}
+
+.ss-dialog-content {
+    background-color: white !important;
+    opacity: 1 !important;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.ss-dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ss-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }

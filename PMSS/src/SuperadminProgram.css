@@ -283,11 +283,13 @@ footer {
     display: flex;
     flex-direction: column;
     min-height: 0; 
+    overflow: hidden;
 }
 
 .sp-list-wrapper {
     flex: 1; 
     min-height: 0; 
+    overflow: hidden;
 }
 
 .sp-search-row {
@@ -365,10 +367,10 @@ footer {
 .sp-scrollable-list {
     flex: 1; 
     overflow-y: auto;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding-right: 0.5rem; 
+    padding-right: 0.5rem;  */
     min-height: 0; 
 }
 
@@ -462,6 +464,22 @@ footer {
     color: #4b5563;
     line-height: 1.5;
     margin: 0;
+}
+
+.sp-select-trigger {
+    width: 100%;
+    min-height: 43px;
+    border: 1px solid #d1d5db !important;
+    border-radius: 0.375rem !important;
+    padding: 0.65rem !important;
+    font-size: 0.875rem !important;
+    background-color: white !important;
+    box-shadow: none !important;
+}
+
+.sp-select-trigger:focus {
+    border-color: var(--energy-blue) !important;
+    box-shadow: 0 0 0 1px var(--energy-blue) !important;
 }
 
 @media (max-width: 1024px) {
