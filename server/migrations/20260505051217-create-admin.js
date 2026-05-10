@@ -49,10 +49,6 @@ module.exports = {
       image_path: {
         type: Sequelize.STRING(150)
       },
-      phone_number: {
-        type: Sequelize.CHAR(16),
-        unique: true
-      },
       role_type: {
         type: Sequelize.ENUM('Superadmin', 'Admin'),
         allowNull: false

@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
     reset_token_hash: DataTypes.CHAR,
     reset_token_expires: DataTypes.DATE,
     image_path: DataTypes.STRING,
-    phone_number: DataTypes.CHAR,
     role_type: DataTypes.ENUM
   }, {
     sequelize,
     modelName: 'Admin',
+    tableName: 'Admin'
   });
   return Admin;
 };

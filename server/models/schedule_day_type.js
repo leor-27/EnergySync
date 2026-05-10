@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Schedule_Day_Type',
+    tableName: 'Schedule_Day_Type'
   });
   return Schedule_Day_Type;
 };
