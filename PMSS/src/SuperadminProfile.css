@@ -113,8 +113,14 @@
     background: white;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     border: 1px solid #eee;
+}
+
+.user-text-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .profile-avatar-circle {
@@ -185,6 +191,7 @@
     border: 1.5px solid #E0E0E0;
     border-radius: 12px;
     height: 200%;
+    overflow-y: auto;
 }
 
 .notif-title-area {
@@ -227,7 +234,7 @@
     display: flex;
     align-items: center;
     gap: 25px;
-    padding: 25px;
+    padding: 20px;
 }
 
 .profile-dialog-form {
@@ -241,10 +248,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-}
-
-.notifications-sidebar-panel {
-    overflow-y: auto;
 }
 
 .profile-avatar-circle {

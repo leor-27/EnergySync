@@ -108,6 +108,112 @@
     color: #111;
 } */
 
+.ss-page-container {
+    flex: 1;
+    height: 100%;
+    min-height: 0; 
+    min-width: 0;
+    padding: 0rem 0rem; 
+    padding-bottom: 2rem; 
+    width: 100%;
+    background-color: transparent;
+    box-sizing: border-box;
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.ss-grid {
+   display: grid;
+    grid-template-columns: 2.8fr 9.2fr; 
+    gap: 3rem;
+    width: 100%;
+    flex: 1; 
+    min-height: 0;
+}
+
+.ss-left-col {
+   display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+    min-height: 0; 
+}
+
+.ss-calendar-widget {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding-top: 0.5rem;
+}
+
+.ss-custom-calendar {
+    margin: 0 auto; 
+}
+
+.ss-custom-calendar .rdp-caption_label {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+}
+
+.ss-custom-calendar th {
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    color: #1C5186 !important;
+    text-transform: capitalize !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.ss-custom-calendar button {
+    border-radius: 50% !important; 
+    outline: none !important;      
+    box-shadow: none !important;   
+    border: none !important;
+}
+.ss-custom-calendar .rdp-day_button {
+    width: 34px !important;
+    height: 34px !important;
+    margin: 0 auto !important; 
+}
+
+.ss-custom-calendar .rdp-selected .rdp-day_button {
+    background-color: #1C5186 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.ss-custom-calendar .rdp-selected .rdp-day_button:hover,
+.ss-custom-calendar .rdp-selected .rdp-day_button:focus {
+    background-color: #1C5186 !important; 
+    color: white !important;
+}
+
+.ss-custom-calendar .rdp-button_previous,
+.ss-custom-calendar .rdp-button_next {
+    color: #6b7280 !important;
+    background-color: transparent !important;
+}
+
+.ss-custom-calendar .rdp-chevron {
+    fill: #6b7280 !important;
+}
+
+.ss-custom-calendar .rdp-button_previous:hover,
+.ss-custom-calendar .rdp-button_next:hover {
+    background-color: #f3f4f6 !important;
+}
+
+.ss-custom-calendar .rdp-day:not(.rdp-selected) .rdp-day_button:hover {
+    background-color: #f3f4f6 !important;
+}
+
+.ss-custom-calendar .rdp-today:not(.rdp-selected) .rdp-day_button {
+    font-weight: bold !important;
+    color: #1C5186 !important;
+}
+
 footer {
     position: fixed;
     bottom: 0;
@@ -133,4 +239,134 @@ footer {
     footer {
         width: 100%;
     }
+}
+
+.ss-availability-widget {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 250px;
+
+    background: white !important;
+    border-radius: 14px !important;
+    padding: 0.5rem;
+
+    border: none !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
+}
+
+.ss-availability-widget h3 {
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+    margin-top: 15px;
+}
+
+.ss-page-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #111827;
+    flex-shrink: 0; 
+}
+
+.ss-avail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1; 
+    overflow-y: auto; 
+    padding-right: 0.5rem;
+}
+
+.ss-avail-list::-webkit-scrollbar { width: 6px; }
+.ss-avail-list::-webkit-scrollbar-track { background: transparent; }
+.ss-avail-list::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+
+.ss-avail-item {
+    background-color: #1C5186 !important;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    width: 100%;
+
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ss-avail-item .p-4 {
+    padding: 0 !important;
+}
+
+.ss-avail-item .ss-badge {
+    align-self: flex-end;
+    font-size: 0.58rem;
+    padding: 0.2rem 0.6rem;
+}
+
+.ss-calendar-widget,
+.ss-availability-widget,
+.ss-timeline-card,
+.ss-avail-item {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ss-avail-item {
+    background-color: #1C5186;
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    width: 100%;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ss-avail-item .p-4 {
+    padding: 0 !important;
+}
+
+.ss-avail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.ss-avail-info h4 {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.ss-avail-info p {
+    color: white;
+    font-size: 1rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.ss-availability-widget .p-6,
+.ss-availability-widget .p-4 {
+    padding-top: 0 !important;
+}
+
+.ss-avail-info p strong {
+    font-weight: 500;
+    color: white;
+}
+
+/* remove badge completely */
+.ss-badge {
+    display: none;
+}
+
+.ss-avail-item,
+.ss-avail-item * {
+    color: white !important;
+}
+
+.ss-avail-item {
+    background: #1C5186 !important;
 }

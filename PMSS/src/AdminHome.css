@@ -5,7 +5,7 @@
     padding: 0;
 }
 
- :root {
+:root {
     --energy-blue: #1C5186; 
     --sidebar-width: 220px;
     --active-light-blue: #E8F0FE;
@@ -55,8 +55,7 @@
     width: var(--sidebar-width);
     background: white;
     border-right: 1px solid #e0e0e0;
-    /* padding-top: 80px; */
-    padding-top: var(--header-height);
+    padding-top: 80px;
 }
 
 .nav-links {
@@ -86,36 +85,29 @@
     background-color: #f5f5f5;
 }
 
-.logout {
-    width: 100%;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    text-align: left;     /* Keeps text aligned with the links */
-    padding: 18px 18px 18px 48px;
-}
-
 .main-content {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    padding-bottom: 80px; /* prevent overlap */
 }
 
+/* --- FIX: Added width 100% to ensure container doesn't overflow --- */
 .dashboard-grid {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 25px;
+    gap: 40px;
     padding: 15px;
+    width: 100%;
+    align-items: flex-start;
+    /* flex-wrap: wrap; allows items to move instead of overlap */
 }
 
 .search-container {
-    flex: 1;
-    max-width: 550px;
+    /* flex: 1 1 500px; grows and shrinks properly */
+    flex: 3;
+    min-width: 0; /* prevents overflow */
 }
 
+/* --- FIX: Changed width from 140% to 100% --- */
 .search-bar {
     display: flex;
     align-items: center;
@@ -123,8 +115,14 @@
     padding: 10px 15px;
     border-radius: 20px;
     gap: 10px;
-    width: 140%;
+    width: 100%; 
     margin-bottom: 20px;
+}
+
+.search-bar,
+.program-card {
+    width: 100%;
+    max-width: 100%;
 }
 
 .search-bar input {
@@ -134,12 +132,13 @@
     outline: none;
 }
 
+/* --- FIX: Changed width from 140% to 100% --- */
 .program-card {
     background: #e6e6e6;
     border-radius: 12px;
     padding: 20px;
     display: flex;
-    width: 140%;
+    width: 100%; 
     justify-content: space-between;
     align-items: center;
 }
@@ -159,21 +158,28 @@
 
 .status-dropdown {
     padding: 8px 12px;
-    width: 17%;
+    width: 130px; /* Changed to fixed px or small % to prevent stretching */
     border-radius: 6px;
     border: 1px solid #ccc;
     background: white;
     font-size: 14px;
 }
 
+/* --- FIX: Added flex-shrink to prevent it being squashed --- */
 .notifications-panel {
-    width: 380px;
+    flex: 0 1 380px; /* responsive instead of fixed */
+    /* width: 100%; */
+    width: 350px;
+    min-width: 300px;
+    flex-shrink: 0;
+    max-width: 380px;
     height: 600px;
     background: white;
     border: 1px solid #ddd;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     overflow: hidden;
+    margin-left: 30px;
 }
 
 .notifications-header {
@@ -258,36 +264,6 @@
     margin-left: 15px;
 } 
 
-/*
-.test-button {
-    background-color: var(--energy-blue);
-    color: white;
-    border: none;
-    height: 35px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 15px;
-    margin-top: 7px;
-    transition: background-color 0.2s;
-}
-
-.secondary-button {
-    background-color: #b0b0b0;
-    color: #333;
-    border: none;
-    height: 35px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 15px;
-    margin-top: 7px;
-    transition: background-color 0.2s;
-}
-*/
-
 footer {
     position: fixed;
     bottom: 0;
@@ -303,6 +279,24 @@ footer {
 }
 
 /* Mobile adjustments */
+@media (max-width: 1024px) {
+    .notifications-panel {
+        width: 300px; /* Shrink panel slightly for mid-sized screens */
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        flex-direction: column;
+    }
+
+    /* .search-container, */
+    .notifications-panel {
+        width: 100%;
+        /* max-width: 100%; */
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 90px;
@@ -311,6 +305,13 @@ footer {
         display: none;
     }
     footer {
+        width: 100%;
+    }
+    .dashboard-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    .notifications-panel {
         width: 100%;
     }
 }

@@ -122,138 +122,122 @@ export default function SuperadminProgram() {
 
     return (
         <>
-                {/* <main className="main-content">
-                    <div className="welcome-section">
-                         <h1 className="welcome-text">Welcome, DJ Makisig!</h1>
-                    </div>
-                </main> */}
-                 <div className="sp-page-container">
+            <div className="sp-page-container">
             <h1 className="sp-page-title">Programs</h1>
+                <div className="sp-grid">
 
-            <div className="sp-grid">
+                    {/* LEFT COLUMN: PROGRAM CREATION FORM */}
+                    <div className="sp-form-col">
+                        <Card className="sp-card sp-form-wrapper border-0 shadow-none">
+                            <CardHeader className="p-0 mb-6">
+                                <CardTitle>
+                                    <h2>{editingId ? "Edit Program" : "New Program"}</h2>
+                                </CardTitle>
+                            </CardHeader>
 
-                {/* LEFT COLUMN: PROGRAM CREATION FORM */}
-                <div className="sp-form-col">
-                    <Card className="sp-card sp-form-wrapper border-0 shadow-none">
-                        <CardHeader className="p-0 mb-6">
-                            <CardTitle>
-                                <h2>{editingId ? "Edit Program" : "New Program"}</h2>
-                            </CardTitle>
-                        </CardHeader>
+                            <CardContent className="p-0">
+                                <div className="sp-form-row">
+                                    <div className="sp-input-group">
+                                        <label>Program Title</label>
+                                        <Input className="h-auto shadow-none" type="text" value={formData.title} onChange={(e) =>
+                                                setFormData({...formData, title: e.target.value})} />
+                                    </div>
+                                    <div className="sp-input-group">
+                                        <label>Program Type</label>
+                                        <Select value={formData.type} onValueChange={(value) =>
+                                                setFormData({...formData, type: value })}>
+                                            <SelectTrigger className="sp-select-trigger">
+                                                <SelectValue placeholder="Select program type" />
+                                            </SelectTrigger>
 
-                         <CardContent className="p-0">
-                            <div className="sp-form-row">
+                                            <SelectContent>
+                                                <SelectItem value="Music Only">
+                                                    Music Only
+                                                </SelectItem>
 
-                                <div className="sp-input-group">
-                                    <label>Program Title</label>
-
-                                    <Input className="h-auto shadow-none" type="text" value={formData.title} onChange={(e) =>
-                                            setFormData({...formData, title: e.target.value})} />
+                                                <SelectItem value="Talk Show">
+                                                    Talk Show
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
 
                                 <div className="sp-input-group">
-                                    <label>Program Type</label>
+                                    <label>Program Description</label>
+                                    <Textarea className="shadow-none resize-none focus-visible:ring-0" value={formData.description} onChange={(e) =>
+                                            setFormData({...formData, description: e.target.value})} />
+                                </div>
 
-                                    <Select value={formData.type} onValueChange={(value) =>
-                                            setFormData({...formData, type: value })}>
-                                        <SelectTrigger className="sp-select-trigger">
-                                            <SelectValue placeholder="Select program type" />
-                                        </SelectTrigger>
+                                <div className="sp-form-actions">
+                                    <Button className="sp-btn-cancel focus-visible:ring-0" onClick={handleCancel}>Cancel</Button>
+                                    <Button className="sp-btn-create border-0 shadow-none focus-visible:ring-0" onClick={handleSubmit}>
+                                        {editingId ? "Update Program" : "Create Program"}
+                                    </Button>
+                                </div>
 
-                                        <SelectContent>
-                                            <SelectItem value="Music Only">
-                                                Music Only
-                                            </SelectItem>
+                            </CardContent>
+                        </Card>
+                    </div>
 
-                                            <SelectItem value="Talk Show">
-                                                Talk Show
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                    {/* RIGHT COLUMN: PROGRAM LIST */}
+                    <div className="sp-list-col">
+                        <Card className="sp-card sp-list-wrapper border-0 shadow-none">
+
+                            {/* Search Bar */}
+                            <div className="sp-search-row">
+                                <div className="sp-search-input-wrapper">
+                                    <Search className="sp-search-icon" size={16} />
+                                    <Input className="h-auto shadow-none" type="text" placeholder="Search" value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </div>
+                                <div className="sp-filter-wrapper">
+                                    <select className="sp-filter-dropdown">
+                                        <option value="all">All Programs</option>
+                                        <option value="on-air">On Air</option>
+                                        <option value="offline">Offline</option>
+                                    </select>
+                                    <ChevronDown className="sp-filter-icon" size={16} />
                                 </div>
                             </div>
 
-                            <div className="sp-input-group">
-                                <label>Program Description</label>
-
-                                <Textarea className="shadow-none resize-none focus-visible:ring-0" value={formData.description} onChange={(e) =>
-                                        setFormData({...formData, description: e.target.value})} />
-                            </div>
-
-                            <div className="sp-form-actions">
-                                <Button className="sp-btn-cancel focus-visible:ring-0" onClick={handleCancel}>Cancel</Button>
-
-                                <Button className="sp-btn-create border-0 shadow-none focus-visible:ring-0" onClick={handleSubmit}>
-                                    {editingId ? "Update Program" : "Create Program"}
-                                </Button>
-                            </div>
-
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* RIGHT COLUMN: PROGRAM LIST */}
-                <div className="sp-list-col">
-                    <Card className="sp-card sp-list-wrapper border-0 shadow-none">
-
-                        {/* Search Bar */}
-                        <div className="sp-search-row">
-                            <div className="sp-search-input-wrapper">
-                                <Search className="sp-search-icon" size={16} />
-                                <Input 
-                                    className="h-auto shadow-none"
-                                    type="text" 
-                                    placeholder="Search" 
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-                            <div className="sp-filter-wrapper">
-                                <select className="sp-filter-dropdown">
-                                    <option value="all">All Programs</option>
-                                    <option value="on-air">On Air</option>
-                                    <option value="offline">Offline</option>
-                                </select>
-                                <ChevronDown className="sp-filter-icon" size={16} />
-                            </div>
-                        </div>
-
-                        {/* Program List */}
-                        <div className="sp-scrollable-list">
-                            {filteredPrograms.length === 0 ? (
-                                <div className="sp-no-msg">No programs found.</div>
-                            ) : (
-                                filteredPrograms.map((program) => (
-                                    <Card key={program.id} className="sp-item-card border-0 shadow-none">
-                                        <CardContent className="p-0">
-                                            <div className="sp-item-header">
-                                                <div className="sp-item-title-row">
-                                                    <h3>{program.title}</h3>
-                                                    <span className={`sp-status-badge ${program.status === 'ON AIR' ? 'sp-status-on-air' : 'sp-status-offline'}`}>
-                                                        {program.status}
-                                                    </span>
+                            {/* Program List */}
+                            <div className="sp-scrollable-list">
+                                {filteredPrograms.length === 0 ? (
+                                    <div className="sp-no-msg">No programs found.</div>
+                                ) : (
+                                    filteredPrograms.map((program) => (
+                                        <Card key={program.id} className="sp-item-card border-0 shadow-none">
+                                            <CardContent className="p-0">
+                                                <div className="sp-item-header">
+                                                    <div className="sp-item-title-row">
+                                                        <h3>{program.title}</h3>
+                                                        <span className={`sp-status-badge ${program.status === 'ON AIR' ? 'sp-status-on-air' : 'sp-status-offline'}`}>
+                                                            {program.status}
+                                                        </span>
+                                                    </div>
+                                                    <div className="sp-actions">
+                                                        <Button className="sp-icon-btn sp-edit-btn focus-visible:ring-0" title="Edit" onClick={() => handleEditClick(program)}>
+                                                            <Edit size={20} />
+                                                        </Button>
+                                                        <Button className="sp-icon-btn sp-delete-btn focus-visible:ring-0" title="Delete" onClick={() => handleDelete(program.id)}>
+                                                            <Trash2 size={20} />
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                                <div className="sp-actions">
-                                                    <Button className="sp-icon-btn sp-edit-btn focus-visible:ring-0" title="Edit" onClick={() => handleEditClick(program)}>
-                                                        <Edit size={20} />
-                                                    </Button>
-                                                    <Button className="sp-icon-btn sp-delete-btn focus-visible:ring-0" title="Delete" onClick={() => handleDelete(program.id)}>
-                                                        <Trash2 size={20} />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                            <p className="sp-timeslot">{program.timeSlot}</p>
-                                            <p className="sp-type-dj">{program.type} {program.dj && `• ${program.dj}`}</p>
-                                            <p className="sp-description">{program.description}</p>
-                                        </CardContent>
-                                    </Card>
-                                ))
-                            )}
-                        </div>
-                    </Card>
+                                                <p className="sp-timeslot">{program.timeSlot}</p>
+                                                <p className="sp-type-dj">{program.type} {program.dj && `• ${program.dj}`}</p>
+                                                <p className="sp-description">{program.description}</p>
+                                            </CardContent>
+                                        </Card>
+                                    ))
+                                )}
+                            </div>
+                        </Card>
+                    </div>
                 </div>
             </div>
-        </div>
         </>
     );
 }

@@ -46,15 +46,15 @@ export default function SuperadminSchedule() {
     // 2. UPDATE STATE TO USE REAL DATE OBJECTS (Defaults to today)
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
-    const [openDialog, setOpenDialog] = useState(false);
-
     const [newProgram, setNewProgram] = useState({
         title: "", 
         dj: "",
         timeSlot: "",
     })
 
+    const [openDialog, setOpenDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
+    const [openSubDialog, setOpenSubDialog] = useState(false);
     const [editingProgram, setEditingProgram] = useState<ScheduledProgram | null>(null);
 
        // Formats the Date object
@@ -82,96 +82,203 @@ export default function SuperadminSchedule() {
     const handleDelete = (id: string) => {
         if(window.confirm("Remove this program?")) setSchedule(schedule.filter(s => s.id !== id));
     };
-    const handleAssignSub = (id: string) => console.log("Assigning sub for:", id);
+
+    const handleAssignSub = (id: string) => {
+        const selectedProgram = schedule.find((prog) => prog.id === id);
+
+        if (selectedProgram) {
+            setEditingProgram(selectedProgram);
+            setOpenSubDialog(true);
+        }
+    };
     
     return (
         <>
             <div className="ss-page-container">
             <h1 className="ss-page-title">Program Scheduling</h1>
+                <div className="ss-grid">
 
-            <div className="ss-grid">
+                    {/* LEFT COLUMN */}
+                    <div className="ss-left-col">
+                        <Card className="ss-calendar-widget">
+                            <CardContent className="p-0">
+                                <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} className="ss-custom-calendar" />
+                            </CardContent>
+                        </Card>
 
-                {/* LEFT COLUMN */}
-                <div className="ss-left-col">
+                        {/* DJ AVAILABILITY LIST */}
+                        <Card className="ss-availability-widget">
+                            <CardContent>
+                                <div className="ss-avail-list">
+                                    {schedule.map(prog => (
+                                        <Card key={prog.id} className="ss-avail-item">
+                                            <CardContent className="p-4">
+                                                <div className="ss-avail-info">
+                                                    <h4>{prog.title}</h4>
+                                                    <p>Assigned DJ: <strong>{prog.dj}</strong></p>
 
-                    <Card className="ss-calendar-widget">
-                        <CardContent className="p-0">
-                            <Calendar 
-                                mode="single"
-                                selected={selectedDate}
-                                onSelect={setSelectedDate}
-                                className="ss-custom-calendar" 
-                            />
-                        </CardContent>
-                    </Card>
-
-                    {/* DJ AVAILABILITY LIST */}
-                    <Card className="ss-availability-widget">
-                        <CardContent>
-                            <div className="ss-avail-list">
-                                {schedule.map(prog => (
-                                    <Card key={prog.id} className="ss-avail-item">
-                                        <CardContent className="p-4">
-                                            <div className="ss-avail-info">
-                                                <h4>{prog.title}</h4>
-                                                <p>Assigned DJ: <strong>{prog.dj}</strong></p>
-                                            </div>
-                                            <span className={`ss-badge ${prog.status === 'Available' ? 'ss-badge-blue' : 'ss-badge-yellow'}`}>
-                                                {prog.status}
-                                            </span>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* RIGHT COLUMN */}
-                <div className="ss-right-col">
-                    <Card className="ss-timeline-card">
-                        <CardHeader>
-                            <div className="ss-timeline-header">
-                                <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-                                    <DialogContent className="ss-dialog-content sm:max-w-[500px]">
-                                        <DialogHeader>
-                                            <DialogTitle>Edit Program Schedule</DialogTitle>
-                                        </DialogHeader>
-
-                                        {editingProgram && (
-                                            <div className="ss-dialog-form">
-
-                                                {/* PROGRAM TITLE (READ ONLY) */}
-                                                <div className="ss-form-group">
-                                                    <Label>Program Title</Label>
-                                                    <Input value={editingProgram.title} disabled className="ss-disabled-input" />
+                                                    <span className={`ss-badge ${
+                                                            prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow"}`}>
+                                                        {prog.status}
+                                                    </span>
                                                 </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
 
-                                                <div className="ss-form-group">
-                                                    <Label>Assign a DJ</Label>
-                                                    <Input value={editingProgram.dj} onChange={(e) =>
-                                                        setEditingProgram({...editingProgram, dj: e.target.value, })} />
-                                                </div>
+                    {/* RIGHT COLUMN */}
+                    <div className="ss-right-col">
+                        <Card className="ss-timeline-card">
+                            <CardHeader>
+                                <div className="ss-timeline-header">
+                                    <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
+                                        <DialogContent className="ss-dialog-content sm:max-w-[500px]">
+                                            <DialogHeader>
+                                                <DialogTitle>Edit Program Schedule</DialogTitle>
+                                            </DialogHeader>
 
-                                                <div className="ss-form-group">
-                                                    <Label>Time</Label>
+                                            {editingProgram && (
+                                                <div className="ss-dialog-form">
+
+                                                    {/* PROGRAM TITLE (READ ONLY) */}
+                                                    <div className="ss-form-group">
+                                                        <Label>Program Title</Label>
+                                                        <Input value={editingProgram.title} disabled className="ss-disabled-input" />
+                                                    </div>
+
+                                                    <div className="ss-form-group">
+                                                        <Label>Assign a DJ</Label>
+                                                        <select className="ss-dj-select">
+                                                            <option>DJ Makisig</option>
+                                                            <option>DJ Apple</option>
+                                                            <option>DJ Barbie</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div className="ss-form-group">
+                                                        <Label>Time Slot</Label>
+
                                                         <div className="ss-time-slot-row">
-                                                            <Input placeholder="9:00" className="ss-time-input" />
+                                                            <select className="ss-time-dropdown">
+                                                                <option>9:00</option>
+                                                                <option>10:00</option>
+                                                                <option>11:00</option>
+                                                            </select>
 
-                                                            <select className="ss-time-select">
+                                                            <select className="ss-ampm-dropdown">
                                                                 <option>AM</option>
                                                                 <option>PM</option>
                                                             </select>
 
                                                             <span className="ss-time-dash">-</span>
 
-                                                            <Input placeholder="11:00" className="ss-time-input" />
+                                                            {/* END TIME */}
+                                                            <select className="ss-time-dropdown">
+                                                                <option>9:00</option>
+                                                                <option>10:00</option>
+                                                                <option>11:00</option>
+                                                            </select>
 
-                                                            <select className="ss-time-select">
+                                                            <select className="ss-ampm-dropdown">
                                                                 <option>AM</option>
                                                                 <option>PM</option>
                                                             </select>
                                                         </div>
+                                                    </div>
+
+                                                    <div className="ss-form-group">
+                                                        <Label>Day</Label>
+
+                                                        <select className="ss-day-select">
+                                                            <option>WEEKDAYS</option>
+                                                            <option>SATURDAY</option>
+                                                            <option>SUNDAY</option>
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                            )}
+
+                                            <DialogFooter>
+                                                <Button variant="outline" onClick={() => setOpenEditDialog(false)}>Cancel</Button>
+                                                <Button onClick={() => {
+                                                    if (!editingProgram) return;
+
+                                                    setSchedule(schedule.map((prog) =>
+                                                            prog.id === editingProgram.id ? editingProgram : prog));
+
+                                                    setOpenEditDialog(false);
+                                                    }}
+                                                >
+                                                    Edit Schedule 
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
+
+                                    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                                        <DialogTrigger asChild>
+                                            <Button className="ss-btn-create">
+                                                Create <Plus size={16} />
+                                            </Button>
+                                        </DialogTrigger>
+
+                                        <DialogContent className="ss-dialog-content sm:max-w-[500px]">
+                                            <DialogHeader>
+                                                <DialogTitle>New Program Schedule</DialogTitle>
+                                            </DialogHeader>
+
+                                            <div className="ss-dialog-form">
+                                                <div className="ss-form-group">
+                                                    <Label>Program</Label>
+                                                    <select className="ss-program-select">
+                                                        <option>Harambogan Sa Radyo</option>
+                                                        <option>Kumpletos Rekados</option>
+                                                    </select>
+                                                </div>
+
+                                                <div className="ss-form-group">
+                                                    <Label>Assign a DJ</Label>
+                                                    <select className="ss-dj-select">
+                                                        <option>DJ Makisig</option>
+                                                        <option>DJ Barbie</option>
+                                                        <option>DJ Apple</option>
+                                                    </select>
+                                                </div>
+
+                                                <div className="ss-form-group">
+                                                    <Label>Time Slot</Label>
+
+                                                    <div className="ss-time-slot-row">
+                                                        <select className="ss-time-dropdown">
+                                                            <option>9:00</option>
+                                                            <option>10:00</option>
+                                                            <option>11:00</option>
+                                                        </select>
+
+                                                        <select className="ss-ampm-dropdown">
+                                                            <option>AM</option>
+                                                            <option>PM</option>
+                                                        </select>
+
+                                                        <span className="ss-time-dash">-</span>
+
+                                                        {/* END TIME */}
+                                                        <select className="ss-time-dropdown">
+                                                            <option>9:00</option>
+                                                            <option>10:00</option>
+                                                            <option>11:00</option>
+                                                        </select>
+
+                                                        <select className="ss-ampm-dropdown">
+                                                            <option>AM</option>
+                                                            <option>PM</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
 
                                                 <div className="ss-form-group">
@@ -183,234 +290,207 @@ export default function SuperadminSchedule() {
                                                         <option>SUNDAY</option>
                                                     </select>
                                                 </div>
-
-                                            </div>
-                                        )}
-
-                                        <DialogFooter>
-                                            <Button variant="outline" onClick={() => setOpenEditDialog(false)}>Cancel</Button>
-                                            <Button onClick={() => {
-                                                    if (!editingProgram) return;
-
-                                                    setSchedule(schedule.map((prog) =>
-                                                            prog.id === editingProgram.id ? editingProgram : prog));
-
-                                                    setOpenEditDialog(false);
-                                                }}
-                                            >
-                                               Edit Schedule 
-                                            </Button>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
-
-                                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                                    <DialogTrigger asChild>
-                                        <Button className="ss-btn-create">
-                                            Create <Plus size={16} />
-                                        </Button>
-                                    </DialogTrigger>
-
-                                    <DialogContent className="ss-dialog-content sm:max-w-[500px]">
-                                        <DialogHeader>
-                                            <DialogTitle>New Program Schedule</DialogTitle>
-                                        </DialogHeader>
-
-                                        <div className="ss-dialog-form">
-                                            <div className="ss-form-group">
-                                                <Label>Program</Label>
-                                                <Input value={newProgram.title} onChange={(e) =>
-                                                        setNewProgram({...newProgram, title: e.target.value, })} />
                                             </div>
 
-                                            <div className="ss-form-group">
-                                                <Label>Assign a DJ</Label>
-                                                <Input
-                                                    value={newProgram.dj} onChange={(e) =>
-                                                        setNewProgram({...newProgram, dj: e.target.value, })} />
-                                            </div>
+                                            <DialogFooter>
+                                                <Button variant="outline" onClick={() => setOpenDialog(false)}>
+                                                    Cancel
+                                                </Button>
 
-                                            <div className="ss-form-group">
-                                                <Label>Time Slot</Label>
+                                                <Button onClick={() => {
+                                                        const newItem: ScheduledProgram = {
+                                                            id: Date.now().toString(),
+                                                            title: newProgram.title,
+                                                            dj: newProgram.dj,
+                                                            timeSlot: newProgram.timeSlot,
+                                                            start: 9,
+                                                            end: 11,
+                                                            status: "Available",
+                                                        };
 
-                                                <div className="ss-time-slot-row">
-                                                    <Input placeholder="9:00" className="ss-time-input"/>
+                                                        setSchedule([...schedule, newItem]);
 
-                                                    <select className="ss-time-select">
-                                                        <option>AM</option>
-                                                        <option>PM</option>
-                                                    </select>
+                                                        setOpenDialog(false);
 
-                                                    <span className="ss-time-dash">-</span>
+                                                        setNewProgram({
+                                                            title: "",
+                                                            dj: "",
+                                                            timeSlot: "",
+                                                        });
+                                                    }}
+                                                >
+                                                    Create Schedule
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
 
-                                                    {/* END TIME */}
-                                                    <Input placeholder="11:00" className="ss-time-input"/>
+                                    <Dialog open={openSubDialog} onOpenChange={setOpenSubDialog}>
+                                        <DialogContent className="ss-dialog-content sm:max-w-[500px]">
+                                            <DialogHeader>
+                                                <DialogTitle>Assign Substitute DJ</DialogTitle>
+                                            </DialogHeader>
 
-                                                    <select className="ss-time-select">
-                                                        <option>AM</option>
-                                                        <option>PM</option>
+                                            <div className="ss-dialog-form">
+                                                <div className="ss-form-group">
+                                                    <Label>Available DJs</Label>
+                                                    <select className="ss-day-select" value={newProgram.dj}
+                                                        onChange={(e) => setNewProgram({...newProgram, dj: e.target.value,})}>
+                                                        <option value="DJ Barbie">DJ Barbie</option>
+                                                        <option value="DJ Makisig">DJ Makisig</option>
+                                                        <option value="Papa Gats">Papa Gats</option>
+                                                        <option value="DJ Sunshine">DJ Sunshine</option>
                                                     </select>
                                                 </div>
                                             </div>
 
-                                            <div className="ss-form-group">
-                                                <Label>Day</Label>
+                                            <DialogFooter>
+                                                <Button variant="outline" onClick={() => setOpenSubDialog(false)}>Cancel</Button>
 
-                                                <select className="ss-day-select">
-                                                    <option>WEEKDAYS</option>
-                                                    <option>SATURDAY</option>
-                                                    <option>SUNDAY</option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                                <Button onClick={() => {
+                                                    
+                                                        setOpenSubDialog(false);
 
-                                        <DialogFooter>
-                                            <Button variant="outline" onClick={() => setOpenDialog(false)}>
-                                                Cancel
-                                            </Button>
+                                                        setNewProgram({
+                                                            title: "",
+                                                            dj: "",
+                                                            timeSlot: "",
+                                                        });
+                                                    }}
+                                                >
+                                                    Assign
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
 
-                                            <Button onClick={() => {
-                                                    const newItem: ScheduledProgram = {
-                                                        id: Date.now().toString(),
-                                                        title: newProgram.title,
-                                                        dj: newProgram.dj,
-                                                        timeSlot: newProgram.timeSlot,
-                                                        start: 9,
-                                                        end: 11,
-                                                        status: "Available",
-                                                    };
-
-                                                    setSchedule([...schedule, newItem]);
-
-                                                    setOpenDialog(false);
-
-                                                    setNewProgram({
-                                                        title: "",
-                                                        dj: "",
-                                                        timeSlot: "",
-                                                    });
-                                                }}
-                                            >
-                                                Create Schedule
-                                            </Button>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
-
-                                <Button className="ss-btn-date">
-                                    <CalendarIcon size={16} /> {formattedDate}
-                                </Button>
-                            </div>
-                        </CardHeader>
-
-                        <CardContent>
-                            <div className="ss-timeline-body">
-                                <div className="ss-time-gutter">
-                                    <span>8:00 AM</span>
-                                    <span>9:00 AM</span>
-                                    <span>10:00 AM</span>
-                                    <span>11:00 AM</span>
-                                    <span>12:00 PM</span>
-                                    <span>1:00 PM</span>
-                                    <span>2:00 PM</span>
-                                    <span>3:00 PM</span>
-                                    <span>4:00 PM</span>
-                                    <span>5:00 PM</span>
-                                    <span>6:00 PM</span>
+                                    <Button className="ss-btn-date">
+                                        <CalendarIcon size={16} /> {formattedDate}
+                                    </Button>
                                 </div>
+                            </CardHeader>
 
-                                <div className="ss-schedule-content">
-                                    {schedule.map(prog => (
-                                        <div key={prog.id} className="ss-schedule-item">
+                            <CardContent>
+                                <div className="ss-timeline-body">
+                                    <div className="ss-time-gutter">
+                                        <span>8:00 AM</span>
+                                        <span>9:00 AM</span>
+                                        <span>10:00 AM</span>
+                                        <span>11:00 AM</span>
+                                        <span>12:00 PM</span>
+                                        <span>1:00 PM</span>
+                                        <span>2:00 PM</span>
+                                        <span>3:00 PM</span>
+                                        <span>4:00 PM</span>
+                                        <span>5:00 PM</span>
+                                        <span>6:00 PM</span>
+                                    </div>
 
-                                            <div className="ss-sched-header">
-                                                <h3>{prog.title}</h3>
+                                    <div className="ss-schedule-content">
+                                        {schedule.map(prog => {
+                                            const top = (prog.start - 8) * 90;
+                                            const height = (prog.end - prog.start) * 90;
 
-                                                <div className="ss-sched-actions">
-                                                    <button onClick={() => handleEdit(prog.id)}>
-                                                        <Edit size={18} />
-                                                    </button>
+                                            return (
+                                                <div key={prog.id} className="ss-schedule-item"
+                                                    style={{
+                                                        top: `${top}px`,
+                                                        height: `${height}px`,
+                                                        position: "absolute",
+                                                        left: "1rem",
+                                                        right: "1rem",
+                                                    }}
+                                                >
+                                                <div className="ss-sched-header">
+                                                    <h3>{prog.title}</h3>
 
-                                                    <button onClick={() => handleDelete(prog.id)}>
-                                                        <Trash2 size={18} />
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className="ss-sched-time">
-                                                <Clock size={14} /> {prog.timeSlot}
-                                            </div>
-
-                                            <div className="ss-sched-footer">
-                                                <div className="ss-dj-info">
-                                                    <strong>{prog.dj}</strong>
-
-                                                    <span className={`ss-badge ${
-                                                            prog.status === 'Available' ? 'ss-badge-blue' : 'ss-badge-yellow' }`}>
-                                                        {prog.status}
-                                                    </span>
-                                                </div>
-
-                                                {prog.status === 'Unavailable' && (
-                                                    <button className="ss-btn-outline" onClick={() => handleAssignSub(prog.id)}>
-                                                        Assign Substitute DJ
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* ADD THE TABLE HERE */}
-                            <div className="ss-table-wrapper">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Program</TableHead>
-                                            <TableHead>DJ</TableHead>
-                                            <TableHead>Time Slot</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-
-                                    <TableBody>
-                                        {schedule.map((prog) => (
-                                            <TableRow key={prog.id}>
-                                                <TableCell>{prog.title}</TableCell>
-                                                <TableCell>{prog.dj}</TableCell>
-                                                <TableCell>{prog.timeSlot}</TableCell>
-
-                                                <TableCell>
-                                                    <span className={`ss-badge ${
-                                                            prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow" }`} >
-                                                        {prog.status}
-                                                    </span>
-                                                </TableCell>
-
-                                                <TableCell>
-                                                    <div className="ss-table-actions">
+                                                    <div className="ss-sched-actions">
                                                         <button onClick={() => handleEdit(prog.id)}>
-                                                            <Edit size={16} />
+                                                            <Edit size={18} />
                                                         </button>
 
                                                         <button onClick={() => handleDelete(prog.id)}>
-                                                            <Trash2 size={16} />
+                                                            <Trash2 size={18} />
                                                         </button>
                                                     </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </div>
+                                                </div>
 
-                        </CardContent>
-                    </Card>
+                                                <div className="ss-sched-time">
+                                                    <Clock size={14} /> {prog.timeSlot}
+                                                </div>
+
+                                                <div className="ss-sched-footer">
+                                                    <div className="ss-dj-info">
+                                                        <strong>{prog.dj}</strong>
+
+                                                        <span
+                                                            className={`ss-badge ${
+                                                                prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow" }`}>
+                                                            {prog.status}
+                                                        </span>
+                                                    </div>
+
+                                                        {prog.status === "Unavailable" && (
+                                                            <button className="ss-btn-outline" onClick={() => handleAssignSub(prog.id)}>
+                                                                Assign Substitute DJ
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* ADD THE TABLE HERE */}
+                                <div className="ss-table-wrapper">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Program</TableHead>
+                                                <TableHead>DJ</TableHead>
+                                                <TableHead>Time Slot</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead>Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+
+                                        <TableBody>
+                                            {schedule.map((prog) => (
+                                                <TableRow key={prog.id}>
+                                                    <TableCell>{prog.title}</TableCell>
+                                                    <TableCell>{prog.dj}</TableCell>
+                                                    <TableCell>{prog.timeSlot}</TableCell>
+
+                                                    <TableCell>
+                                                        <span className={`ss-badge ${
+                                                                prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow" }`} >
+                                                            {prog.status}
+                                                        </span>
+                                                    </TableCell>
+
+                                                    <TableCell>
+                                                        <div className="ss-table-actions">
+                                                            <button onClick={() => handleEdit(prog.id)}>
+                                                                <Edit size={16} />
+                                                            </button>
+
+                                                            <button onClick={() => handleDelete(prog.id)}>
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
-        </div>
         </>
     );
 }

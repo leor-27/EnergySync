@@ -10,9 +10,7 @@ export default function SuperadminProfile() {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
-    const handleImageUpload = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
 
         if (file) {
@@ -48,15 +46,14 @@ export default function SuperadminProfile() {
                                             <Edit2 size={22} className="edit-pencil" />
                                         </DialogTrigger>
 
-                                        <DialogContent className="sm:max-w-[500px] profile-dialog-content">
-
+                                        <DialogContent className="sm:max-w-[500px] bg-white text-black border shadow-lg">
                                             <DialogHeader>
                                                 <DialogTitle>Edit Profile</DialogTitle>
                                             </DialogHeader>
 
                                             <div className="profile-dialog-form">
                                                 <div className="profile-dialog-group">
-                                                    <Label>Display Name</Label>
+                                                    <Label>Stage Name</Label>
                                                     <Input defaultValue="DJ Makisig" />
                                                 </div>
 

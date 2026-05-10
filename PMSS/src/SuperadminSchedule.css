@@ -150,6 +150,7 @@ footer {
     overflow: hidden; 
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .ss-page-title {
@@ -267,7 +268,8 @@ footer {
     flex: 1; 
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    /* min-height: 0; */
+    min-height: 250px;
 }
 
 .ss-avail-list {
@@ -285,13 +287,51 @@ footer {
 .ss-avail-list::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
 
 .ss-avail-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.9rem 1rem;
+    width: 100%;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+
+    transition: all 0.2s ease;
+}
+
+.ss-avail-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.ss-avail-item .p-4 {
+    padding: 0 !important;
+}
+
+.ss-avail-info {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    background-color: #e5e7eb;
-    border: 1px solid #e1e1e1;
-    border-radius: 0.5rem;
-    padding: 1rem;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.ss-avail-info h4 {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #1C5186;
+    line-height: 1.2;
+}
+
+.ss-avail-info p {
+    margin: 0;
+    font-size: 0.72rem;
+    color: #1C5186;
+    line-height: 1.2;
+}
+
+.ss-avail-item .ss-badge {
+    align-self: flex-end;
+    font-size: 0.58rem;
+    padding: 0.2rem 0.6rem;
 }
 
 .ss-avail-info h4 {
@@ -412,22 +452,26 @@ footer {
     font-weight: 500;
 }
 
-/* Schedule Content Area */
-.ss-schedule-content {
+ .ss-schedule-content {
     flex: 1;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    position: relative;
+    min-height: 1500px;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent,
+            transparent 89px,
+            #e5e7eb 90px
+        );
 }
 
 .ss-schedule-item {
     background-color: #e5e7eb;
-    border: 1px solid;
-    border-color: #e1e1e1;
-    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.75rem;
     padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    overflow: hidden;
 }
 
 .ss-sched-header {
@@ -501,8 +545,7 @@ footer {
 
 .ss-calendar-widget,
 .ss-availability-widget,
-.ss-timeline-card,
-.ss-avail-item {
+.ss-timeline-card {
     border: none !important;
     box-shadow: none !important;
 }
@@ -593,4 +636,48 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+/* TIME SLOT */
+
+.ss-time-slot-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+}
+
+.ss-time-dropdown,
+.ss-ampm-dropdown,
+.ss-day-select, .ss-dj-select, .ss-program-select {
+    height: 42px;
+    border: 1px solid #d1d5db;
+    border-radius: 0.4rem;
+    background-color: white;
+    font-size: 0.875rem;
+    outline: none;
+    padding: 0 0.75rem;
+}
+
+.ss-time-dropdown {
+    width: 90px;
+}
+
+.ss-ampm-dropdown {
+    width: 70px;
+}
+
+.ss-time-dropdown:focus,
+.ss-ampm-dropdown:focus,
+.ss-day-select:focus,
+.ss-dj-select:focus,
+.ss-program-select:focus {
+    border-color: #1C5186;
+    box-shadow: 0 0 0 1px #1C5186;
+}
+
+.ss-time-dash {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
 }
