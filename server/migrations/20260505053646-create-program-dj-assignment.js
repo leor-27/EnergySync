@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Program_DJ_Assignments', {
+    await queryInterface.createTable('Program_DJ_Assignment', {
       assignment_ID: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'DJs',
+          model: 'DJ',
           key: 'dj_ID'
         },
         onUpdate: 'CASCADE',
@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Programs',
+          model: 'Program',
           key: 'program_ID'
         },
         onUpdate: 'CASCADE',
@@ -40,7 +40,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Admins',
+          model: 'Admin',
           key: 'admin_ID'
         },
         onUpdate: 'CASCADE',
@@ -57,7 +57,7 @@ module.exports = {
     });
 
     await queryInterface.sequelize.query(`
-      ALTER TABLE Program_DJ_Assignments
+      ALTER TABLE Program_DJ_Assignment
       ADD CONSTRAINT check_assignment_end_date
       CHECK (effective_end_date IS NULL OR effective_end_date > effective_start_date)
     `);

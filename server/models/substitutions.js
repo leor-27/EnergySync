@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Substitutions.init({
-    substitution_ID: DataTypes.INTEGER,
+    substitution_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     assignment_ID: DataTypes.INTEGER,
     substitute_dj_ID: DataTypes.INTEGER,
     status: DataTypes.ENUM('Accepted', 'Pending', 'Rejected'),

@@ -15,8 +15,10 @@ module.exports = {
         invite_token_expires: '2026-01-01 10:43:44',
         reset_token_hash: 'B90b73b1b6f48bd99fmswqlae12...',
         reset_token_expires: '2026-01-07 12:14:14',
-        image_path: NULL,
-        role_type: 'Superadmin'
+        image_path: null,
+        role_type: 'Superadmin',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         username: 'djapple',
@@ -27,10 +29,12 @@ module.exports = {
         is_initialized: 1,
         invite_token_hash: '4e7a2c9d1f36b8a0c5e19d73f264...',
         invite_token_expires: '2026-01-14 14:13:04',
-        reset_token_hash: NULL,
-        reset_token_expires: NULL,
-        image_path: NULL,
-        role_type: 'Admin'
+        reset_token_hash: null,
+        reset_token_expires: null,
+        image_path: null,
+        role_type: 'Admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         username: 'papagats',
@@ -41,10 +45,12 @@ module.exports = {
         is_initialized: 1,
         invite_token_hash: 'a9c4e7f21d6b3058f3e1a2d9c764...',
         invite_token_expires: '2026-01-15 18:02:27',
-        reset_token_hash: NULL,
-        reset_token_expires: NULL,
-        image_path: NULL,
-        role_type: 'Admin'
+        reset_token_hash: null,
+        reset_token_expires: null,
+        image_path: null,
+        role_type: 'Admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         username: 'djbarbie',
@@ -55,10 +61,12 @@ module.exports = {
         is_initialized: 1,
         invite_token_hash: '5d1e7c9a3f82b406e1a4d9c73f28...',
         invite_token_expires: '2026-01-15 21:54:30',
-        reset_token_hash: NULL,
-        reset_token_expires: NULL,
-        image_path: NULL,
-        role_type: 'Admin'
+        reset_token_hash: null,
+        reset_token_expires: null,
+        image_path: null,
+        role_type: 'Admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         username: 'kuyabok',
@@ -69,10 +77,12 @@ module.exports = {
         is_initialized: 1,
         invite_token_hash: '9c2b9z5h1g97f72395m1j2q64k10...',
         invite_token_expires: '2026-01-15 23:21:11',
-        reset_token_hash: NULL,
-        reset_token_expires: NULL,
-        image_path: NULL,
-        role_type: 'Admin'
+        reset_token_hash: null,
+        reset_token_expires: null,
+        image_path: null,
+        role_type: 'Admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ], {});
   },

@@ -8,36 +8,46 @@ module.exports = {
         dj_ID: 1,
         program_ID: 2,
         effective_start_date: '2026-01-15 22:49:41',
-        effective_end_date: NULL,
-        assigned_by_admin_ID: 1
+        effective_end_date: null,
+        assigned_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         dj_ID: 4,
         program_ID: 3,
         effective_start_date: '2026-01-15 22:50:11',
-        effective_end_date: NULL,
-        assigned_by_admin_ID: 1
+        effective_end_date: null,
+        assigned_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         dj_ID: 3,
         program_ID: 4,
         effective_start_date: '2026-01-15 22:51:19',
-        effective_end_date: NULL,
-        assigned_by_admin_ID: 1
+        effective_end_date: null,
+        assigned_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         dj_ID: 2,
         program_ID: 5,
         effective_start_date: '2026-01-15 22:53:17',
-        effective_end_date: NULL,
-        assigned_by_admin_ID: 1
+        effective_end_date: null,
+        assigned_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         dj_ID: 4,
         program_ID: 5,
         effective_start_date: '2026-01-15 22:53:39',
-        effective_end_date: NULL,
-        assigned_by_admin_ID: 1
+        effective_end_date: null,
+        assigned_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ], {});
   },

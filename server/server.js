@@ -35,11 +35,10 @@ db.sequelize.authenticate().then(() => {
   console.log('Database connected!');
   app.listen(5000, () => console.log('Server running on port 5000'));
 });
-
-// Start server after Sequelize initialization
 db.sequelize.authenticate()
   .then(() => {
     console.log('Database connected via Sequelize.');
+
     app.listen(PORT, () => {
       console.log(`Server running at http://localhost:${PORT}`);
     });

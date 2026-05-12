@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Program_DJ_Assignment.init({
-    assignment_ID: DataTypes.INTEGER,
+    assignment_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     dj_ID: DataTypes.INTEGER,
     program_ID: DataTypes.INTEGER,
     effective_start_date: DataTypes.DATE,

@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DJ_Availability.init({
-    availability_ID: DataTypes.INTEGER,
+    availability_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     assignment_ID: DataTypes.INTEGER,
     broadcast_date: DataTypes.DATEONLY,
     status: DataTypes.ENUM('Available', 'Unavailable'),

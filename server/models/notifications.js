@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Notifications.init({
-    notification_ID: DataTypes.INTEGER,
+    notification_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     admin_ID: DataTypes.INTEGER,
     message: DataTypes.STRING,
     is_read: DataTypes.BOOLEAN,

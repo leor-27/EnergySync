@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DJ.init({
-    dj_ID: DataTypes.INTEGER,
+    dj_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     admin_ID: DataTypes.INTEGER,
     stage_name: DataTypes.STRING
   }, {

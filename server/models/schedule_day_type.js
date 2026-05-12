@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Schedule_Day_Type.init({
-    schedule_day_type_ID: DataTypes.INTEGER,
+    schedule_day_type_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     schedule_day_type: DataTypes.ENUM('WEEKDAYS', 'SATURDAY', 'SUNDAY')
   }, {
     sequelize,

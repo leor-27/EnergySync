@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Program_DJ_Assignments',
+          model: 'Program_DJ_Assignment',
           key: 'assignment_ID'
         },
         onUpdate: 'CASCADE',
@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'DJs',
+          model: 'DJ',
           key: 'dj_ID'
         },
         onUpdate: 'CASCADE',
@@ -46,7 +46,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Admins',
+          model: 'Admin',
           key: 'admin_ID'
         },
         onUpdate: 'CASCADE',

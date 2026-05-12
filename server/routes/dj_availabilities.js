@@ -3,13 +3,26 @@ const router = express.Router();
 const { DJ_Availability } = require('../models'); // Import Sequelize Model
 
 router.get('/', async (req, res) => {
-  const dj_availabilities = await DJ_Availability.findAll({ order: [['createdAt', 'DESC']] });
-  res.json({ success: true, data: dj_availabilities });
-});
+  try {
 
-router.post('/', async (req, res) => {
-  const newDjAvailability = await DJ_Availability.create(req.body);
-  res.json({ success: true, data: newDjAvailability });
+    const dj_availabilities =
+      await DJ_Availability.findAll({
+        order: [['created_at', 'DESC']]
+      });
+
+    res.json({
+      success: true,
+      data: dj_availabilities
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+
+  }
 });
 
 module.exports = router;

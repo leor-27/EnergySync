@@ -10,8 +10,10 @@ module.exports = {
         start_time: '00:00:00',
         end_time: '05:00:00',
         effective_start_date: '2026-01-15 22:44:41',
-        effective_end_date: NULL,
-        scheduled_by_admin_ID: 1
+        effective_end_date: null,
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         program_ID: 1,
@@ -19,8 +21,10 @@ module.exports = {
         start_time: '00:00:00',
         end_time: '05:00:00',
         effective_start_date: '2026-01-15 22:44:59',
-        effective_end_date: NULL,
-        scheduled_by_admin_ID: 1
+        effective_end_date: null,
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         program_ID: 2,
@@ -28,8 +32,10 @@ module.exports = {
         start_time: '07:00:00',
         end_time: '09:00:00',
         effective_start_date: '2026-01-15 22:49:52',
-        effective_end_date: NULL,
-        scheduled_by_admin_ID: 1
+        effective_end_date: null,
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         program_ID: 3,
@@ -37,8 +43,10 @@ module.exports = {
         start_time: '09:00:00',
         end_time: '11:00:00',
         effective_start_date: '2026-01-15 22:50:32',
-        effective_end_date: NULL,
-        scheduled_by_admin_ID: 1
+        effective_end_date: null,
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         program_ID: 4,
@@ -46,8 +54,10 @@ module.exports = {
         start_time: '12:00:00',
         end_time: '14:00:00',
         effective_start_date: '2026-01-15 22:52:39',
-        effective_end_date: NULL,
-        scheduled_by_admin_ID: 1
+        effective_end_date: null,
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         program_ID: 5,
@@ -55,8 +65,10 @@ module.exports = {
         start_time: '15:00:00',
         end_time: '17:00:00',
         effective_start_date: '2026-01-15 22:53:25',
-        effective_end_date: NULL,
-        scheduled_by_admin_ID: 1
+        effective_end_date: null,
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         program_ID: 5,
@@ -64,8 +76,10 @@ module.exports = {
         start_time: '15:00:00',
         end_time: '17:00:00',
         effective_start_date: '2026-01-15 22:53:29',
-        effective_end_date: NULL,
-        scheduled_by_admin_ID: 1
+        effective_end_date: null,
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         program_ID: 5,
@@ -74,7 +88,9 @@ module.exports = {
         end_time: '17:00:00',
         effective_start_date: '2026-01-15 22:53:33',
         effective_end_date: '2026-01-20 05:12:11',
-        scheduled_by_admin_ID: 1
+        scheduled_by_admin_ID: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ], {});
   },

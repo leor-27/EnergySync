@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Program_Schedule.init({
-    schedule_ID: DataTypes.INTEGER,
+    schedule_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     program_ID: DataTypes.INTEGER,
     schedule_day_type_ID: DataTypes.INTEGER,
     start_time: DataTypes.TIME,
