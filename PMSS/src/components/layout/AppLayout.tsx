@@ -1,5 +1,5 @@
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom"
-import { Home, User, Calendar, Tv, LogOut } from "lucide-react"
+import { Home, User, Calendar, Tv, LogOut, FolderOpen } from "lucide-react"
 import { useAuth } from "@/contexts/useAuth"
 
 export default function AppLayout() {
@@ -59,6 +59,16 @@ export default function AppLayout() {
                 <span>Schedule</span>
               </NavLink>
             </li>
+
+            {!isAdmin && (
+              <li>
+                <NavLink to="/superadmin-reports"
+                  className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                  <FolderOpen size={20} />
+                  <span>Reports</span>
+                </NavLink>
+              </li>
+            )}
 
             <li>
               <button className="nav-item logout"

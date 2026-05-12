@@ -9,6 +9,7 @@ import './SuperadminProfile.css'
 import './SuperadminProgram.css'
 import './AdminSchedule.css'
 import './SuperadminSchedule.css'
+import './SuperadminReports.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(

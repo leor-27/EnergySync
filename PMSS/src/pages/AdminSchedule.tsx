@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Home, User, Calendar as CalendarIcon, LogOut } from "lucide-react"; 
+import { useNavigate } from "react-router-dom";
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
