@@ -174,42 +174,106 @@ export default function SuperadminProgram() {
         setEditingId(null);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!formData.title || !formData.type) return;
 
-        if (editingId) {
-            // BACKEND TODO: Send a PUT or PATCH request to update the DB
-            alert("Ready to UPDATE database for ID: " + editingId);
+        try {
+            if (editingId) {
 
-            setPrograms(programs.map(p => 
-                p.id === editingId ? { ...p, ...formData } : p
-            ));
-        } else {
-            // BACKEND TODO: Send a POST request to add a new program to the DB
-            alert("Ready to CREATE new program in database: " + formData.title);
+                // UPDATE PROGRAM
+                const response = await fetch(
+                    `http://localhost:5000/api/programs/${editingId}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            program_name: formData.title,
+                            program_type: formData.type,
+                            description: formData.description
+                        })
+                    }
+                );
 
-            const newProg: Program = {
-                program_ID: Date.now(),
-                program_name: formData.title,
-                program_type: formData.type,
-                description: formData.description,
-                created_at: new Date().toISOString(),
-                added_by_admin_ID: 1
-            };
-            setPrograms([...programs, newProg]);
+                const data = await response.json();
+
+                if (data.success) {
+                    alert("Program updated!");
+
+                    setPrograms(
+                        programs.map((p: any) =>
+                            p.program_ID === editingId
+                                ? {
+                                    ...p,
+                                    program_name: formData.title,
+                                    program_type: formData.type,
+                                    description: formData.description
+                                }
+                                : p
+                        )
+                    );
+                }
+            } else {
+                // CREATE PROGRAM
+                const response = await fetch(
+                    "http://localhost:5000/api/programs",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            program_name: formData.title,
+                            program_type: formData.type,
+                            description: formData.description,
+                            added_by_admin_ID: 1
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert("Program created!");
+
+                    setPrograms([
+                        ...programs,
+                        data.data
+                    ]);
+                }
+            }
+            handleCancel();
+        } catch (err) {
+            console.error("Submit Error:", err);
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+    try {
+        const response = await fetch(
+            `http://localhost:5000/api/programs/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Program deleted!");
+
+            setPrograms(
+                programs.filter(
+                    (p: any) => p.program_ID !== id
+                )
+            );
         }
 
-        handleCancel();
-    };
-
-    const handleDelete = (id: number) => {
-        // BACKEND TODO: Send a DELETE request for this ID
-        setPrograms(
-            programs.filter(
-                (p: any) => p.program_ID !== id
-            )
-        );
-    };
+    } catch (err) {
+        console.error("Delete Error:", err);
+    }
+};
 
     const filteredPrograms = programCards.filter((program: any) =>
     program.program_name
@@ -332,7 +396,7 @@ export default function SuperadminProgram() {
                                                     </div>
                                                 </div>
                                                 <p className="sp-timeslot">{program.start_time} - {program.end_time} | {program.day_types}</p>
-                                                <p className="sp-type-dj">{program.type} {program.dj_name}</p>
+                                                <p className="sp-type-dj">  {program.program_type} | {program.dj_name}</p>
                                                 <p className="sp-description">{program.description}</p>
                                             </CardContent>
                                         </Card>

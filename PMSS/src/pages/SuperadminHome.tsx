@@ -5,6 +5,7 @@ import { Calendar, Search, SlidersHorizontal, Bell } from "lucide-react";
 export default function SuperadminHome() {
     const navigate = useNavigate();
 
+    const [admins, setAdmins] = useState<any[]>([]);
     const [notifications, setNotifications] = useState<any[]>([]);
     const [programs, setPrograms] = useState<any[]>([]);
     const [program_schedules, setProgramSchedules] = useState<any[]>([]);
@@ -92,10 +93,13 @@ export default function SuperadminHome() {
         return <div>Loading...</div>;
     }
 
+    const currentDj = djs[0];
+    const currentAdmin = admins[0];
+
     return (
         <>
             <div className="welcome-section">
-                <h1 className="welcome-text">Welcome, {djs[0]?.stage_name || "DJ"}!</h1>
+                <h1 className="welcome-text">Welcome, {currentDj?.stage_name || "DJ"}!</h1>
             </div>
 
             <div className="dashboard-grid">

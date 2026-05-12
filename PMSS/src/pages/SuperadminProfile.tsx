@@ -114,6 +114,9 @@ export default function SuperadminProfile() {
         return <div>Loading...</div>;
     }
 
+    const currentDj = djs[0];
+    const currentAdmin = admins[0];
+
     return (
         <>
             <div className="profile-container-grid">
@@ -132,7 +135,7 @@ export default function SuperadminProfile() {
                             <div className="user-text-info">
                                 <div className="name-row">
                                     <h2 style={{ fontSize: '23px' }}>
-                                        <strong>{djs[0]?.stage_name || "DJ"}</strong>
+                                        <strong>{currentDj?.stage_name || "DJ"}</strong>
                                     </h2>
                                     <Dialog>
                                         <DialogTrigger asChild>
@@ -147,17 +150,17 @@ export default function SuperadminProfile() {
                                             <div className="profile-dialog-form">
                                                 <div className="profile-dialog-group">
                                                     <Label>Stage Name</Label>
-                                                    <Input defaultValue={djs[0]?.stage_name || ""} />
+                                                    <Input defaultValue={currentDj?.stage_name || ""} />
                                                 </div>
 
                                                 <div className="profile-dialog-group">
                                                     <Label>Full Name</Label>
-                                                    <Input defaultValue={`${admins[0]?.first_name || ""} ${admins[0]?.last_name || ""}`} />
+                                                    <Input defaultValue={`${currentAdmin?.first_name || ""} ${currentAdmin?.last_name || ""}`} />
                                                 </div>
 
                                                 <div className="profile-dialog-group">
                                                     <Label>Username</Label>
-                                                    <Input defaultValue={`@${admins[0]?.username || ""}`} />
+                                                    <Input defaultValue={`@${currentAdmin?.username || ""}`} />
                                                 </div>
                                             </div>
 
@@ -168,8 +171,8 @@ export default function SuperadminProfile() {
                                         </DialogContent>
                                     </Dialog>
                                 </div>
-                                <p className="full-name">{admins[0]?.first_name} {admins[0]?.last_name}</p>
-                                <p className="handle">@{admins[0]?.username}</p>
+                                <p className="full-name">{currentAdmin?.first_name} {currentAdmin?.last_name}</p>
+                                <p className="handle">@{currentAdmin?.username}</p>
                             </div>
                         </CardContent>
                     </Card>
