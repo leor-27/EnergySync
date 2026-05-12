@@ -10,38 +10,48 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 type ScheduledProgram = {
-    id: string;
-    title: string;
-    timeSlot: string; // visual text display
-    start: number;    // e.g., 9.0 for 9:00 AM
-    end: number;      // e.g., 11.0 for 11:00 AM
-    dj: string;
+    schedule_ID: number;
+    program_ID: number;
+    program_name: string;
+
+    start_time: string;
+    end_time: string;
+
+    start: number;
+    end: number;
+
+    timeSlot: string;
+
+    day_types: string;
+
+    dj_name: string;
+
     status: "Available" | "Unavailable";
 };
 
 export default function SuperadminSchedule() {
     const navigate = useNavigate();
 
-    const [schedule, setSchedule] = useState<ScheduledProgram[]>([
-    { 
-        id: "1", 
-        title: "KUMPLETOS REKADOS", 
-        timeSlot: "9:00 AM - 11:00 AM | WEEKDAYS", 
-        start: 9.0, // 9:00 AM
-        end: 11.0,  // 11:00 AM
-        dj: "DJ Barbie", 
-        status: "Unavailable" 
-    },
-    { 
-        id: "2", 
-        title: "LOVELINES", 
-        timeSlot: "12:00 PM - 2:00 PM | WEEKDAYS", 
-        start: 12.0, // 12:00 PM
-        end: 14.0,   // 2:00 PM (14:00 in 24hr time)
-        dj: "Papa Gats", 
-        status: "Available" 
-    }
-]);
+    // const [schedule, setSchedule] = useState<ScheduledProgram[]>([
+    // { 
+    //     id: "1", 
+    //     title: "KUMPLETOS REKADOS", 
+    //     timeSlot: "9:00 AM - 11:00 AM | WEEKDAYS", 
+    //     start: 9.0, // 9:00 AM
+    //     end: 11.0,  // 11:00 AM
+    //     dj: "DJ Barbie", 
+    //     status: "Unavailable" 
+    // },
+    // { 
+    //     id: "2", 
+    //     title: "LOVELINES", 
+    //     timeSlot: "12:00 PM - 2:00 PM | WEEKDAYS", 
+    //     start: 12.0, // 12:00 PM
+    //     end: 14.0,   // 2:00 PM (14:00 in 24hr time)
+    //     dj: "Papa Gats", 
+    //     status: "Available" 
+    // }
+// ]);
 
     // 2. UPDATE STATE TO USE REAL DATE OBJECTS (Defaults to today)
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -52,10 +62,17 @@ export default function SuperadminSchedule() {
         timeSlot: "",
     })
 
+    const [programs, setPrograms] = useState<any[]>([]);
+    const [program_schedules, setProgramSchedules] = useState<any[]>([]);
+    const [djs, setDjs] = useState<any[]>([]);
+    const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
+    const [schedule_day_types, setScheduleDayTypes] = useState<any[]>([]);
+    const [substitutions, setSubstitutions] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openSubDialog, setOpenSubDialog] = useState(false);
-    const [editingProgram, setEditingProgram] = useState<ScheduledProgram | null>(null);
+    const [editingProgram, setEditingProgram] = useState<any | null>(null);
 
        // Formats the Date object
     const formattedDate = selectedDate 
@@ -63,15 +80,68 @@ export default function SuperadminSchedule() {
         : "Select a date";
 
     useEffect(() => {
-         // BACKEND TODO: Fetch schedule data when 'selectedDate' changes
+    const fetchData = async () => {
+      try {
+        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsJson = await djsRes.json();
+
+        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsJson = await programsRes.json();
+
+        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+        const schedulesJson = await schedulesRes.json();
+
+        const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
+        const programDjAssignmentsJson = await programDjAssignmentsRes.json();
+
+        const scheduleDayTypesRes = await fetch("http://localhost:5000/api/schedule_day_types");
+        const scheduleDayTypesJson = await scheduleDayTypesRes.json();
+
+        const substitutionsRes = await fetch("http://localhost:5000/api/substitutions");
+        const substitutionsJson = await substitutionsRes.json();
+
+        if (djsJson.success) {
+          setDjs(djsJson.data);
+        }
+
+        if (programsJson.success) {
+          setPrograms(programsJson.data);
+        }
+
+        if (schedulesJson.success) {
+          setProgramSchedules(schedulesJson.data);
+        }
+
+        if (programDjAssignmentsJson.success) {
+          setProgramDjAssignments(programDjAssignmentsJson.data);
+        }
+
+        if (scheduleDayTypesJson.success) {
+            setScheduleDayTypes(scheduleDayTypesJson.data);
+        }
+
+        if (substitutionsJson.success) {
+            setSubstitutions(substitutionsJson.data);
+        }
+      } catch(err) {
+        console.error("Fetch Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
         if (selectedDate) {
             console.log("Fetching schedule for:", selectedDate.toISOString());
         }
     }, [selectedDate]);
 
     const handleCreate = () => alert("Open Create Schedule Form");
-    const handleEdit = (id: string) => {
-        const selectedProgram = schedule.find((prog) => prog.id === id);
+    const handleEdit = (id: number) => {
+        const selectedProgram = programSchedules.find(
+            (prog: any) => prog.schedule_ID === id
+        );
 
         if (selectedProgram) {
             setEditingProgram(selectedProgram);
@@ -79,18 +149,90 @@ export default function SuperadminSchedule() {
         }
     };
 
-    const handleDelete = (id: string) => {
-        if(window.confirm("Remove this program?")) setSchedule(schedule.filter(s => s.id !== id));
+    const handleDelete = (id: number) => {
+        if(window.confirm("Remove this program?")) {
+            setProgramSchedules(
+                program_schedules.filter(
+                    (s: any) => s.schedule_ID !== id
+                )
+            );
+        }
     };
 
-    const handleAssignSub = (id: string) => {
-        const selectedProgram = schedule.find((prog) => prog.id === id);
+    const handleAssignSub = (id: number) => {
+        const selectedProgram = programSchedules.find((prog) => prog.schedule_ID === id);
 
         if (selectedProgram) {
             setEditingProgram(selectedProgram);
             setOpenSubDialog(true);
         }
     };
+
+    const programSchedules = programs.map((program: any) => {
+        const matchedSchedules = program_schedules.filter(
+            (schedule: any) =>
+                schedule.program_ID === program.program_ID
+        );
+
+        const dayTypes = matchedSchedules.map((schedule: any) => {
+            const matchedDayType = schedule_day_types.find(
+                (day: any) =>
+                    day.schedule_day_type_ID === schedule.schedule_day_type_ID
+            );
+
+            return matchedDayType?.schedule_day_type || "";
+        });
+
+        const matchedAssignment = program_dj_assignments.find(
+            (assignment: any) =>
+                assignment.program_ID === program.program_ID
+        );
+
+        const matchedDj = djs.find(
+            (dj: any) =>
+                dj.dj_ID === matchedAssignment?.dj_ID
+        );
+
+        // Convert SQL time into decimal for timeline
+        const startHour = matchedSchedules[0]?.start_time
+            ? parseInt(matchedSchedules[0].start_time.split(":")[0])
+            : 0;
+
+        const endHour = matchedSchedules[0]?.end_time
+            ? parseInt(matchedSchedules[0].end_time.split(":")[0])
+            : 0;
+
+        return {
+            ...program,
+
+            schedule_ID:
+                matchedSchedules[0]?.schedule_ID,
+
+            start_time:
+                matchedSchedules[0]?.start_time || "",
+
+            end_time:
+                matchedSchedules[0]?.end_time || "",
+
+            start:
+                startHour,
+
+            end:
+                endHour,
+
+            timeSlot:
+                `${matchedSchedules[0]?.start_time || ""} - ${matchedSchedules[0]?.end_time || ""}`,
+
+            day_types:
+                dayTypes.join(", "),
+
+            dj_name:
+                matchedDj?.stage_name || "No DJ Assigned",
+
+            status:
+                "Available",
+        };
+    });
     
     return (
         <>
@@ -110,12 +252,12 @@ export default function SuperadminSchedule() {
                         <Card className="ss-availability-widget">
                             <CardContent>
                                 <div className="ss-avail-list">
-                                    {schedule.map(prog => (
-                                        <Card key={prog.id} className="ss-avail-item">
+                                    {programSchedules.map(prog => (
+                                        <Card key={prog.schedule_ID} className="ss-avail-item">
                                             <CardContent className="p-4">
                                                 <div className="ss-avail-info">
-                                                    <h4>{prog.title}</h4>
-                                                    <p>Assigned DJ: <strong>{prog.dj}</strong></p>
+                                                    <h4>{prog.program_name}</h4>
+                                                    <p>Assigned DJ: <strong>{prog.dj_name}</strong></p>
 
                                                     <span className={`ss-badge ${
                                                             prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow"}`}>
@@ -147,7 +289,7 @@ export default function SuperadminSchedule() {
                                                     {/* PROGRAM TITLE (READ ONLY) */}
                                                     <div className="ss-form-group">
                                                         <Label>Program Title</Label>
-                                                        <Input value={editingProgram.title} disabled className="ss-disabled-input" />
+                                                        <Input value={editingProgram.program_name} disabled className="ss-disabled-input" />
                                                     </div>
 
                                                     <div className="ss-form-group">
@@ -208,8 +350,16 @@ export default function SuperadminSchedule() {
                                                 <Button onClick={() => {
                                                     if (!editingProgram) return;
 
-                                                    setSchedule(schedule.map((prog) =>
-                                                            prog.id === editingProgram.id ? editingProgram : prog));
+                                                    setProgramSchedules(
+                                                        program_schedules.map((prog: any) =>
+                                                            prog.schedule_ID === editingProgram.schedule_ID
+                                                                ? {
+                                                                    ...prog,
+                                                                    ...editingProgram
+                                                                }
+                                                                : prog
+                                                        )
+                                                    );
 
                                                     setOpenEditDialog(false);
                                                     }}
@@ -298,17 +448,20 @@ export default function SuperadminSchedule() {
                                                 </Button>
 
                                                 <Button onClick={() => {
-                                                        const newItem: ScheduledProgram = {
-                                                            id: Date.now().toString(),
-                                                            title: newProgram.title,
-                                                            dj: newProgram.dj,
+
+                                                        const newItem = {
+                                                            schedule_ID: Date.now(),
+                                                            program_name: newProgram.title,
+                                                            dj_name: newProgram.dj,
                                                             timeSlot: newProgram.timeSlot,
+                                                            start_time: "09:00:00",
+                                                            end_time: "11:00:00",
                                                             start: 9,
                                                             end: 11,
                                                             status: "Available",
                                                         };
 
-                                                        setSchedule([...schedule, newItem]);
+                                                        setProgramSchedules([...program_schedules, newItem]);
 
                                                         setOpenDialog(false);
 
@@ -387,12 +540,12 @@ export default function SuperadminSchedule() {
                                     </div>
 
                                     <div className="ss-schedule-content">
-                                        {schedule.map(prog => {
+                                        {programSchedules.map(prog => {
                                             const top = (prog.start - 8) * 90;
                                             const height = (prog.end - prog.start) * 90;
 
                                             return (
-                                                <div key={prog.id} className="ss-schedule-item"
+                                                <div key={prog.schedule_ID} className="ss-schedule-item"
                                                     style={{
                                                         top: `${top}px`,
                                                         height: `${height}px`,
@@ -402,14 +555,14 @@ export default function SuperadminSchedule() {
                                                     }}
                                                 >
                                                 <div className="ss-sched-header">
-                                                    <h3>{prog.title}</h3>
+                                                    <h3>{prog.program_name}</h3>
 
                                                     <div className="ss-sched-actions">
-                                                        <button onClick={() => handleEdit(prog.id)}>
+                                                        <button onClick={() => handleEdit(prog.schedule_ID)}>
                                                             <Edit size={18} />
                                                         </button>
 
-                                                        <button onClick={() => handleDelete(prog.id)}>
+                                                        <button onClick={() => handleDelete(prog.schedule_ID)}>
                                                             <Trash2 size={18} />
                                                         </button>
                                                     </div>
@@ -421,7 +574,7 @@ export default function SuperadminSchedule() {
 
                                                 <div className="ss-sched-footer">
                                                     <div className="ss-dj-info">
-                                                        <strong>{prog.dj}</strong>
+                                                        <strong>{prog.dj_name}</strong>
 
                                                         <span
                                                             className={`ss-badge ${
@@ -431,7 +584,7 @@ export default function SuperadminSchedule() {
                                                     </div>
 
                                                         {prog.status === "Unavailable" && (
-                                                            <button className="ss-btn-outline" onClick={() => handleAssignSub(prog.id)}>
+                                                            <button className="ss-btn-outline" onClick={() => handleAssignSub(prog.schedule_ID)}>
                                                                 Assign Substitute DJ
                                                             </button>
                                                         )}
@@ -456,10 +609,10 @@ export default function SuperadminSchedule() {
                                         </TableHeader>
 
                                         <TableBody>
-                                            {schedule.map((prog) => (
-                                                <TableRow key={prog.id}>
-                                                    <TableCell>{prog.title}</TableCell>
-                                                    <TableCell>{prog.dj}</TableCell>
+                                            {programSchedules.map((prog) => (
+                                                <TableRow key={prog.schedule_ID}>
+                                                    <TableCell>{prog.program_name}</TableCell>
+                                                    <TableCell>{prog.dj_name}</TableCell>
                                                     <TableCell>{prog.timeSlot}</TableCell>
 
                                                     <TableCell>
@@ -471,11 +624,11 @@ export default function SuperadminSchedule() {
 
                                                     <TableCell>
                                                         <div className="ss-table-actions">
-                                                            <button onClick={() => handleEdit(prog.id)}>
+                                                            <button onClick={() => handleEdit(prog.schedule_ID)}>
                                                                 <Edit size={16} />
                                                             </button>
 
-                                                            <button onClick={() => handleDelete(prog.id)}>
+                                                            <button onClick={() => handleDelete(prog.schedule_ID)}>
                                                                 <Trash2 size={16} />
                                                             </button>
                                                         </div>

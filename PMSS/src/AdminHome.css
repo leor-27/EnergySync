@@ -91,23 +91,19 @@
     overflow-y: auto;
 }
 
-/* --- FIX: Added width 100% to ensure container doesn't overflow --- */
 .dashboard-grid {
     display: flex;
     gap: 40px;
     padding: 15px;
     width: 100%;
     align-items: flex-start;
-    /* flex-wrap: wrap; allows items to move instead of overlap */
 }
 
 .search-container {
-    /* flex: 1 1 500px; grows and shrinks properly */
     flex: 3;
     min-width: 0; /* prevents overflow */
 }
 
-/* --- FIX: Changed width from 140% to 100% --- */
 .search-bar {
     display: flex;
     align-items: center;
@@ -132,7 +128,6 @@
     outline: none;
 }
 
-/* --- FIX: Changed width from 140% to 100% --- */
 .program-card {
     background: #e6e6e6;
     border-radius: 12px;
@@ -165,7 +160,6 @@
     font-size: 14px;
 }
 
-/* --- FIX: Added flex-shrink to prevent it being squashed --- */
 .notifications-panel {
     flex: 0 1 380px; /* responsive instead of fixed */
     /* width: 100%; */

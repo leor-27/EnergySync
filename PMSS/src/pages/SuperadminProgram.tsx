@@ -8,47 +8,53 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 type Program = {
-    id: string;
-    title: string;
-    status: "ON AIR" | "OFFLINE";
-    timeSlot: string;
-    type: string;
-    dj: string;
+    program_ID: number;
+    program_name: string;
+    program_type: string;
     description: string;
+    created_at: string;
+    added_by_admin_ID: number;
 };
 
 export default function SuperadminProgram() {
     const navigate = useNavigate();
 
-    const [programs, setPrograms] = useState<Program[]>([
-        {
-            id: "1",
-            title: "GOOD MORNING ENERGY",
-            status: "OFFLINE",
-            timeSlot: "12:00 AM - 5:00 AM | WEEKDAYS, SAT",
-            type: "MUSIC ONLY",
-            dj: "",
-            description: "An all-night musical journey for the late hours. This program provides a continuous stream of hits, creating a serene and dreamlike atmosphere as the city rests."
-        },
-        {
-            id: "2",
-            title: "HARAMBOGAN SA RADYO",
-            status: "ON AIR",
-            timeSlot: "7:00 AM - 9:00 AM | WEEKDAYS",
-            type: "TALK SHOW",
-            dj: "DJ MAKISIG",
-            description: "A vibrant and entertaining morning program filled with humor, laughter, and lively conversation to ensure a fun and engaging start to your day with no dull moments."
-        },
-        {
-            id: "3",
-            title: "AFTERNOON DELIGHT",
-            status: "OFFLINE",
-            timeSlot: "1:00 PM - 4:00 PM | WEEKDAYS",
-            type: "MUSIC ONLY",
-            dj: "DJ SUNSHINE",
-            description: "Keep your energy up during the afternoon slump with a mix of upbeat pop and classic hits."
-        }
-    ]);
+    const [programs, setPrograms] = useState<any[]>([]);
+    const [program_schedules, setProgramSchedules] = useState<any[]>([]);
+    const [djs, setDjs] = useState<any[]>([]);
+    const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
+    const [schedule_day_types, setScheduleDayTypes] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // const [programs, setPrograms] = useState<Program[]>([
+    //     {
+    //         id: "1",
+    //         title: "GOOD MORNING ENERGY",
+    //         status: "OFFLINE",
+    //         timeSlot: "12:00 AM - 5:00 AM | WEEKDAYS, SAT",
+    //         type: "MUSIC ONLY",
+    //         dj: "",
+    //         description: "An all-night musical journey for the late hours. This program provides a continuous stream of hits, creating a serene and dreamlike atmosphere as the city rests."
+    //     },
+    //     {
+    //         id: "2",
+    //         title: "HARAMBOGAN SA RADYO",
+    //         status: "ON AIR",
+    //         timeSlot: "7:00 AM - 9:00 AM | WEEKDAYS",
+    //         type: "TALK SHOW",
+    //         dj: "DJ MAKISIG",
+    //         description: "A vibrant and entertaining morning program filled with humor, laughter, and lively conversation to ensure a fun and engaging start to your day with no dull moments."
+    //     },
+    //     {
+    //         id: "3",
+    //         title: "AFTERNOON DELIGHT",
+    //         status: "OFFLINE",
+    //         timeSlot: "1:00 PM - 4:00 PM | WEEKDAYS",
+    //         type: "MUSIC ONLY",
+    //         dj: "DJ SUNSHINE",
+    //         description: "Keep your energy up during the afternoon slump with a mix of upbeat pop and classic hits."
+    //     }
+    // ]);
 
     // Search & Form States
     const [searchTerm, setSearchTerm] = useState("");
@@ -59,19 +65,108 @@ export default function SuperadminProgram() {
     });
 
     // Edit/Create Program Tracker
-    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
-        // BACKEND TODO: Fetch initial programs from database (GET request)
+    const fetchData = async () => {
+      try {
+        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsJson = await djsRes.json();
+
+        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsJson = await programsRes.json();
+
+        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+        const schedulesJson = await schedulesRes.json();
+
+        const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
+        const programDjAssignmentsJson = await programDjAssignmentsRes.json();
+
+        const scheduleDayTypesRes = await fetch("http://localhost:5000/api/schedule_day_types");
+        const scheduleDayTypesJson = await scheduleDayTypesRes.json();
+
+        if (djsJson.success) {
+          setDjs(djsJson.data);
+        }
+
+        if (programsJson.success) {
+          setPrograms(programsJson.data);
+        }
+
+        if (schedulesJson.success) {
+          setProgramSchedules(schedulesJson.data);
+        }
+
+        if (programDjAssignmentsJson.success) {
+          setProgramDjAssignments(programDjAssignmentsJson.data);
+        }
+
+        if (scheduleDayTypesJson.success) {
+            setScheduleDayTypes(scheduleDayTypesJson.data);
+        }
+      } catch(err) {
+        console.error("Fetch Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
     }, []);
+
+    const programCards = programs.map((program: any) => {
+    // Find schedules for this program
+    const matchedSchedules = program_schedules.filter(
+        (schedule: any) =>
+            schedule.program_ID === program.program_ID
+    );
+
+    // Find day types
+    const dayTypes = matchedSchedules.map((schedule: any) => {
+        const matchedDayType = schedule_day_types.find(
+            (day: any) =>
+                day.schedule_day_type_ID === schedule.schedule_day_type_ID
+        );
+
+        return matchedDayType?.schedule_day_type || "";
+    });
+
+    // Find DJ assignment
+    const matchedAssignment = program_dj_assignments.find(
+        (assignment: any) =>
+            assignment.program_ID === program.program_ID
+    );
+
+    // Find DJ
+    const matchedDj = djs.find(
+        (dj: any) =>
+            dj.dj_ID === matchedAssignment?.dj_ID
+    );
+
+    return {
+        ...program,
+
+        start_time:
+            matchedSchedules[0]?.start_time || "",
+
+        end_time:
+            matchedSchedules[0]?.end_time || "",
+
+        day_types:
+            dayTypes.join(", "),
+
+        dj_name:
+            matchedDj?.stage_name || "No DJ Assigned",
+    };
+});
 
     const handleEditClick = (program: Program) => {
         setFormData({
-            title: program.title,
-            type: program.type,
+            title: program.program_name,
+            type: program.program_type,
             description: program.description
         });
-        setEditingId(program.id);
+        setEditingId(program.program_ID);
     };
 
     const handleCancel = () => {
@@ -94,11 +189,12 @@ export default function SuperadminProgram() {
             alert("Ready to CREATE new program in database: " + formData.title);
 
             const newProg: Program = {
-                id: Date.now().toString(), // Fake unique ID
-                status: "OFFLINE", 
-                timeSlot: "TBD", 
-                dj: "",
-                ...formData
+                program_ID: Date.now(),
+                program_name: formData.title,
+                program_type: formData.type,
+                description: formData.description,
+                created_at: new Date().toISOString(),
+                added_by_admin_ID: 1
             };
             setPrograms([...programs, newProg]);
         }
@@ -106,15 +202,24 @@ export default function SuperadminProgram() {
         handleCancel();
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = (id: number) => {
         // BACKEND TODO: Send a DELETE request for this ID
-        setPrograms(programs.filter(p => p.id !== id));
+        setPrograms(
+            programs.filter(
+                (p: any) => p.program_ID !== id
+            )
+        );
     };
 
-    const filteredPrograms = programs.filter(program => 
-        program.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        program.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredPrograms = programCards.filter((program: any) =>
+    program.program_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+
+    program.description
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+);
 
     useEffect(() => {
 
@@ -207,27 +312,27 @@ export default function SuperadminProgram() {
                                 {filteredPrograms.length === 0 ? (
                                     <div className="sp-no-msg">No programs found.</div>
                                 ) : (
-                                    filteredPrograms.map((program) => (
-                                        <Card key={program.id} className="sp-item-card border-0 shadow-none">
+                                    filteredPrograms.map((program: any) => (
+                                        <Card key={program.program_ID} className="sp-item-card border-0 shadow-none">
                                             <CardContent className="p-0">
                                                 <div className="sp-item-header">
                                                     <div className="sp-item-title-row">
-                                                        <h3>{program.title}</h3>
+                                                        <h3>{program.program_name}</h3>
                                                         <span className={`sp-status-badge ${program.status === 'ON AIR' ? 'sp-status-on-air' : 'sp-status-offline'}`}>
-                                                            {program.status}
+                                                            OFFLINE
                                                         </span>
                                                     </div>
                                                     <div className="sp-actions">
                                                         <Button className="sp-icon-btn sp-edit-btn focus-visible:ring-0" title="Edit" onClick={() => handleEditClick(program)}>
                                                             <Edit size={20} />
                                                         </Button>
-                                                        <Button className="sp-icon-btn sp-delete-btn focus-visible:ring-0" title="Delete" onClick={() => handleDelete(program.id)}>
+                                                        <Button className="sp-icon-btn sp-delete-btn focus-visible:ring-0" title="Delete" onClick={() => handleDelete(program.program_ID)}>
                                                             <Trash2 size={20} />
                                                         </Button>
                                                     </div>
                                                 </div>
-                                                <p className="sp-timeslot">{program.timeSlot}</p>
-                                                <p className="sp-type-dj">{program.type} {program.dj && `• ${program.dj}`}</p>
+                                                <p className="sp-timeslot">{program.start_time} - {program.end_time} | {program.day_types}</p>
+                                                <p className="sp-type-dj">{program.type} {program.dj_name}</p>
                                                 <p className="sp-description">{program.description}</p>
                                             </CardContent>
                                         </Card>

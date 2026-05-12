@@ -1,13 +1,74 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Search, SlidersHorizontal, Bell } from "lucide-react";
 
 export default function AdminHome() {
-  useEffect(() => {}, []);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [programs, setPrograms] = useState<any[]>([]);
+  const [program_schedules, setProgramSchedules] = useState<any[]>([]);
+  const [djs, setDjs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsJson = await djsRes.json();
+
+        const notificationsRes = await fetch("http://localhost:5000/api/notifications");
+        const notificationsJson = await notificationsRes.json();
+
+        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsJson = await programsRes.json();
+
+        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+        const schedulesJson = await schedulesRes.json();
+
+        if (djsJson.success) {
+          setDjs(djsJson.data);
+        }
+
+        if (notificationsJson.success) {
+          setNotifications(notificationsJson.data);
+        }
+
+        if (programsJson.success) {
+          setPrograms(programsJson.data);
+        }
+
+        if (schedulesJson.success) {
+          setProgramSchedules(schedulesJson.data);
+        }
+      } catch(err) {
+        console.error("Fetch Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Merge schedules with programs
+  const programCards = program_schedules.map((schedule: any) => {
+    const matchedProgram = programs.find(
+      (program) =>
+        program.program_ID === schedule.program_ID
+    );
+
+    return {
+      ...schedule,
+      program_name: matchedProgram?.program_name || "Unknown Program",
+    };
+  });
+
+  if (loading) {
+    return <div>Loading...</div>;
+  } // change to the query
+  
   return (
     <>
       <div className="welcome-section">
-        <h1 className="welcome-text">Welcome, DJ Apple!</h1>
+        <h1 className="welcome-text">Welcome, {djs[0]?.stage_name || "DJ"}!</h1>
       </div>
 
       <div className="dashboard-grid">
@@ -17,17 +78,18 @@ export default function AdminHome() {
             <input type="text" placeholder="Search" />
             <SlidersHorizontal size={18} className="filter-icon" />
           </div>
-
-          <div className="program-card">
+          {programCards.map((program: any) => (
+            <div className="program-card" key={program.schedule_ID}>
             <div className="program-info">
-              <h3>Energy sa Hapon</h3>
-              <p><Calendar size={14} /> 3:00 PM - 5:00 PM</p>
+              <h3>{program.program_name}</h3>
+              <p><Calendar size={14} /> {program.start_time} - {program.end_time}</p>
             </div>
             <select className="status-dropdown">
               <option>Available</option>
               <option>Unavailable</option>
             </select>
           </div>
+          ))}
         </section>
 
         <aside className="notifications-panel">
@@ -43,13 +105,19 @@ export default function AdminHome() {
           </div>
 
           <div className="notif-list">
-            <div className="notif-item">
+            {notifications.map((notif) => (
+              <div className="notif-item" key={notif.notification_ID}>
               <div className="notif-dot red"></div>
               <div className="notif-content">
-                <p>You confirmed your attendance</p>
-                <span className="notif-time">2:00 PM</span>
+                <p>{notif.message}</p>
+                <span className="notif-time">
+                   {new Date(
+                      notif.notified_at
+                    ).toLocaleString()}
+                </span>
               </div>
             </div>
+            ))} 
           </div>
         </aside>
       </div>
