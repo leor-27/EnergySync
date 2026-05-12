@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     substitution_ID: DataTypes.INTEGER,
     assignment_ID: DataTypes.INTEGER,
     substitute_dj_ID: DataTypes.INTEGER,
-    status: DataTypes.ENUM,
+    status: DataTypes.ENUM('Accepted', 'Pending', 'Rejected'),
     broadcast_date: DataTypes.DATEONLY,
     assigned_at: DataTypes.DATE,
     assigned_by_admin_ID: DataTypes.INTEGER

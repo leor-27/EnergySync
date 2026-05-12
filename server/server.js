@@ -39,12 +39,12 @@ db.sequelize.authenticate().then(() => {
 // Start server after Sequelize initialization
 db.sequelize.authenticate()
   .then(() => {
-    console.log('✅ Database connected via Sequelize.');
+    console.log('Database connected via Sequelize.');
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`Server running at http://localhost:${PORT}`);
     });
   })
   .catch(err => {
-    console.error('❌ Unable to connect to the database:', err);
+    console.error('Unable to connect to the database:', err);
     process.exit(1);
   });

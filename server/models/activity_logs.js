@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   activity_logs.init({
-    id: DataTypes.INTEGER,
+    id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true
+  },
     log_message: DataTypes.STRING,
     created_at: DataTypes.DATE
   }, {

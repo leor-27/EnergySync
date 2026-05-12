@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Schedule_Day_Type.init({
     schedule_day_type_ID: DataTypes.INTEGER,
-    schedule_day_type: DataTypes.ENUM
+    schedule_day_type: DataTypes.ENUM('WEEKDAYS', 'SATURDAY', 'SUNDAY')
   }, {
     sequelize,
     modelName: 'Schedule_Day_Type',

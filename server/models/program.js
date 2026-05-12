@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Program.init({
     program_ID: DataTypes.INTEGER,
     program_name: DataTypes.STRING,
-    program_type: DataTypes.ENUM,
+    program_type: DataTypes.ENUM('MUSIC ONLY', 'WITH DJ/HOST'),
     description: DataTypes.STRING,
     created_at: DataTypes.DATE,
     added_by_admin_ID: DataTypes.INTEGER

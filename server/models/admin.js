@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     reset_token_hash: DataTypes.CHAR,
     reset_token_expires: DataTypes.DATE,
     image_path: DataTypes.STRING,
-    role_type: DataTypes.ENUM
+    role_type: DataTypes.ENUM('Superadmin', 'Admin')
   }, {
     sequelize,
     modelName: 'Admin',

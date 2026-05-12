@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     availability_ID: DataTypes.INTEGER,
     assignment_ID: DataTypes.INTEGER,
     broadcast_date: DataTypes.DATEONLY,
-    status: DataTypes.ENUM,
+    status: DataTypes.ENUM('Available', 'Unavailable'),
     confirmed_at: DataTypes.DATE
   }, {
     sequelize,
