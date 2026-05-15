@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/useAuth"
 
 type ScheduledProgram = {
     id: string;
@@ -22,31 +23,106 @@ export default function AdminSchedule() {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
     const [viewMode, setViewMode] = useState("month");
+    const { user } = useAuth()
 
-    const [schedule, setSchedule] = useState<ScheduledProgram[]>([
-        { 
-            id: "1", 
-            title: "KUMPLETOS REKADOS", 
-            timeSlot: "9:00 AM - 11:00 AM | WEEKDAYS", 
-            start: 9.0, // 9:00 AM
-            end: 11.0,  // 11:00 AM
-            dj: "DJ Barbie", 
-            status: "Unavailable" 
-        },
-        { 
-            id: "2", 
-            title: "LOVELINES", 
-            timeSlot: "12:00 PM - 2:00 PM | WEEKDAYS", 
-            start: 12.0, // 12:00 PM
-            end: 14.0,   // 2:00 PM (14:00 in 24hr time)
-            dj: "Papa Gats", 
-            status: "Available" 
-        }
-    ]);
+    // const [schedule, setSchedule] = useState<ScheduledProgram[]>([
+    //     { 
+    //         id: "1", 
+    //         title: "KUMPLETOS REKADOS", 
+    //         timeSlot: "9:00 AM - 11:00 AM | WEEKDAYS", 
+    //         start: 9.0, // 9:00 AM
+    //         end: 11.0,  // 11:00 AM
+    //         dj: "DJ Barbie", 
+    //         status: "Unavailable" 
+    //     },
+    //     { 
+    //         id: "2", 
+    //         title: "LOVELINES", 
+    //         timeSlot: "12:00 PM - 2:00 PM | WEEKDAYS", 
+    //         start: 12.0, // 12:00 PM
+    //         end: 14.0,   // 2:00 PM (14:00 in 24hr time)
+    //         dj: "Papa Gats", 
+    //         status: "Available" 
+    //     }
+    // ]);
+    const [schedule, setSchedule] = useState<ScheduledProgram[]>([]);
 
     useEffect(() => {
 
-    }, []);
+  const fetchSchedule = async () => {
+
+    try {
+
+      const [
+        programsRes,
+        schedulesRes,
+        assignmentsRes,
+        djsRes
+      ] = await Promise.all([
+        fetch("http://localhost:5000/api/programs"),
+        fetch("http://localhost:5000/api/program_schedules"),
+        fetch("http://localhost:5000/api/program_dj_assignments"),
+        fetch("http://localhost:5000/api/djs")
+      ])
+
+      const programsJson = await programsRes.json()
+      const schedulesJson = await schedulesRes.json()
+      const assignmentsJson = await assignmentsRes.json()
+      const djsJson = await djsRes.json()
+
+      const currentDj = djsJson.data.find(
+        (dj: any) =>
+          Number(dj.admin_ID) === Number(user?.admin_ID)
+      )
+
+      const merged = schedulesJson.data
+        .map((sched: any) => {
+
+          const program = programsJson.data.find(
+            (p: any) =>
+              p.program_ID === sched.program_ID
+          )
+
+          const assignment =
+            assignmentsJson.data.find(
+              (a: any) =>
+                a.schedule_ID === sched.schedule_ID
+            )
+
+          return {
+            id: sched.schedule_ID,
+            title:
+              program?.program_name ||
+              "Unknown Program",
+
+            timeSlot:
+              `${sched.start_time} - ${sched.end_time}`,
+
+            start: 0,
+            end: 0,
+
+            dj:
+              currentDj?.stage_name ||
+              "DJ",
+
+            status: "Available"
+          }
+
+        })
+
+      setSchedule(merged)
+
+    } catch (err) {
+
+      console.error(err)
+
+    }
+
+  }
+
+  fetchSchedule()
+
+}, [user])
 
     return (
         <>

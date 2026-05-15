@@ -6,7 +6,7 @@ export default function AppLayout() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
-  const isAdmin = user?.role === "admin"
+  const isAdmin = user?.role === "Admin"
 
   return (
     <div className="admin-layout">

@@ -104,9 +104,11 @@
 
 .profile-container-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    max-width: 1200px;
+    grid-template-columns: 1fr 1fr; /* Default side-by-side */
+    gap: 30px;
+    max-width: 1300px;
+    width: 100%;
+    align-items: start;
 }
 
 .white-card {
@@ -148,7 +150,6 @@
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    height: 150%;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
@@ -190,7 +191,6 @@
     background: white;
     border: 1.5px solid #E0E0E0;
     border-radius: 12px;
-    height: 200%;
     overflow-y: auto;
 }
 
@@ -301,4 +301,122 @@ footer {
     .profile-container-grid { 
         grid-template-columns: 1fr; 
     }
+}
+
+@media (max-width: 1024px) {
+    .profile-container-grid {
+        grid-template-columns: 1fr; /* Stack columns vertically */
+        gap: 20px;
+        padding: 0 10px;
+    }
+    
+    .notifications-sidebar-panel {
+        height: auto; /* Allow it to grow with content instead of fixed height */
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+    /* Center the Profile Header */
+    .profile-card-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .name-row {
+        justify-content: center;
+    }
+
+    .profile-avatar-circle {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+    }
+
+    /* Adjust the Sidebar if visible */
+    .sidebar {
+        width: 80px;
+    }
+    
+    .nav-item span {
+        display: none; /* Hide text, keep icons */
+    }
+
+    /* Program Rows - stacking badge on mobile if needed */
+    .program-item-box {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .time-slot {
+        justify-content: center;
+    }
+}
+
+/* Fix for very small screens */
+@media (max-width: 480px) {
+    .notif-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .notif-time {
+        align-self: flex-end;
+    }
+}
+
+.notif-row.highlighted {
+    border: 2px solid var(--energy-blue);
+    background-color: #f0f7ff; /* Light blue tint */
+}
+
+.notif-row.detailed {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.notif-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.blue-bg {
+    background-color: var(--energy-blue);
+}
+
+/* 2. REMOVE fixed percentage heights */
+.programs-section, 
+.notifications-sidebar-panel {
+    height: auto;      /* Change from 150% or 200% to auto */
+    min-height: 400px; /* Use min-height if you want them to look long */
+}
+
+/* 3. The Breakpoint: This prevents the overlap */
+@media (max-width: 1100px) {
+    .profile-container-grid {
+        grid-template-columns: 1fr; /* Stacks notifications UNDER programs */
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .notifications-sidebar-panel {
+        margin-top: 20px; /* Adds breathing room when stacked */
+    }
+}
+
+/* 4. Ensure images/cards don't overflow */
+.white-card, .programs-section, .notifications-sidebar-panel {
+    width: 100%;
+    overflow: hidden; /* Prevents internal content from pushing the card wide */
 }

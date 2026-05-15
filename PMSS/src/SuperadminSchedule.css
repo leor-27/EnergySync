@@ -139,37 +139,27 @@ footer {
 
 .ss-page-container {
     flex: 1;
-    height: 100%;
-    min-height: 0; 
-    min-width: 0;
-    padding: 0rem 0rem; 
-    padding-bottom: 2rem; 
-    width: 100%;
-    background-color: transparent;
-    box-sizing: border-box;
-    overflow: hidden; 
     display: flex;
     flex-direction: column;
+    padding: 2rem;
+    height: calc(100vh - 140px); /* Adjust based on header/footer height */
     overflow-y: auto;
+    background-color: #f9f9f9;
 }
 
 .ss-page-title {
-    font-size: 1.875rem;
+    font-size: 2rem;
     font-weight: 700;
-    margin-top: 0;
     margin-bottom: 1.5rem;
     color: #111827;
-    flex-shrink: 0; 
 }
 
 /* Grid Layout */
 .ss-grid {
-   display: grid;
-    grid-template-columns: 2.8fr 9.2fr; 
-    gap: 3rem;
-    width: 100%;
-    flex: 1; 
-    min-height: 0;
+    display: grid;
+    grid-template-columns: 320px 1fr; 
+    gap: 2rem;
+    align-items: start;
 }
 
 .ss-card {
@@ -181,20 +171,17 @@ footer {
 
 /* LEFT COLUMN */
 .ss-left-col {
-   display: flex;
+    display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    height: 100%;
-    min-height: 0; 
 }
 
 /* CUSTOM CALENDAR STYLING */
-
 .ss-calendar-widget {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    padding-top: 0.5rem;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
 
 .ss-custom-calendar {
@@ -265,20 +252,17 @@ footer {
 
 /* Availability List */
 .ss-availability-widget {
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-    /* min-height: 0; */
-    min-height: 250px;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    min-height: 400px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
 }
 
 .ss-avail-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    flex: 1; 
-    overflow-y: auto; 
-    padding-right: 0.5rem;
+    gap: 1rem;
 }
 
 /* Custom Scrollbar for the availability list */
@@ -367,18 +351,16 @@ footer {
 }
 
 .ss-timeline-card {
-    background-color: #e5e7eb; 
-    border-radius: 0.75rem;
+    background: #D1D5DB !important; /* Grey background from photo */
+    border-radius: 12px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .ss-timeline-header {
-    background-color: #2b5a8c; 
-    padding: 1.25rem 2rem;
+    background-color: #1C5186;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -417,11 +399,10 @@ footer {
 
 .ss-timeline-body {
     display: flex;
-    height: 500px;
+    height: 600px; /* Fixed height for the scrollable area */
     overflow-y: auto;
+    background-color: #D1D5DB; /* Grey area */
     position: relative;
-    background-color: white;
-    border-bottom: 1px solid #e5e7eb;
 }
 
 .ss-table-wrapper {
@@ -434,44 +415,36 @@ footer {
 
 /* Left side of timeline */
 .ss-time-gutter {
-    width: 100px;
-    flex-shrink: 0;
-    border-right: 1px solid #d1d5db;
+    width: 80px;
+    background: #D1D5DB;
+    border-right: 1px solid #9ca3af;
     display: flex;
     flex-direction: column;
-    padding: 1rem 0;
 }
 
 .ss-time-gutter span {
-    height: 90px; 
+    height: 100px; /* Increased height for better spacing */
     display: flex;
-    justify-content: flex-end;
-    padding-right: 1rem;
-    font-size: 0.90rem;
-    color: #6b7280;
-    font-weight: 500;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 10px;
+    font-size: 0.85rem;
+    color: #4b5563;
 }
 
- .ss-schedule-content {
+.ss-schedule-content {
     flex: 1;
     position: relative;
-    min-height: 1500px;
-    background:
-        repeating-linear-gradient(
-            to bottom,
-            transparent,
-            transparent 89px,
-            #e5e7eb 90px
-        );
+    background-color: #D1D5DB;
+    min-height: 1200px; /* Ensure content area is tall enough to scroll */
 }
 
 .ss-schedule-item {
-    background-color: #e5e7eb;
-    border: 1px solid #d1d5db;
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    overflow: hidden;
+    background-color: #F3F4F6;
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
 }
 
 .ss-sched-header {
@@ -680,4 +653,16 @@ footer {
     font-size: 1rem;
     font-weight: 600;
     color: #374151;
+}
+
+@media (max-width: 1100px) {
+    .ss-grid {
+        grid-template-columns: 1fr;
+    }
+    .ss-left-col {
+        order: 2;
+    }
+    .ss-right-col {
+        order: 1;
+    }
 }

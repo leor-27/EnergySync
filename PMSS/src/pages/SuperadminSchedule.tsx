@@ -149,15 +149,30 @@ export default function SuperadminSchedule() {
         }
     };
 
-    const handleDelete = (id: number) => {
-        if(window.confirm("Remove this program?")) {
+    const handleDelete = async (id: number) => {
+    if (!window.confirm("Remove this program?")) return;
+
+    try {
+        const response = await fetch(
+            `http://localhost:5000/api/program_schedules/${id}`,
+            {
+                method: "DELETE",
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
             setProgramSchedules(
                 program_schedules.filter(
                     (s: any) => s.schedule_ID !== id
                 )
             );
         }
-    };
+    } catch (err) {
+        console.error("Delete Error:", err);
+    }
+};
 
     const handleAssignSub = (id: number) => {
         const selectedProgram = programSchedules.find((prog) => prog.schedule_ID === id);
@@ -168,7 +183,8 @@ export default function SuperadminSchedule() {
         }
     };
 
-    const programSchedules = programs.map((program: any) => {
+    const programSchedules: ScheduledProgram[] = programs
+    .map((program: any) => {
         const matchedSchedules = program_schedules.filter(
             (schedule: any) =>
                 schedule.program_ID === program.program_ID
@@ -193,13 +209,18 @@ export default function SuperadminSchedule() {
                 dj.dj_ID === matchedAssignment?.dj_ID
         );
 
+        const convertTimeToDecimal = (time: string) => {
+            const [hours, minutes] = time.split(":").map(Number);
+            return hours + minutes / 60;
+        };
+
         // Convert SQL time into decimal for timeline
         const startHour = matchedSchedules[0]?.start_time
-            ? parseInt(matchedSchedules[0].start_time.split(":")[0])
+            ? convertTimeToDecimal(matchedSchedules[0].start_time)
             : 0;
 
         const endHour = matchedSchedules[0]?.end_time
-            ? parseInt(matchedSchedules[0].end_time.split(":")[0])
+            ? convertTimeToDecimal(matchedSchedules[0].end_time)
             : 0;
 
         return {
@@ -351,15 +372,16 @@ export default function SuperadminSchedule() {
                                                     if (!editingProgram) return;
 
                                                     setProgramSchedules(
-                                                        program_schedules.map((prog: any) =>
-                                                            prog.schedule_ID === editingProgram.schedule_ID
-                                                                ? {
-                                                                    ...prog,
-                                                                    ...editingProgram
-                                                                }
-                                                                : prog
-                                                        )
-                                                    );
+    program_schedules.map((prog: any) =>
+        prog.schedule_ID === editingProgram.schedule_ID
+            ? {
+                ...prog,
+                start_time: editingProgram.start_time,
+                end_time: editingProgram.end_time,
+            }
+            : prog
+    )
+);
 
                                                     setOpenEditDialog(false);
                                                     }}
@@ -447,33 +469,43 @@ export default function SuperadminSchedule() {
                                                     Cancel
                                                 </Button>
 
-                                                <Button onClick={() => {
+                                                <Button
+    onClick={async () => {
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/program_schedules",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        program_ID: 1, // replace with selected program
+                        start_time: "09:00:00",
+                        end_time: "11:00:00",
+                        schedule_day_type_ID: 1,
+                    }),
+                }
+            );
 
-                                                        const newItem = {
-                                                            schedule_ID: Date.now(),
-                                                            program_name: newProgram.title,
-                                                            dj_name: newProgram.dj,
-                                                            timeSlot: newProgram.timeSlot,
-                                                            start_time: "09:00:00",
-                                                            end_time: "11:00:00",
-                                                            start: 9,
-                                                            end: 11,
-                                                            status: "Available",
-                                                        };
+            const data = await response.json();
 
-                                                        setProgramSchedules([...program_schedules, newItem]);
+            if (data.success) {
+                setProgramSchedules([
+                    ...program_schedules,
+                    data.data,
+                ]);
 
-                                                        setOpenDialog(false);
-
-                                                        setNewProgram({
-                                                            title: "",
-                                                            dj: "",
-                                                            timeSlot: "",
-                                                        });
-                                                    }}
-                                                >
-                                                    Create Schedule
-                                                </Button>
+                setOpenDialog(false);
+            }
+        } catch (err) {
+            console.error("Create Error:", err);
+        }
+    }}
+>
+    Create Schedule
+</Button>
+                                                
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>

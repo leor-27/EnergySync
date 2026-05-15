@@ -14,6 +14,7 @@ import SuperadminProgram from './pages/SuperadminProgram'
 import AdminSchedule from './pages/AdminSchedule'
 import SuperadminSchedule from './pages/SuperadminSchedule'
 import SuperadminReports from './pages/SuperadminReports'
+import ResetPassword from './pages/ResetPassword'
 
 // const ADMINS_API = 'http://localhost:5000/api/admins';
 // const DJ_AVAILABILITIES_API = 'http://localhost:5000/api/dj_availabilities';
@@ -84,13 +85,16 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path = "/" element={ <LandingPage /> }/>
-        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+        <Route path="/reset-password/:token" element={<ResetPassword />}/>
+        <Route element={<ProtectedRoute allowedRoles={["Admin"]}><AppLayout /></ProtectedRoute>}>
           <Route path="/admin-home" element={<AdminHome />} />
           <Route path="/admin-profile" element={<AdminProfile />} />
           <Route path="/admin-schedule" element={<AdminSchedule />} />
+        </Route>
 
+        <Route element={<ProtectedRoute allowedRoles={["Superadmin"]}><AppLayout /></ProtectedRoute>}>
           <Route path="/superadmin-home" element={<SuperadminHome />} />
-          <Route path="/superadmin-profile" element={<SuperadminProfile />} />
+          <Route path="/superadmin-profile" element={<SuperadminProfile />} />   
           <Route path="/superadmin-program" element={<SuperadminProgram />} />
           <Route path="/superadmin-schedule" element={<SuperadminSchedule />} />
           <Route path="/superadmin-reports" element={<SuperadminReports />} />

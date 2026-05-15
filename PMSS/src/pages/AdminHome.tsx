@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar, Search, SlidersHorizontal, Bell } from "lucide-react";
+import { useAuth } from "@/contexts/useAuth"
 
 export default function AdminHome() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
   const [program_schedules, setProgramSchedules] = useState<any[]>([]);
   const [djs, setDjs] = useState<any[]>([]);
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,18 +53,23 @@ export default function AdminHome() {
     fetchData();
   }, []);
 
+  const currentDj = djs.find(
+    (dj) => Number(dj.admin_ID) === Number(user?.admin_ID)
+  );
+
   // Merge schedules with programs
   const programCards = program_schedules.map((schedule: any) => {
-    const matchedProgram = programs.find(
-      (program) =>
-        program.program_ID === schedule.program_ID
-    );
-
+    const matchedProgram = programs.find(p => p.program_ID === schedule.program_ID);
     return {
       ...schedule,
       program_name: matchedProgram?.program_name || "Unknown Program",
     };
   });
+
+   // Handler to navigate and pass notification data
+  const handleNotifClick = (notif: any) => {
+    navigate("/admin-profile", { state: { selectedNotif: notif } });
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -68,7 +78,8 @@ export default function AdminHome() {
   return (
     <>
       <div className="welcome-section">
-        <h1 className="welcome-text">Welcome, {djs[0]?.stage_name || "DJ"}!</h1>
+        <h1 className="welcome-text">Welcome, {user?.stage_name || "DJ"}!</h1>
+        {/* <h1 className="welcome-text">Welcome, {user?.stage_name || "DJ"}!</h1> */}
       </div>
 
       <div className="dashboard-grid">
@@ -78,18 +89,22 @@ export default function AdminHome() {
             <input type="text" placeholder="Search" />
             <SlidersHorizontal size={18} className="filter-icon" />
           </div>
-          {programCards.map((program: any) => (
+        {programCards.length > 0 ? (
+          programCards.map((program: any) => (
             <div className="program-card" key={program.schedule_ID}>
-            <div className="program-info">
-              <h3>{program.program_name}</h3>
-              <p><Calendar size={14} /> {program.start_time} - {program.end_time}</p>
+              <div className="program-info">
+                <h3>{program.program_name}</h3>
+                <p><Calendar size={14} /> {program.start_time} - {program.end_time}</p>
+              </div>
+              <select className="status-dropdown">
+                <option>Available</option>
+                <option>Unavailable</option>
+              </select>
             </div>
-            <select className="status-dropdown">
-              <option>Available</option>
-              <option>Unavailable</option>
-            </select>
-          </div>
-          ))}
+          ))
+        ) : (
+          <p>No programs scheduled.</p> // Added the missing ":" part of the ternary
+        )}
         </section>
 
         <aside className="notifications-panel">
@@ -106,14 +121,14 @@ export default function AdminHome() {
 
           <div className="notif-list">
             {notifications.map((notif) => (
-              <div className="notif-item" key={notif.notification_ID}>
+              <div className="notif-item clickable" key={notif.notification_ID} onClick={() => handleNotifClick(notif)}>
               <div className="notif-dot red"></div>
               <div className="notif-content">
                 <p>{notif.message}</p>
                 <span className="notif-time">
                    {new Date(
                       notif.notified_at
-                    ).toLocaleString()}
+                    ).toLocaleString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
             </div>

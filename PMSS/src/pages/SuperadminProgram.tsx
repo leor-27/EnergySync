@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAuth } from "@/contexts/useAuth"
 
 type Program = {
     program_ID: number;
@@ -19,12 +20,13 @@ type Program = {
 export default function SuperadminProgram() {
     const navigate = useNavigate();
 
-    const [programs, setPrograms] = useState<any[]>([]);
+    const [programs, setPrograms] = useState<Program[]>([]);
     const [program_schedules, setProgramSchedules] = useState<any[]>([]);
     const [djs, setDjs] = useState<any[]>([]);
     const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
     const [schedule_day_types, setScheduleDayTypes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
     // const [programs, setPrograms] = useState<Program[]>([
     //     {
@@ -134,7 +136,10 @@ export default function SuperadminProgram() {
     // Find DJ assignment
     const matchedAssignment = program_dj_assignments.find(
         (assignment: any) =>
-            assignment.program_ID === program.program_ID
+            matchedSchedules.some(
+                (schedule: any) =>
+                    schedule.schedule_ID === assignment.schedule_ID
+            )
     );
 
     // Find DJ
@@ -160,7 +165,7 @@ export default function SuperadminProgram() {
     };
 });
 
-    const handleEditClick = (program: Program) => {
+    const handleEditClick = (program: any) => {
         setFormData({
             title: program.program_name,
             type: program.program_type,
@@ -227,7 +232,7 @@ export default function SuperadminProgram() {
                             program_name: formData.title,
                             program_type: formData.type,
                             description: formData.description,
-                            added_by_admin_ID: 1
+                            added_by_admin_ID: user?.admin_ID
                         })
                     }
                 );

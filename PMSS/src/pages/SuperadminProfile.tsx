@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Calendar, Camera, Edit2, Bell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/useAuth"
 
 export default function SuperadminProfile() {
+    const location = useLocation();
+    const passedNotif = location.state?.selectedNotif;
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -26,6 +31,7 @@ export default function SuperadminProfile() {
     const [program_schedules, setProgramSchedules] = useState<any[]>([]);
     const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -81,41 +87,50 @@ export default function SuperadminProfile() {
     fetchData();
     }, []);
 
-    const programCards = program_schedules.map((schedule: any) => {
-    // Find matching program
+    const programCards = program_schedules
+  .map((schedule: any) => {
     const matchedProgram = programs.find(
-        (program: any) =>
-        program.program_ID === schedule.program_ID
+      (p) => p.program_ID === schedule.program_ID
     );
 
-    // Find assignment for this program
     const matchedAssignment = program_dj_assignments.find(
-        (assignment: any) =>
-        assignment.program_ID === schedule.program_ID
+      (a) => a.schedule_ID === schedule.schedule_ID
     );
 
-    // Find DJ from assignment
     const matchedDj = djs.find(
-        (dj: any) =>
-        dj.dj_ID === matchedAssignment?.dj_ID
+      (d) => d.dj_ID === matchedAssignment?.dj_ID
     );
 
     return {
-        ...schedule,
-        program_name:
+      ...schedule,
+      program_name:
         matchedProgram?.program_name || "Unknown Program",
 
-        dj_name:
+      dj_ID:
+        matchedDj?.dj_ID,
+
+      dj_name:
         matchedDj?.stage_name || "No DJ Assigned",
     };
-    }); // change to the query
+  });// change to the query
+
+  /* 
+  .filter(
+  (program: any) =>
+    program.dj_ID === currentDj?.dj_ID
+)*/
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    const currentDj = djs[0];
-    const currentAdmin = admins[0];
+    const currentAdmin = admins.find(
+  (admin) => Number(admin.admin_ID) === Number(user?.admin_ID)
+);
+
+const currentDj = djs.find(
+  (dj) => Number(dj.admin_ID) === Number(user?.admin_ID)
+) || null;
 
     return (
         <>
@@ -135,7 +150,9 @@ export default function SuperadminProfile() {
                             <div className="user-text-info">
                                 <div className="name-row">
                                     <h2 style={{ fontSize: '23px' }}>
-                                        <strong>{currentDj?.stage_name || "DJ"}</strong>
+                                        <strong><strong>
+  {currentDj?.stage_name || currentAdmin?.username || "Superadmin"}
+</strong></strong>
                                     </h2>
                                     <Dialog>
                                         <DialogTrigger asChild>
@@ -213,6 +230,21 @@ export default function SuperadminProfile() {
                     </CardHeader>
 
                     <CardContent className="p-0">
+                        {passedNotif && (
+                        <div className="notif-row detailed highlighted">
+                            <div className="notif-user-row">
+                                <div className="status-dot blue-bg"></div>
+                                <span style={{ fontWeight: 600 }}>System Notification</span>
+                            </div>
+                            <div className="notif-body" style={{ marginTop: '10px' }}>
+                                <p>{passedNotif.message}</p>
+                                <span style={{ fontSize: '11px', color: '#666', display: 'block', textAlign: 'right' }}>
+                                    Posted on {new Date(passedNotif.notified_at).toLocaleString()}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                    
                         {notifications.map((notif) => (
                         <div className="notif-row" key={notif.notification_ID}>
                             <span className="status-dot red-dot"></span>

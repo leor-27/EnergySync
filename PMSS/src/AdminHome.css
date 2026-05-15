@@ -93,15 +93,16 @@
 
 .dashboard-grid {
     display: flex;
-    gap: 40px;
+    gap: 30px;
     padding: 15px;
     width: 100%;
     align-items: flex-start;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
 }
 
 .search-container {
-    flex: 3;
-    min-width: 0; /* prevents overflow */
+    flex: 1;
+    min-width: 350px; /* Ensures search area doesn't get too thin */
 }
 
 .search-bar {
@@ -161,19 +162,15 @@
 }
 
 .notifications-panel {
-    flex: 0 1 380px; /* responsive instead of fixed */
-    /* width: 100%; */
-    width: 350px;
-    min-width: 300px;
+    width: 380px;
     flex-shrink: 0;
-    max-width: 380px;
-    height: 600px;
     background: white;
     border: 1px solid #ddd;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     overflow: hidden;
-    margin-left: 30px;
+    height: fit-content;
+    max-height: 600px;
 }
 
 .notifications-header {
@@ -258,6 +255,16 @@
     margin-left: 15px;
 } 
 
+.notif-item.clickable {
+    cursor: pointer;
+    transition: background 0.2s;
+    padding: 12px 10px;
+}
+
+.notif-item.clickable:hover {
+    background-color: #f9f9f9;
+}
+
 footer {
     position: fixed;
     bottom: 0;
@@ -275,19 +282,33 @@ footer {
 /* Mobile adjustments */
 @media (max-width: 1024px) {
     .notifications-panel {
-        width: 300px; /* Shrink panel slightly for mid-sized screens */
+        width: 320px;
     }
 }
+
 
 @media (max-width: 900px) {
     .dashboard-grid {
         flex-direction: column;
     }
 
-    /* .search-container, */
-    .notifications-panel {
+    .notifications-panel, 
+    .search-container {
         width: 100%;
-        /* max-width: 100%; */
+        min-width: 100%;
+    }
+    
+    .sidebar {
+        width: 80px;
+    }
+    
+    .nav-item span {
+        display: none;
+    }
+    
+    .nav-item {
+        padding: 18px;
+        justify-content: center;
     }
 }
 

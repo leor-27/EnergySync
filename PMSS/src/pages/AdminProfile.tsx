@@ -1,31 +1,33 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom"
 import { Calendar, Camera, Edit2, Bell } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/useAuth"
 
 export default function AdminProfile() {
+    const location = useLocation();
+    const passedNotif = location.state?.selectedNotif;
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
-  
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-  
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setProfileImage(imageUrl);
-        }
-    };
+    const { user } = useAuth();
+    
 
-  const [admins, setAdmins] = useState<any[]>([]);
+  // const [admins, setAdmins] = useState<any[]>([]);
   const [djs, setDjs] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
   const [program_schedules, setProgramSchedules] = useState<any[]>([]);
   const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const currentDj = djs.find(
+    (dj) =>
+      Number(dj.admin_ID) ===
+      Number(user?.admin_ID)
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,9 +50,9 @@ export default function AdminProfile() {
         const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
 
-        if (adminsJson.success) {
-          setAdmins(adminsJson.data);
-        }
+        // if (adminsJson.success) {
+        //   setAdmins(adminsJson.data);
+        // }
 
         if (djsJson.success) {
           setDjs(djsJson.data);
@@ -81,34 +83,54 @@ export default function AdminProfile() {
     fetchData();
   }, []);
 
-  const programCards = program_schedules.map((schedule: any) => {
-    // Find matching program
+  // const currentAdmin = admins.find(
+  //   (admin) => Number(admin.admin_ID) === Number(user?.admin_ID)
+  // );
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+  
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setProfileImage(imageUrl);
+        }
+    };
+
+  const programCards = program_schedules
+  .map((schedule: any) => {
+
     const matchedProgram = programs.find(
-        (program: any) =>
-        program.program_ID === schedule.program_ID
+      (p) => p.program_ID === schedule.program_ID
     );
 
-    // Find assignment for this program
-    const matchedAssignment = program_dj_assignments.find(
-        (assignment: any) =>
-        assignment.program_ID === schedule.program_ID
-    );
+    const matchedAssignment =
+      program_dj_assignments.find(
+        (a) => a.schedule_ID === schedule.schedule_ID
+      );
 
-    // Find DJ from assignment
     const matchedDj = djs.find(
-        (dj: any) =>
-        dj.dj_ID === matchedAssignment?.dj_ID
+      (d) => d.dj_ID === matchedAssignment?.dj_ID
     );
 
     return {
-        ...schedule,
-        program_name:
-        matchedProgram?.program_name || "Unknown Program",
+      ...schedule,
 
-        dj_name:
-        matchedDj?.stage_name || "No DJ Assigned",
+      program_name:
+        matchedProgram?.program_name ||
+        "Unknown Program",
+
+      dj_ID: matchedDj?.dj_ID,
+
+      dj_name:
+        matchedDj?.stage_name ||
+        "No DJ Assigned",
     };
-    }); // change to the query
+  })
+
+  .filter(
+  (program: any) =>
+    Number(program.dj_ID) === Number(user?.dj_ID)
+);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -129,7 +151,7 @@ export default function AdminProfile() {
               <div className="admin-info-text">
                 <div className="name-header">
                   <h2 style={{ fontSize: "23px" }}>
-                    <strong>{djs[0]?.stage_name || "DJ"}</strong>
+                    <strong>{user?.stage_name || "DJ"}</strong>
                   </h2>
                   <Dialog>
                     <DialogTrigger asChild>
@@ -144,17 +166,17 @@ export default function AdminProfile() {
                       <div className="profile-dialog-form">
                         <div className="profile-dialog-group">
                           <Label>Stage Name</Label>
-                          <Input defaultValue={djs[0]?.stage_name || ""} />
+                          <Input defaultValue={user?.stage_name || ""} />
                         </div>
                 
                         <div className="profile-dialog-group">
                           <Label>Full Name</Label>
-                          <Input defaultValue={`${admins[0]?.first_name || ""} ${admins[0]?.last_name || ""}`} />
+                          <Input defaultValue={`${user?.first_name || ""} ${user?.last_name || ""}`} />
                         </div>
                 
                         <div className="profile-dialog-group">
                           <Label>Username</Label>
-                          <Input defaultValue={`@${admins[0]?.username || ""}`} />
+                          <Input defaultValue={`@${user?.username || ""}`} />
                         </div>
                       </div>
                 
@@ -165,8 +187,8 @@ export default function AdminProfile() {
                     </DialogContent>
                   </Dialog>
                 </div>
-                <p className="full-name">{admins[0]?.first_name} {admins[0]?.last_name}</p>
-                <p className="handle">@{admins[0]?.username}</p>
+                <p className="full-name">{user?.first_name} {user?.last_name}</p>
+                <p className="handle">@{user?.username}</p>
               </div>
             </CardContent>
           </Card>
@@ -204,15 +226,27 @@ export default function AdminProfile() {
 
           <CardContent className="p-0">
             <div className="notif-list">
+              {passedNotif && (
+                            <div className="notif-card detailed highlighted">
+                                <div className="notif-user-row">
+                                    <div className="circle-icon blue-bg"></div>
+                                    <span className="notif-author">Sender Name</span>
+                                </div>
+                                <div className="notif-body">
+                                    <p>{passedNotif.message}</p>
+                                    <span className="notif-author-line">
+                                        Posted on {new Date(passedNotif.notified_at).toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
               {notifications.map((notif) => (
               <div className="notif-card light-grey" key={notif.notification_ID}>
                 <p>{notif.message}</p>
                 <span className="notif-time">
-                  <strong>{new Date(
-                      notif.notified_at
-                    ).toLocaleString()}</strong>
-                  <span className="unread-dot"></span>
-                </span>
+                                    {new Date(notif.notified_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    <span className="unread-dot"></span>
+                                </span>
               </div>
               ))}
             </div>

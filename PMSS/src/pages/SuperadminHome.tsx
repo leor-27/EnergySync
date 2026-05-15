@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Search, SlidersHorizontal, Bell } from "lucide-react"; 
+import { useAuth } from "@/contexts/useAuth"
 
 export default function SuperadminHome() {
     const navigate = useNavigate();
 
-    const [admins, setAdmins] = useState<any[]>([]);
     const [notifications, setNotifications] = useState<any[]>([]);
     const [programs, setPrograms] = useState<any[]>([]);
     const [program_schedules, setProgramSchedules] = useState<any[]>([]);
     const [djs, setDjs] = useState<any[]>([]);
     const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth()
 
     useEffect(() => {
     const fetchData = async () => {
@@ -61,23 +62,12 @@ export default function SuperadminHome() {
     }, []);
 
     const programCards = program_schedules.map((schedule: any) => {
-    // Find matching program
-    const matchedProgram = programs.find(
-        (program: any) =>
-        program.program_ID === schedule.program_ID
-    );
-
-    // Find assignment for this program
-    const matchedAssignment = program_dj_assignments.find(
-    (assignment: any) =>
-      assignment.program_ID === schedule.program_ID
-  );
-
-    // Find DJ from assignment
-    const matchedDj = djs.find(
-        (dj: any) =>
-        dj.dj_ID === matchedAssignment?.dj_ID
-    );
+        const matchedProgram = programs.find(p => p.program_ID === schedule.program_ID);
+        const matchedAssignment =
+        program_dj_assignments.find(
+            (a) => a.schedule_ID === schedule.schedule_ID
+        );
+        const matchedDj = djs.find(dj => dj.dj_ID === matchedAssignment?.dj_ID);
 
     return {
         ...schedule,
@@ -87,19 +77,22 @@ export default function SuperadminHome() {
         dj_name:
         matchedDj?.stage_name || "No DJ Assigned",
     };
-    }); // change to the query
+    });
+
+    const handleNotifClick = (notif: any) => {
+        navigate("/superadmin-profile", { state: { selectedNotif: notif } });
+    };
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    const currentDj = djs[0];
-    const currentAdmin = admins[0];
+    // const currentDj = djs[0];
 
     return (
         <>
             <div className="welcome-section">
-                <h1 className="welcome-text">Welcome, {currentDj?.stage_name || "DJ"}!</h1>
+                <h1 className="welcome-text">Welcome, {user?.stage_name || "DJ"}!</h1>
             </div>
 
             <div className="dashboard-grid">
@@ -133,14 +126,14 @@ export default function SuperadminHome() {
                     </div>
                     <div className="notif-list">
                         {notifications.map((notif: any) => (
-                            <div className="notif-item" key={notif.notification_ID}>
+                            <div className="notif-item clickable" key={notif.notification_ID} onClick={() => handleNotifClick(notif)}>
                                 <div className="notif-dot red"></div>
                                 <div className="notif-content">
                                     <p>{notif.message}</p>
                                     <span className="notif-time">
                                     {new Date(
                                         notif.notified_at
-                                        ).toLocaleString()}
+                                        ).toLocaleString([], { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                 </div>
                             </div>

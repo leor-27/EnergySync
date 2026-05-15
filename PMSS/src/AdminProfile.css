@@ -106,8 +106,9 @@
 .profile-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    max-width: 1200px;
+    gap: 30px;
+    max-width: 1300px;
+    align-items: start;
 }
 
 /* Info Card */
@@ -232,6 +233,14 @@
     height: 6%;
 }
 
+.notif-card.detailed {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    height: auto;
+    padding: 20px;
+}
+
 .notif-list {
     overflow-y: auto;
 }
@@ -298,6 +307,38 @@
     border-color: var(--energy-blue);
 }
 
+.notif-user-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.notif-author {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.notif-body p {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.notif-author-line {
+    font-size: 11px;
+    color: #777;
+    display: block;
+    text-align: right;
+    width: 100%;
+}
+
+.highlighted {
+    border: 2px solid var(--energy-blue);
+    background-color: #f0f7ff;
+}
+
 footer {
     position: fixed;
     bottom: 0;
@@ -325,5 +366,37 @@ footer {
     }
     .profile-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+    .profile-grid {
+        grid-template-columns: 1fr; /* Stack on tablets and mobiles */
+        gap: 20px;
+    }
+    
+    .notif-panel {
+        width: 100%;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-card-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .name-header {
+        justify-content: center;
+    }
+
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
     }
 }
