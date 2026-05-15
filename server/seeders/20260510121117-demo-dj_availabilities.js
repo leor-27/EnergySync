@@ -5,6 +5,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('DJ_Availability', [
       {
+        /* add values for new attributes */
         assignment_ID: 1,
         broadcast_date: '2026-01-16',
         status: 'Available',

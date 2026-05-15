@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      DJ.belongsTo(models.Admin, {
+    foreignKey: "admin_ID"
+  });
     }
   }
   DJ.init({
@@ -25,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'DJ',
-    tableName: 'DJ'
+    tableName: 'DJ',
+    timestamps: false
   });
   return DJ;
 };

@@ -23,13 +23,33 @@ module.exports = {
         type: Sequelize.DATEONLY,
         allowNull: false
       },
-      status: {
-        type: Sequelize.ENUM('Available', 'Unavailable'),
-        allowNull: false
+      remarks: {
+        type: Sequelize.STRING(500)
       },
       confirmed_at: {
         type: Sequelize.DATE,
         allowNull: false
+      },
+      status: {
+        type: Sequelize.ENUM('Available', 'Unavailable'),
+        allowNull: false
+      },
+      approval_status: {
+        type: Sequelize.ENUM('Pending', 'Accepted', 'Rejected'),
+        allowNull: false
+      },
+      reviewed_at: {
+        type: Sequelize.DATE
+      },
+      reviewed_by_admin_ID: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Admin',
+          key: 'admin_ID'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT'
       },
       createdAt: {
         allowNull: false,

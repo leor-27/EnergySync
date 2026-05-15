@@ -22,8 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     assignment_ID: DataTypes.INTEGER,
     broadcast_date: DataTypes.DATEONLY,
+    remarks: DataTypes.STRING,
+    confirmed_at: DataTypes.DATE,
     status: DataTypes.ENUM('Available', 'Unavailable'),
-    confirmed_at: DataTypes.DATE
+    approval_status: DataTypes.ENUM('Pending', 'Accepted', 'Rejected'),
+    reviewed_at: DataTypes.DATE,
+    reviewed_by_admin_ID: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'DJ_Availability',

@@ -13,6 +13,7 @@ const programRouter = require('./routes/programs');
 const scheduleDayTypeRouter = require('./routes/schedule_day_types');
 const substitutionRouter = require('./routes/substitutions');
 const activityLogRouter = require('./routes/activity_logs');
+const authRouter = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,11 +31,8 @@ app.use('/api/programs', programRouter);
 app.use('/api/schedule_day_types', scheduleDayTypeRouter);
 app.use('/api/substitutions', substitutionRouter);
 app.use('/api/activity_logs', activityLogRouter);
+app.use('/api/auth', authRouter);
 
-db.sequelize.authenticate().then(() => {
-  console.log('Database connected!');
-  app.listen(5000, () => console.log('Server running on port 5000'));
-});
 db.sequelize.authenticate()
   .then(() => {
     console.log('Database connected via Sequelize.');
