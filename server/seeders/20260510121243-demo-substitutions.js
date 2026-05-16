@@ -10,9 +10,7 @@ module.exports = {
         status: 'Accepted',
         broadcast_date: '2026-01-16',
         assigned_at: '2026-01-16 10:12:27',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       },
       {
         assignment_ID: 3,
@@ -20,9 +18,7 @@ module.exports = {
         status: 'Rejected',
         broadcast_date: '2026-01-17',
         assigned_at: '2026-01-17 08:29:27',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       },
       {
         assignment_ID: 3,
@@ -30,9 +26,7 @@ module.exports = {
         status: 'Accepted',
         broadcast_date: '2026-04-22',
         assigned_at: '2026-04-22 21:36:20',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       },
       {
         assignment_ID: 3,
@@ -40,9 +34,7 @@ module.exports = {
         status: 'Rejected',
         broadcast_date: '2026-04-22',
         assigned_at: '2026-04-22 21:47:38',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       },
       {
         assignment_ID: 1,
@@ -50,9 +42,7 @@ module.exports = {
         status: 'Accepted',
         broadcast_date: '2026-04-23',
         assigned_at: '2026-04-23 10:12:27',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       },
       {
         assignment_ID: 1,
@@ -60,9 +50,7 @@ module.exports = {
         status: 'Accepted',
         broadcast_date: '2026-04-23',
         assigned_at: '2026-04-23 10:57:29',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       },
       {
         assignment_ID: 1,
@@ -70,9 +58,7 @@ module.exports = {
         status: 'Rejected',
         broadcast_date: '2026-05-03',
         assigned_at: '2026-05-03 16:45:12',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       },
       {
         assignment_ID: 1,
@@ -80,9 +66,7 @@ module.exports = {
         status: 'Accepted',
         broadcast_date: '2026-05-04',
         assigned_at: '2026-05-04 19:06:35',
-        assigned_by_admin_ID: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        assigned_by_admin_ID: 1
       }
     ], {});
   },

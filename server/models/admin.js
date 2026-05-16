@@ -28,9 +28,9 @@ module.exports = (sequelize, DataTypes) => {
     last_name: DataTypes.STRING,
     password_hash: DataTypes.CHAR,
     is_initialized: DataTypes.BOOLEAN,
-    invite_token_hash: DataTypes.CHAR,
+    invite_token_hash: DataTypes.STRING,
     invite_token_expires: DataTypes.DATE,
-    reset_token_hash: DataTypes.CHAR,
+    reset_token_hash: DataTypes.STRING,
     reset_token_expires: DataTypes.DATE,
     image_path: {
       type: DataTypes.STRING,

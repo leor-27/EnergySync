@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   try {
 
     const djs = await DJ.findAll({
-      order: [['createdAt', 'DESC']]
+      order: [['dj_ID', 'DESC']]
     });
 
     res.json({

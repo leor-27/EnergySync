@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'activity_logs',
-    tableName: 'activity_logs'
+    tableName: 'activity_logs',
+    timestamps: false
   });
   return activity_logs;
 };

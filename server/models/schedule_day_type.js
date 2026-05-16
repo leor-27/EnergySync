@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Schedule_Day_Type',
-    tableName: 'Schedule_Day_Type'
+    tableName: 'Schedule_Day_Type',
+    timestamps: false
   });
   return Schedule_Day_Type;
 };

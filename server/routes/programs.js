@@ -6,7 +6,7 @@ const { Program } = require('../models');
 router.get('/', async (req, res) => {
   try {
     const programs = await Program.findAll({
-      order: [['created_at', 'DESC']]
+      order: [['program_ID', 'DESC']]
     });
     res.json({
       success: true,

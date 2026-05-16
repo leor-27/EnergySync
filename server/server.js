@@ -16,6 +16,7 @@ const activityLogRouter = require('./routes/activity_logs');
 const authRouter = require('./routes/auth');
 
 const app = express();
+require("./cron/attendanceReminder");
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({ origin: 'http://localhost:5173' }));

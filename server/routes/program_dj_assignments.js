@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
 
     const program_dj_assignments =
       await Program_DJ_Assignment.findAll({
-        order: [['createdAt', 'DESC']]
+        order: [['assignment_ID', 'DESC']]
       });
 
     res.json({
@@ -46,6 +46,46 @@ router.post('/', async (req, res) => {
     });
 
   }
+});
+
+router.post("/assign-dj", async (req, res) => {
+
+  const {
+    dj_ID,
+    program_ID,
+    admin_ID,
+    start_date
+  } = req.body;
+
+  try {
+
+    await db.query(
+      "CALL sp_AdminAssignDJ(?, ?, ?, ?)",
+      {
+        replacements: [
+          dj_ID,
+          program_ID,
+          admin_ID,
+          start_date
+        ]
+      }
+    );
+
+    res.json({
+      success: true,
+      message: "DJ assigned successfully"
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+
 });
 
 module.exports = router;

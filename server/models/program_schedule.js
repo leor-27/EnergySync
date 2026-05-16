@@ -30,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Program_Schedule',
-    tableName: 'Program_Schedule'
+    tableName: 'Program_Schedule',
+    timestamps: false
   });
   return Program_Schedule;
 };

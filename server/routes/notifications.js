@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
   try {
 
     const notifications = await Notifications.findAll({
-      order: [['createdAt', 'DESC']]
+      order: [['notification_ID', 'DESC']]
     });
 
     res.json({

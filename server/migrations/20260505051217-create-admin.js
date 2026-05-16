@@ -33,14 +33,14 @@ module.exports = {
         defaultValue: false
       },
       invite_token_hash: {
-        type: Sequelize.CHAR(64),
+        type: Sequelize.STRING(255),
         unique: true
       },
       invite_token_expires: {
         type: Sequelize.DATE
       },
       reset_token_hash: {
-        type: Sequelize.CHAR(64),
+        type: Sequelize.STRING(255),
         unique: true
       },
       reset_token_expires: {

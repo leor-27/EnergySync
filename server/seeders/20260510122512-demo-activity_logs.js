@@ -6,15 +6,11 @@ module.exports = {
     await queryInterface.bulkInsert('activity_logs', [
       {
         log_message: 'Substitution ID 8 changed from Pending to Rejected',
-        created_at: '2026-05-03 08:46:26',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: '2026-05-03 08:46:26'
       },
       {
         log_message: 'Substitution ID 9 changed from Pending to Accepted, and notification was sent to Admin ID 1',
-        created_at: '2026-05-04 11:12:43',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        created_at: '2026-05-04 11:12:43'
       }
     ], {});
   },

@@ -16,9 +16,7 @@ module.exports = {
         reset_token_hash: 'B90b73b1b6f48bd99fmswqlae12...',
         reset_token_expires: '2026-01-07 12:14:14',
         image_path: null,
-        role_type: 'Superadmin',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        role_type: 'Superadmin'
       },
       {
         username: 'djapple',
@@ -32,9 +30,7 @@ module.exports = {
         reset_token_hash: null,
         reset_token_expires: null,
         image_path: null,
-        role_type: 'Admin',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        role_type: 'Admin'
       },
       {
         username: 'papagats',
@@ -48,9 +44,7 @@ module.exports = {
         reset_token_hash: null,
         reset_token_expires: null,
         image_path: null,
-        role_type: 'Admin',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        role_type: 'Admin'
       },
       {
         username: 'djbarbie',
@@ -64,9 +58,7 @@ module.exports = {
         reset_token_hash: null,
         reset_token_expires: null,
         image_path: null,
-        role_type: 'Admin',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        role_type: 'Admin'
       },
       {
         username: 'kuyabok',
@@ -80,9 +72,7 @@ module.exports = {
         reset_token_hash: null,
         reset_token_expires: null,
         image_path: null,
-        role_type: 'Admin',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        role_type: 'Admin'
       }
     ], {});
   },
