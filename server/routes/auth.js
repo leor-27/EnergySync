@@ -85,6 +85,7 @@ router.post("/login", async (req, res) => {
         last_name: admin.last_name,
         email: admin.email,
         role: admin.role_type,
+        image_path: admin.image_path,
         stage_name: admin.DJ?.stage_name || null,
   dj_ID: admin.DJ?.dj_ID || null
       }

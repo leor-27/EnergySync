@@ -13,25 +13,83 @@ export default function SuperadminProfile() {
     const passedNotif = location.state?.selectedNotif;
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const [profileImage, setProfileImage] = useState<string | null>(null);
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
+    const handleImageUpload = async (
+  event: React.ChangeEvent<HTMLInputElement>
+) => {
 
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setProfileImage(imageUrl);
-        }
-    };
+  const file = event.target.files?.[0];
 
-    const [admins, setAdmins] = useState<any[]>([]);
+  if (!file || !user) return;
+
+  try {
+
+    const formData = new FormData();
+
+    formData.append("image", file);
+    formData.append("admin_ID", String(user.admin_ID));
+
+    const res = await fetch(
+      "http://localhost:5000/api/admins/upload-profile",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    const data = await res.json();
+
+if (data.success) {
+
+  const updatedUser = {
+    ...user!,
+    image_path: data.image_path
+  };
+
+  localStorage.setItem(
+    "user",
+    JSON.stringify(updatedUser)
+  );
+
+  setUser(updatedUser);
+
+  setProfileImage(
+    `http://localhost:5000/${data.image_path}`
+  );
+}
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+};
+
+    // const [admins, setAdmins] = useState<any[]>([]);
     const [djs, setDjs] = useState<any[]>([]);
     const [notifications, setNotifications] = useState<any[]>([]);
     const [programs, setPrograms] = useState<any[]>([]);
     const [program_schedules, setProgramSchedules] = useState<any[]>([]);
     const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
+
+const currentAdmin = user;
+
+const [profileImage, setProfileImage] =
+useState<string | null>(null);
+
+    useEffect(() => {
+
+  if (user?.image_path) {
+
+    setProfileImage(
+      `http://localhost:5000/${user.image_path}`
+    );
+
+  }
+
+}, [user]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,9 +112,9 @@ export default function SuperadminProfile() {
         const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
 
-        if (adminsJson.success) {
-          setAdmins(adminsJson.data);
-        }
+        // if (adminsJson.success) {
+        //   setAdmins(adminsJson.data);
+        // }
 
         if (djsJson.success) {
           setDjs(djsJson.data);
@@ -123,10 +181,6 @@ export default function SuperadminProfile() {
     if (loading) {
         return <div>Loading...</div>;
     }
-
-    const currentAdmin = admins.find(
-  (admin) => Number(admin.admin_ID) === Number(user?.admin_ID)
-);
 
 const currentDj = djs.find(
   (dj) => Number(dj.admin_ID) === Number(user?.admin_ID)

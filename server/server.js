@@ -32,6 +32,7 @@ app.use('/api/schedule_day_types', scheduleDayTypeRouter);
 app.use('/api/substitutions', substitutionRouter);
 app.use('/api/activity_logs', activityLogRouter);
 app.use('/api/auth', authRouter);
+app.use("/uploads", express.static("uploads"));
 
 db.sequelize.authenticate()
   .then(() => {

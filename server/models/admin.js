@@ -32,7 +32,10 @@ module.exports = (sequelize, DataTypes) => {
     invite_token_expires: DataTypes.DATE,
     reset_token_hash: DataTypes.CHAR,
     reset_token_expires: DataTypes.DATE,
-    image_path: DataTypes.STRING,
+    image_path: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     role_type: DataTypes.ENUM('Superadmin', 'Admin')
   }, {
     sequelize,

@@ -205,6 +205,7 @@ type User = {
   first_name: string
   last_name: string
   role: string
+  image_path?: string | null
   stage_name?: string | null
   dj_ID?: number | null
 }

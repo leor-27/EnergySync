@@ -13,8 +13,7 @@ export default function AdminProfile() {
     const passedNotif = location.state?.selectedNotif;
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
-    const { user } = useAuth();
-    
+    const { user, setUser } = useAuth();
 
   // const [admins, setAdmins] = useState<any[]>([]);
   const [djs, setDjs] = useState<any[]>([]);
@@ -23,6 +22,11 @@ export default function AdminProfile() {
   const [program_schedules, setProgramSchedules] = useState<any[]>([]);
   const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editStageName, setEditStageName] = useState("");
+const [editUsername, setEditUsername] = useState("");
+const [editFirstName, setEditFirstName] = useState("");
+const [editLastName, setEditLastName] = useState("");
+
   const currentDj = djs.find(
     (dj) =>
       Number(dj.admin_ID) ===
@@ -83,18 +87,90 @@ export default function AdminProfile() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+
+  if (user) {
+
+    setEditUsername(user.username || "");
+    setEditFirstName(user.first_name || "");
+    setEditLastName(user.last_name || "");
+
+  }
+
+  if (currentDj) {
+
+    setEditStageName(currentDj.stage_name || "");
+
+  }
+
+  if (user?.image_path) {
+
+    setProfileImage(
+      `http://localhost:5000/${user.image_path}`
+    );
+
+  }
+
+}, [user, currentDj]);
+
   // const currentAdmin = admins.find(
   //   (admin) => Number(admin.admin_ID) === Number(user?.admin_ID)
   // );
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-  
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setProfileImage(imageUrl);
-        }
-    };
+  const handleImageUpload = async (
+  event: React.ChangeEvent<HTMLInputElement>
+) => {
+
+  const file = event.target.files?.[0];
+
+  if (!file || !user) return;
+
+  try {
+
+    const formData = new FormData();
+
+    formData.append("image", file);
+    formData.append(
+      "admin_ID",
+      String(user.admin_ID)
+    );
+
+    const res = await fetch(
+      "http://localhost:5000/api/admins/upload-profile",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success && user) {
+
+      const updatedUser = {
+        ...user,
+        image_path: data.image_path
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(updatedUser)
+      );
+
+      setUser(updatedUser);
+
+      setProfileImage(
+        `http://localhost:5000/${data.image_path}`
+      );
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+};
 
   const programCards = program_schedules
   .map((schedule: any) => {
@@ -136,6 +212,67 @@ export default function AdminProfile() {
     return <div>Loading...</div>;
   }
 
+  const handleSaveProfile = async () => {
+
+  try {
+
+    const res = await fetch(
+      "http://localhost:5000/api/djs/update-profile",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          admin_ID: user?.admin_ID,
+          dj_ID: currentDj?.dj_ID,
+          stage_name: editStageName,
+          username: editUsername,
+          first_name: editFirstName,
+          last_name: editLastName
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success && user) {
+
+      const updatedUser = {
+        ...user,
+        username: editUsername,
+        first_name: editFirstName,
+        last_name: editLastName,
+        stage_name: editStageName
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(updatedUser)
+      );
+
+      setUser(updatedUser);
+
+      setDjs((prev) =>
+        prev.map((dj) =>
+          dj.dj_ID === currentDj?.dj_ID
+            ? {
+                ...dj,
+                stage_name: editStageName
+              }
+            : dj
+        )
+      );
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+};
+
   return (
     <>
       <div className="profile-grid">
@@ -151,7 +288,7 @@ export default function AdminProfile() {
               <div className="admin-info-text">
                 <div className="name-header">
                   <h2 style={{ fontSize: "23px" }}>
-                    <strong>{user?.stage_name || "DJ"}</strong>
+                    <strong>{currentDj?.stage_name || "DJ"}</strong>
                   </h2>
                   <Dialog>
                     <DialogTrigger asChild>
@@ -166,23 +303,45 @@ export default function AdminProfile() {
                       <div className="profile-dialog-form">
                         <div className="profile-dialog-group">
                           <Label>Stage Name</Label>
-                          <Input defaultValue={user?.stage_name || ""} />
+                          <Input
+  value={editStageName}
+  onChange={(e) =>
+    setEditStageName(e.target.value)
+  }
+/>
                         </div>
                 
                         <div className="profile-dialog-group">
                           <Label>Full Name</Label>
-                          <Input defaultValue={`${user?.first_name || ""} ${user?.last_name || ""}`} />
+                          <Input
+  value={editFirstName}
+  onChange={(e) =>
+    setEditFirstName(e.target.value)
+  }
+/>
+
+<Input
+  value={editLastName}
+  onChange={(e) =>
+    setEditLastName(e.target.value)
+  }
+/>
                         </div>
                 
                         <div className="profile-dialog-group">
                           <Label>Username</Label>
-                          <Input defaultValue={`@${user?.username || ""}`} />
+                          <Input
+  value={editUsername}
+  onChange={(e) =>
+    setEditUsername(e.target.value)
+  }
+/>
                         </div>
                       </div>
                 
                       <DialogFooter>
                         <Button variant="outline">Cancel</Button>
-                        <Button>Save Changes</Button>
+                        <Button  onClick={handleSaveProfile}>Save Changes</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
