@@ -63,10 +63,9 @@ export default function SuperadminHome() {
 
     const programCards = program_schedules.map((schedule: any) => {
         const matchedProgram = programs.find(p => p.program_ID === schedule.program_ID);
-        const matchedAssignment =
-        program_dj_assignments.find(
-            (a) => a.schedule_ID === schedule.schedule_ID
-        );
+        const matchedAssignment = program_dj_assignments.find(
+  (a) => a.schedule_ID === schedule.schedule_ID
+);
         const matchedDj = djs.find(dj => dj.dj_ID === matchedAssignment?.dj_ID);
 
     return {

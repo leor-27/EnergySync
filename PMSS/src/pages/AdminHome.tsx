@@ -10,6 +10,20 @@ export default function AdminHome() {
   const [djs, setDjs] = useState<any[]>([]);
   const { user } = useAuth()
   const [loading, setLoading] = useState(true);
+  const [
+  program_dj_assignments,
+  setProgramDjAssignments
+] = useState<any[]>([]);
+
+const [
+  selectedStatuses,
+  setSelectedStatuses
+] = useState<Record<number, string>>({});
+
+const [
+  remarks,
+  setRemarks
+] = useState<Record<number, string>>({});
 
   const navigate = useNavigate();
 
@@ -28,6 +42,14 @@ export default function AdminHome() {
         const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
         const schedulesJson = await schedulesRes.json();
 
+        const programDjAssignmentsRes =
+  await fetch(
+    "http://localhost:5000/api/program_dj_assignments"
+  );
+
+const programDjAssignmentsJson =
+  await programDjAssignmentsRes.json();
+
         if (djsJson.success) {
           setDjs(djsJson.data);
         }
@@ -43,6 +65,14 @@ export default function AdminHome() {
         if (schedulesJson.success) {
           setProgramSchedules(schedulesJson.data);
         }
+
+        if (programDjAssignmentsJson.success) {
+
+  setProgramDjAssignments(
+    programDjAssignmentsJson.data
+  );
+
+}
       } catch(err) {
         console.error("Fetch Error:", err);
       } finally {
@@ -58,13 +88,47 @@ export default function AdminHome() {
   );
 
   // Merge schedules with programs
-  const programCards = program_schedules.map((schedule: any) => {
-    const matchedProgram = programs.find(p => p.program_ID === schedule.program_ID);
-    return {
-      ...schedule,
-      program_name: matchedProgram?.program_name || "Unknown Program",
-    };
-  });
+  const programCards =
+  program_schedules
+    .map((schedule: any) => {
+
+      const matchedProgram =
+        programs.find(
+          (p) =>
+            p.program_ID ===
+            schedule.program_ID
+        );
+
+      const matchedAssignment =
+  program_dj_assignments.find(
+    (a) =>
+      a.schedule_ID ===
+      schedule.schedule_ID
+  );
+
+      return {
+
+        ...schedule,
+
+        assignment_ID:
+          matchedAssignment?.assignment_ID,
+
+        dj_ID:
+          matchedAssignment?.dj_ID,
+
+        program_name:
+          matchedProgram?.program_name
+          || "Unknown Program"
+
+      };
+
+    })
+
+    .filter(
+      (program: any) =>
+        Number(program.dj_ID) ===
+        Number(currentDj?.dj_ID)
+    );
 
    // Handler to navigate and pass notification data
   const handleNotifClick = (notif: any) => {
@@ -74,6 +138,89 @@ export default function AdminHome() {
   if (loading) {
     return <div>Loading...</div>;
   } // change to the query
+
+const handleSubmitUnavailable =
+async (program: any) => {
+
+  try {
+
+    const matchedAssignment =
+      program_dj_assignments.find(
+        (a) =>
+          a.schedule_ID ===
+          program.schedule_ID
+      );
+
+    if (!matchedAssignment) {
+
+      alert("Assignment not found");
+
+      return;
+
+    }
+
+    if (
+  !remarks[program.schedule_ID]
+) {
+
+  alert(
+    "Remarks are required."
+  );
+
+  return;
+
+}
+
+    const res = await fetch(
+      "http://localhost:5000/api/dj-availability",
+      {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body: JSON.stringify({
+
+          assignment_ID:
+            matchedAssignment.assignment_ID,
+
+          broadcast_date:
+            new Date()
+              .toISOString()
+              .split("T")[0],
+
+          status: "Unavailable",
+
+          remarks:
+            remarks[
+              program.schedule_ID
+            ]
+
+        })
+
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+
+      alert(
+        "Unavailability submitted successfully."
+      );
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+};
   
   return (
     <>
@@ -96,10 +243,44 @@ export default function AdminHome() {
                 <h3>{program.program_name}</h3>
                 <p><Calendar size={14} /> {program.start_time} - {program.end_time}</p>
               </div>
-              <select className="status-dropdown">
-                <option>Available</option>
-                <option>Unavailable</option>
-              </select>
+              <select
+  className="status-dropdown"
+  value={selectedStatuses[program.schedule_ID] || "Available"}
+  onChange={(e) =>
+    setSelectedStatuses({
+      ...selectedStatuses,
+      [program.schedule_ID]: e.target.value
+    })
+  }
+>
+  <option value="Available">Available</option>
+  <option value="Unavailable">Unavailable</option>
+</select>
+
+{selectedStatuses[program.schedule_ID] === "Unavailable" && (
+  <div style={{ marginTop: "10px" }}>
+    
+    <textarea
+      placeholder="Enter remarks..."
+      value={remarks[program.schedule_ID] || ""}
+      onChange={(e) =>
+        setRemarks({
+          ...remarks,
+          [program.schedule_ID]: e.target.value
+        })
+      }
+    />
+
+    <button
+      onClick={() =>
+        handleSubmitUnavailable(program)
+      }
+    >
+      Submit
+    </button>
+
+  </div>
+)}
             </div>
           ))
         ) : (

@@ -179,10 +179,10 @@ const [editLastName, setEditLastName] = useState("");
       (p) => p.program_ID === schedule.program_ID
     );
 
-    const matchedAssignment =
-      program_dj_assignments.find(
-        (a) => a.schedule_ID === schedule.schedule_ID
-      );
+   const matchedAssignment =
+  program_dj_assignments.find(
+    (a) => a.schedule_ID === schedule.schedule_ID
+  );
 
     const matchedDj = djs.find(
       (d) => d.dj_ID === matchedAssignment?.dj_ID
@@ -202,10 +202,10 @@ const [editLastName, setEditLastName] = useState("");
         "No DJ Assigned",
     };
   })
-
-  .filter(
+  
+.filter(
   (program: any) =>
-    Number(program.dj_ID) === Number(user?.dj_ID)
+    Number(program.dj_ID) === Number(currentDj?.dj_ID)
 );
 
   if (loading) {

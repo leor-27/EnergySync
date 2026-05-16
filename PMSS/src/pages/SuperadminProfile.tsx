@@ -152,8 +152,8 @@ useState<string | null>(null);
     );
 
     const matchedAssignment = program_dj_assignments.find(
-      (a) => a.schedule_ID === schedule.schedule_ID
-    );
+  (a) => a.program_ID === schedule.program_ID
+);
 
     const matchedDj = djs.find(
       (d) => d.dj_ID === matchedAssignment?.dj_ID

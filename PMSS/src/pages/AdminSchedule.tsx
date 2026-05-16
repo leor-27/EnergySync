@@ -89,6 +89,12 @@ export default function AdminSchedule() {
                 a.schedule_ID === sched.schedule_ID
             )
 
+            if (
+  assignment?.dj_ID !== currentDj?.dj_ID
+) {
+  return null;
+}
+
           return {
             id: sched.schedule_ID,
             title:
@@ -109,6 +115,7 @@ export default function AdminSchedule() {
           }
 
         })
+        .filter(Boolean)
 
       setSchedule(merged)
 

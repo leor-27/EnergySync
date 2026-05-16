@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/useAuth"
 
 type ScheduledProgram = {
     schedule_ID: number;
@@ -26,7 +27,13 @@ type ScheduledProgram = {
 
     dj_name: string;
 
-    status: "Available" | "Unavailable";
+    status: string;
+
+approval_status?: string;
+
+availability_status?: string;
+
+substitute_dj?: string;
 };
 
 export default function SuperadminSchedule() {
@@ -68,11 +75,18 @@ export default function SuperadminSchedule() {
     const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
     const [schedule_day_types, setScheduleDayTypes] = useState<any[]>([]);
     const [substitutions, setSubstitutions] = useState<any[]>([]);
+    const [
+  pendingRequests,
+  setPendingRequests
+] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openSubDialog, setOpenSubDialog] = useState(false);
     const [editingProgram, setEditingProgram] = useState<any | null>(null);
+    const [selectedDjId, setSelectedDjId] =
+  useState<number | null>(null);
+  const { user } = useAuth();
 
        // Formats the Date object
     const formattedDate = selectedDate 
@@ -88,8 +102,29 @@ export default function SuperadminSchedule() {
         const programsRes = await fetch("http://localhost:5000/api/programs");
         const programsJson = await programsRes.json();
 
-        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
-        const schedulesJson = await schedulesRes.json();
+        // const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+        // const schedulesJson = await schedulesRes.json();
+
+        const formattedSelectedDate =
+selectedDate
+  ?.toISOString()
+  .split("T")[0];
+
+const schedulesRes =
+await fetch(
+  `http://localhost:5000/api/schedule-by-date/${formattedSelectedDate}`
+);
+
+const schedulesJson =
+await schedulesRes.json();
+
+if (schedulesJson.success) {
+
+  setProgramSchedules(
+    schedulesJson.data
+  );
+
+}
 
         const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
@@ -99,6 +134,22 @@ export default function SuperadminSchedule() {
 
         const substitutionsRes = await fetch("http://localhost:5000/api/substitutions");
         const substitutionsJson = await substitutionsRes.json();
+
+        const pendingRes =
+  await fetch(
+    "http://localhost:5000/api/dj_availability/pending-unavailability"
+  );
+
+const pendingJson =
+  await pendingRes.json();
+
+if (pendingJson.success) {
+
+  setPendingRequests(
+    pendingJson.data
+  );
+
+}
 
         if (djsJson.success) {
           setDjs(djsJson.data);
@@ -149,6 +200,139 @@ export default function SuperadminSchedule() {
         }
     };
 
+    const handleApprove = async (
+  availability_ID: number
+) => {
+
+  try {
+
+    const response =
+      await fetch(
+        "http://localhost:5000/api/dj_availability/approve",
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            availability_ID,
+            superadmin_ID: 1
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (data.success) {
+
+      alert("Approved!");
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+};
+
+const handleReject = async (
+  availability_ID: number
+) => {
+
+  try {
+
+    const response =
+      await fetch(
+        "http://localhost:5000/api/dj_availability/reject",
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            availability_ID,
+            superadmin_ID: 1
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (data.success) {
+
+      alert("Rejected!");
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+};
+
+const handleAssignDJ = async (
+  program_ID: number
+) => {
+
+  if (!selectedDjId) {
+
+    alert("Select a DJ first");
+    return;
+
+  }
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:5000/api/program_dj_assignments/assign-dj",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          dj_ID: selectedDjId,
+          program_ID,
+          admin_ID: 1,
+          start_date: new Date()
+            .toISOString()
+            .split("T")[0]
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+
+      alert("DJ assigned!");
+
+      setOpenEditDialog(false);
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+};
+
     const handleDelete = async (id: number) => {
     if (!window.confirm("Remove this program?")) return;
 
@@ -183,12 +367,70 @@ export default function SuperadminSchedule() {
         }
     };
 
+    const handleAssignSubstitute =
+async (
+  assignment_ID: number,
+  substitute_dj_ID: number
+) => {
+
+  try {
+
+    const res = await fetch(
+      "http://localhost:5000/api/substitutions/assign-substitute",
+      {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body: JSON.stringify({
+
+          assignment_ID,
+
+          substitute_dj_ID,
+
+          broadcast_date:
+            new Date()
+              .toISOString()
+              .split("T")[0],
+
+          admin_ID:
+            user?.admin_ID
+
+        })
+
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+
+      alert(
+        "Substitute assigned!"
+      );
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+
+};
+
     const programSchedules: ScheduledProgram[] = programs
     .map((program: any) => {
         const matchedSchedules = program_schedules.filter(
             (schedule: any) =>
                 schedule.program_ID === program.program_ID
         );
+
+        if (!matchedSchedules.length) return null;
 
         const dayTypes = matchedSchedules.map((schedule: any) => {
             const matchedDayType = schedule_day_types.find(
@@ -229,6 +471,9 @@ export default function SuperadminSchedule() {
             schedule_ID:
                 matchedSchedules[0]?.schedule_ID,
 
+            assignment_ID:
+                matchedAssignment?.assignment_ID,
+
             start_time:
                 matchedSchedules[0]?.start_time || "",
 
@@ -251,9 +496,20 @@ export default function SuperadminSchedule() {
                 matchedDj?.stage_name || "No DJ Assigned",
 
             status:
-                "Available",
+    matchedSchedules[0]
+      ?.availability_status
+      || "Not Confirmed",
+
+approval_status:
+    matchedSchedules[0]
+      ?.approval_status,
+
+substitute_dj:
+    matchedSchedules[0]
+      ?.substitute_dj,
         };
-    });
+    })
+    .filter(Boolean) as ScheduledProgram[];
     
     return (
         <>
@@ -281,7 +537,12 @@ export default function SuperadminSchedule() {
                                                     <p>Assigned DJ: <strong>{prog.dj_name}</strong></p>
 
                                                     <span className={`ss-badge ${
-                                                            prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow"}`}>
+                                                        prog.status === "Available"
+                                                            ? "ss-badge-blue"
+                                                            : prog.status === "Unavailable"
+                                                            ? "ss-badge-yellow"
+                                                            : "ss-badge-red"
+                                                        }`}>
                                                         {prog.status}
                                                     </span>
                                                 </div>
@@ -291,6 +552,81 @@ export default function SuperadminSchedule() {
                                 </div>
                             </CardContent>
                         </Card>
+
+                        <Card className="ss-availability-widget mt-4">
+
+  <CardHeader>
+    <h3>
+      Pending Unavailability Requests
+    </h3>
+  </CardHeader>
+
+  <CardContent>
+
+    {pendingRequests.length === 0 && (
+      <p>
+        No pending requests
+      </p>
+    )}
+
+    {pendingRequests.map((item) => (
+
+      <div
+        key={item.availability_ID}
+        className="mb-4 border-b pb-4"
+      >
+
+        <p>
+          <strong>
+            {item.stage_name}
+          </strong>
+          {" "}filed unavailability
+        </p>
+
+        <p>
+          Program:
+          {" "}
+          {item.program_name}
+        </p>
+
+        <p>
+          Remarks:
+          {" "}
+          {item.remarks}
+        </p>
+
+        <div className="flex gap-2 mt-2">
+
+          <Button
+            onClick={() =>
+              handleApprove(
+                item.availability_ID
+              )
+            }
+          >
+            Approve
+          </Button>
+
+          <Button
+            variant="destructive"
+            onClick={() =>
+              handleReject(
+                item.availability_ID
+              )
+            }
+          >
+            Reject
+          </Button>
+
+        </div>
+
+      </div>
+
+    ))}
+
+  </CardContent>
+
+</Card>
                     </div>
 
                     {/* RIGHT COLUMN */}
@@ -315,11 +651,30 @@ export default function SuperadminSchedule() {
 
                                                     <div className="ss-form-group">
                                                         <Label>Assign a DJ</Label>
-                                                        <select className="ss-dj-select">
-                                                            <option>DJ Makisig</option>
-                                                            <option>DJ Apple</option>
-                                                            <option>DJ Barbie</option>
-                                                        </select>
+                                                        <select
+  className="ss-dj-select"
+
+  value={selectedDjId || ""}
+
+  onChange={(e) =>
+    setSelectedDjId(
+      Number(e.target.value)
+    )
+  }
+>
+  <option value="">
+    Select DJ
+  </option>
+
+  {djs.map((dj) => (
+    <option
+      key={dj.dj_ID}
+      value={dj.dj_ID}
+    >
+      {dj.stage_name}
+    </option>
+  ))}
+</select>
                                                     </div>
 
                                                     <div className="ss-form-group">
@@ -366,29 +721,28 @@ export default function SuperadminSchedule() {
                                                 </div>
                                             )}
 
-                                            <DialogFooter>
-                                                <Button variant="outline" onClick={() => setOpenEditDialog(false)}>Cancel</Button>
-                                                <Button onClick={() => {
-                                                    if (!editingProgram) return;
+<DialogFooter>
 
-                                                    setProgramSchedules(
-    program_schedules.map((prog: any) =>
-        prog.schedule_ID === editingProgram.schedule_ID
-            ? {
-                ...prog,
-                start_time: editingProgram.start_time,
-                end_time: editingProgram.end_time,
-            }
-            : prog
-    )
-);
+  <Button
+    variant="outline"
+    onClick={() =>
+      setOpenEditDialog(false)
+    }
+  >
+    Cancel
+  </Button>
 
-                                                    setOpenEditDialog(false);
-                                                    }}
-                                                >
-                                                    Edit Schedule 
-                                                </Button>
-                                            </DialogFooter>
+  <Button
+    onClick={() =>
+      handleAssignDJ(
+        editingProgram.program_ID
+      )
+    }
+  >
+    Assign DJ
+  </Button>
+
+</DialogFooter>
                                         </DialogContent>
                                     </Dialog>
 
@@ -519,33 +873,69 @@ export default function SuperadminSchedule() {
                                             <div className="ss-dialog-form">
                                                 <div className="ss-form-group">
                                                     <Label>Available DJs</Label>
-                                                    <select className="ss-day-select" value={newProgram.dj}
-                                                        onChange={(e) => setNewProgram({...newProgram, dj: e.target.value,})}>
-                                                        <option value="DJ Barbie">DJ Barbie</option>
-                                                        <option value="DJ Makisig">DJ Makisig</option>
-                                                        <option value="Papa Gats">Papa Gats</option>
-                                                        <option value="DJ Sunshine">DJ Sunshine</option>
-                                                    </select>
+                                                    <select
+  className="ss-day-select"
+  value={newProgram.dj}
+  onChange={(e) =>
+    setNewProgram({
+      ...newProgram,
+      dj: e.target.value,
+    })
+  }
+>
+
+  <option value="">
+    Select DJ
+  </option>
+
+  {djs.map((dj) => (
+
+    <option
+      key={dj.dj_ID}
+      value={dj.dj_ID}
+    >
+      {dj.stage_name}
+    </option>
+
+  ))}
+
+</select>
                                                 </div>
                                             </div>
 
                                             <DialogFooter>
-                                                <Button variant="outline" onClick={() => setOpenSubDialog(false)}>Cancel</Button>
 
-                                                <Button onClick={() => {
-                                                    
-                                                        setOpenSubDialog(false);
+  <Button
+    variant="outline"
+    onClick={() => setOpenSubDialog(false)}
+  >
+    Cancel
+  </Button>
 
-                                                        setNewProgram({
-                                                            title: "",
-                                                            dj: "",
-                                                            timeSlot: "",
-                                                        });
-                                                    }}
-                                                >
-                                                    Assign
-                                                </Button>
-                                            </DialogFooter>
+  <Button
+    onClick={() => {
+
+      if (!editingProgram) return;
+
+      handleAssignSubstitute(
+        editingProgram.assignment_ID,
+        Number(newProgram.dj)
+      );
+
+      setOpenSubDialog(false);
+
+      setNewProgram({
+        title: "",
+        dj: "",
+        timeSlot: "",
+      });
+
+    }}
+  >
+    Assign
+  </Button>
+
+</DialogFooter>
                                         </DialogContent>
                                     </Dialog>
 
@@ -610,12 +1000,28 @@ export default function SuperadminSchedule() {
 
                                                         <span
                                                             className={`ss-badge ${
-                                                                prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow" }`}>
+  prog.status === "Available"
+    ? "ss-badge-blue"
+    : prog.status === "Unavailable"
+    ? "ss-badge-yellow"
+    : "ss-badge-red"
+}`} >
                                                             {prog.status}
                                                         </span>
                                                     </div>
 
-                                                        {prog.status === "Unavailable" && (
+                                                    {prog.substitute_dj && (
+  <p>
+    Substitute:
+    <strong>
+      {prog.substitute_dj}
+    </strong>
+  </p>
+)}
+
+                                                        {prog.status === "Unavailable"
+&&
+prog.approval_status === "Approved" && (
                                                             <button className="ss-btn-outline" onClick={() => handleAssignSub(prog.schedule_ID)}>
                                                                 Assign Substitute DJ
                                                             </button>
@@ -649,7 +1055,12 @@ export default function SuperadminSchedule() {
 
                                                     <TableCell>
                                                         <span className={`ss-badge ${
-                                                                prog.status === "Available" ? "ss-badge-blue" : "ss-badge-yellow" }`} >
+  prog.status === "Available"
+    ? "ss-badge-blue"
+    : prog.status === "Unavailable"
+    ? "ss-badge-yellow"
+    : "ss-badge-red"
+}`} >
                                                             {prog.status}
                                                         </span>
                                                     </TableCell>
