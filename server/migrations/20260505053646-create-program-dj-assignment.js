@@ -51,7 +51,7 @@ module.exports = {
 
     await queryInterface.sequelize.query(`
       ALTER TABLE Program_DJ_Assignment
-      ADD CONSTRAINT check_assignment_end_date
+      ADD CONSTRAINT check_pda_end_date
       CHECK (effective_end_date IS NULL OR effective_end_date > effective_start_date)
     `);
   },

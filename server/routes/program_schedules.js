@@ -100,19 +100,40 @@ router.get(
   }
 );
 
-// CREATE PROGRAM SCHEDULE
 router.post('/', async (req, res) => {
+
   try {
 
-    const newProgramSchedule =
-      await Program_Schedule.create(req.body);
+    const {
+      program_ID,
+      schedule_day_type_ID,
+      start_time,
+      end_time,
+      effective_start_date,
+      admin_ID
+    } = req.body;
+
+    await db.sequelize.query(
+      "CALL sp_createProgramSchedule(?, ?, ?, ?, ?, ?)",
+      {
+        replacements: [
+          program_ID,
+          schedule_day_type_ID,
+          start_time,
+          end_time,
+          effective_start_date,
+          admin_ID
+        ]
+      }
+    );
 
     res.json({
-      success: true,
-      data: newProgramSchedule
+      success: true
     });
 
   } catch (err) {
+
+    console.error(err);
 
     res.status(500).json({
       success: false,
@@ -120,6 +141,76 @@ router.post('/', async (req, res) => {
     });
 
   }
+
 });
+
+router.get(
+  "/by-broadcast-date/:date",
+  async (req, res) => {
+
+    try {
+
+      const { date } = req.params;
+
+      const [results] =
+        await db.sequelize.query(`
+
+          SELECT
+              ps.*,
+              p.program_name
+
+          FROM Program_Schedule ps
+
+          INNER JOIN Program p
+              ON p.program_ID = ps.program_ID
+
+          WHERE
+
+              (
+                DAYOFWEEK(?) BETWEEN 2 AND 6
+                AND ps.schedule_day_type_ID = 1
+              )
+
+          OR
+
+              (
+                DAYOFWEEK(?) = 7
+                AND ps.schedule_day_type_ID = 2
+              )
+
+          OR
+
+              (
+                DAYOFWEEK(?) = 1
+                AND ps.schedule_day_type_ID = 3
+              )
+
+        `,
+        {
+          replacements: [
+            date,
+            date,
+            date
+          ]
+        });
+
+      res.json({
+        success: true,
+        data: results
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message: err.message
+      });
+
+    }
+
+  }
+);
 
 module.exports = router;

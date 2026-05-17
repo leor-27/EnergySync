@@ -26,25 +26,25 @@ router.get('/', async (req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
-  try {
+// router.post('/', async (req, res) => {
+//   try {
 
-    const newNotification =
-      await Notifications.create(req.body);
+//     const newNotification =
+//       await Notifications.create(req.body);
 
-    res.json({
-      success: true,
-      data: newNotification
-    });
+//     res.json({
+//       success: true,
+//       data: newNotification
+//     });
 
-  } catch (err) {
+//   } catch (err) {
 
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
+//     res.status(500).json({
+//       success: false,
+//       message: err.message
+//     });
 
-  }
-});
+//   }
+// });
 
 module.exports = router;

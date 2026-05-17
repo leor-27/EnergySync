@@ -26,9 +26,16 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
-    password_hash: DataTypes.CHAR,
+    password_hash: {
+      type: DataTypes.CHAR(60),
+      allowNull: true
+    },
     is_initialized: DataTypes.BOOLEAN,
-    reset_token_hash: DataTypes.CHAR,
+    reset_token_hash: {
+      type: DataTypes.CHAR(64),
+      allowNull: true,
+      unique: true
+    },
     reset_token_expires: DataTypes.DATE,
     image_path: {
       type: DataTypes.STRING,

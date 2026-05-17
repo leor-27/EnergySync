@@ -63,7 +63,7 @@ router.post("/assign-dj", async (req, res) => {
   try {
 
     await db.sequelize.query(
-      "CALL sp_AdminAssignDJ(?, ?, ?, ?)",
+      "CALL sp_superadminAssignDJ(?, ?, ?, ?)",
       {
         replacements: [
           dj_ID,
@@ -85,6 +85,135 @@ router.post("/assign-dj", async (req, res) => {
 
     res.status(500).json({
       success: false
+    });
+
+  }
+
+});
+
+router.get("/full", async (req, res) => {
+
+  try {
+
+    const [results] =
+      await db.sequelize.query(`
+        SELECT
+          pda.assignment_ID,
+          dj.stage_name,
+          p.program_name,
+          pda.effective_start_date,
+          pda.effective_end_date,
+          a.first_name AS assigned_by
+
+        FROM Program_DJ_Assignment pda
+
+        INNER JOIN DJ dj
+          ON pda.dj_ID = dj.dj_ID
+
+        INNER JOIN Program p
+          ON pda.program_ID = p.program_ID
+
+        LEFT JOIN Admin a
+          ON pda.assigned_by_admin_ID = a.admin_ID
+      `);
+
+    res.json({
+      success: true,
+      data: results
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+
+});
+
+router.get("/detailed", async (req, res) => {
+
+  try {
+
+    const [results] =
+      await db.sequelize.query(`
+
+        SELECT
+          pda.assignment_ID,
+          dj.stage_name,
+          p.program_name,
+          pda.effective_start_date,
+          pda.effective_end_date,
+          a.first_name AS assigned_by
+
+        FROM Program_DJ_Assignment pda
+
+        INNER JOIN DJ dj
+          ON pda.dj_ID = dj.dj_ID
+
+        INNER JOIN Program p
+          ON pda.program_ID = p.program_ID
+
+        LEFT JOIN Admin a
+          ON pda.assigned_by_admin_ID = a.admin_ID
+
+      `);
+
+    res.json({
+      success: true,
+      data: results
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+
+  }
+
+});
+
+router.get("/program-djs", async (req, res) => {
+
+  try {
+
+    const [results] =
+      await db.sequelize.query(`
+
+        SELECT
+          pda.assignment_ID,
+          p.program_name,
+          dj.stage_name AS assigned_dj
+
+        FROM Program_DJ_Assignment pda
+
+        INNER JOIN Program p
+          ON pda.program_ID = p.program_ID
+
+        INNER JOIN DJ dj
+          ON pda.dj_ID = dj.dj_ID
+
+      `);
+
+    res.json({
+      success: true,
+      data: results
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message
     });
 
   }

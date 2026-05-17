@@ -47,9 +47,9 @@ module.exports = {
       {
         assignment_ID: 1,
         substitute_dj_ID: 2,
-        status: 'Accepted',
-        broadcast_date: '2026-04-23',
-        assigned_at: '2026-04-23 10:57:29',
+        status: 'Cancelled',
+        broadcast_date: '2026-04-24',
+        assigned_at: '2026-04-24 10:57:29',
         assigned_by_admin_ID: 1
       },
       {
