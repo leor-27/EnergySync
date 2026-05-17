@@ -18,6 +18,8 @@ type Program = {
 };
 
 export default function SuperadminProgram() {
+    const API_URL =
+  import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     const [programs, setPrograms] = useState<Program[]>([]);
@@ -72,19 +74,59 @@ export default function SuperadminProgram() {
     useEffect(() => {
     const fetchData = async () => {
       try {
-        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsRes = await fetch(
+  `${API_URL}/api/djs`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const djsJson = await djsRes.json();
 
-        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsRes = await fetch(
+  `${API_URL}/api/programs`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const programsJson = await programsRes.json();
 
-        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+        const schedulesRes = await fetch(
+  `${API_URL}/api/program_schedules`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const schedulesJson = await schedulesRes.json();
 
-        const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
+        const programDjAssignmentsRes = await fetch(
+  `${API_URL}/api/program_dj_assignments`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
 
-        const scheduleDayTypesRes = await fetch("http://localhost:5000/api/schedule_day_types");
+        const scheduleDayTypesRes = await fetch(
+  `${API_URL}/api/schedule_day_types`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const scheduleDayTypesJson = await scheduleDayTypesRes.json();
 
         if (djsJson.success) {
@@ -187,11 +229,13 @@ export default function SuperadminProgram() {
 
                 // UPDATE PROGRAM
                 const response = await fetch(
-                    `http://localhost:5000/api/programs/${editingId}`,
+                    `${API_URL}/api/programs/${editingId}`,
                     {
                         method: "PUT",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            Authorization:
+    `Bearer ${localStorage.getItem("token")}`
                         },
                         body: JSON.stringify({
                             program_name: formData.title,
@@ -222,11 +266,13 @@ export default function SuperadminProgram() {
             } else {
                 // CREATE PROGRAM
                 const response = await fetch(
-                    "http://localhost:5000/api/programs",
+                    `${API_URL}/api/programs`,
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            Authorization:
+    `Bearer ${localStorage.getItem("token")}`
                         },
                         body: JSON.stringify({
                             program_name: formData.title,
@@ -257,9 +303,13 @@ export default function SuperadminProgram() {
     const handleDelete = async (id: number) => {
     try {
         const response = await fetch(
-            `http://localhost:5000/api/programs/${id}`,
+            `${API_URL}/api/programs/${id}`,
             {
-                method: "DELETE"
+                method: "DELETE",
+headers: {
+  Authorization:
+    `Bearer ${localStorage.getItem("token")}`
+}
             }
         );
 
@@ -289,10 +339,6 @@ export default function SuperadminProgram() {
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
 );
-
-    useEffect(() => {
-
-    }, []);
 
     return (
         <>
@@ -381,15 +427,55 @@ export default function SuperadminProgram() {
                                 {filteredPrograms.length === 0 ? (
                                     <div className="sp-no-msg">No programs found.</div>
                                 ) : (
-                                    filteredPrograms.map((program: any) => (
+                                    filteredPrograms.map((program: any) => {
+
+    const now = new Date();
+
+    const currentHour =
+      now.getHours() +
+      now.getMinutes() / 60;
+
+    const parseTimeToDecimal = (
+      time: string
+    ) => {
+
+      const [hour, minute] =
+  time
+    .split(":")
+    .slice(0, 2)
+    .map(Number);
+
+      return hour + minute / 60;
+
+    };
+
+    const hasSchedule =
+  program.start_time &&
+  program.end_time;
+
+const isOnAir =
+  hasSchedule &&
+  currentHour >=
+    parseTimeToDecimal(program.start_time)
+  &&
+  currentHour <
+    parseTimeToDecimal(program.end_time);
+
+    return (
                                         <Card key={program.program_ID} className="sp-item-card border-0 shadow-none">
                                             <CardContent className="p-0">
                                                 <div className="sp-item-header">
                                                     <div className="sp-item-title-row">
                                                         <h3>{program.program_name}</h3>
-                                                        <span className={`sp-status-badge ${program.status === 'ON AIR' ? 'sp-status-on-air' : 'sp-status-offline'}`}>
-                                                            OFFLINE
-                                                        </span>
+                                                        <span
+  className={`sp-status-badge ${
+    isOnAir
+      ? "sp-status-on-air"
+      : "sp-status-offline"
+  }`}
+>
+  {isOnAir ? "ON AIR" : "OFFLINE"}
+</span>
                                                     </div>
                                                     <div className="sp-actions">
                                                         <Button className="sp-icon-btn sp-edit-btn focus-visible:ring-0" title="Edit" onClick={() => handleEditClick(program)}>
@@ -405,7 +491,8 @@ export default function SuperadminProgram() {
                                                 <p className="sp-description">{program.description}</p>
                                             </CardContent>
                                         </Card>
-                                    ))
+    );
+})
                                 )}
                             </div>
                         </Card>

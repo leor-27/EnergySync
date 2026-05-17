@@ -1,15 +1,15 @@
-* {
+/* * {
     box-sizing: border-box;
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-}
+} */
 
-:root {
+/* :root {
     --energy-blue: #1C5186; 
     --sidebar-width: 220px;
     --active-light-blue: #E8F0FE;
-}
+} */
 
 .superadmin-layout {
     display: flex;

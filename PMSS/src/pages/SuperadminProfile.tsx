@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Calendar, Camera, Edit2, Bell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/contexts/useAuth"
 
 export default function SuperadminProfile() {
+    const API_URL =
+  import.meta.env.VITE_API_URL;
     const location = useLocation();
     const passedNotif = location.state?.selectedNotif;
 
@@ -30,7 +32,7 @@ export default function SuperadminProfile() {
     formData.append("admin_ID", String(user.admin_ID));
 
     const res = await fetch(
-      "http://localhost:5000/api/admins/upload-profile",
+      `${API_URL}/api/admins/upload-profile`,
       {
         method: "POST",
         body: formData
@@ -54,7 +56,7 @@ if (data.success) {
   setUser(updatedUser);
 
   setProfileImage(
-    `http://localhost:5000/${data.image_path}`
+    `${API_URL}/${data.image_path}`
   );
 }
 
@@ -73,6 +75,17 @@ if (data.success) {
     const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const { user, setUser } = useAuth();
+    const [editStageName, setEditStageName] =
+  useState("");
+
+const [editUsername, setEditUsername] =
+  useState("");
+
+const [editFirstName, setEditFirstName] =
+  useState("");
+
+const [editLastName, setEditLastName] =
+  useState("");
 
 const currentAdmin = user;
 
@@ -94,22 +107,60 @@ useState<string | null>(null);
     useEffect(() => {
         const fetchData = async () => {
       try {
-        const adminsRes = await fetch("http://localhost:5000/api/admins");
-        const adminsJson = await adminsRes.json();
 
-        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsRes = await fetch(
+  `${API_URL}/api/djs`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const djsJson = await djsRes.json();
 
-        const notificationsRes = await fetch("http://localhost:5000/api/notifications");
+       const notificationsRes = await fetch(
+  `${API_URL}/api/notifications`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const notificationsJson = await notificationsRes.json();
 
-        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsRes = await fetch(
+  `${API_URL}/api/programs`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const programsJson = await programsRes.json();
 
-        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+        const schedulesRes = await fetch(
+  `${API_URL}/api/program_schedules`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const schedulesJson = await schedulesRes.json();
 
-        const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
+        const programDjAssignmentsRes = await fetch(
+  `${API_URL}/api/program_dj_assignments`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
 
         // if (adminsJson.success) {
@@ -143,7 +194,7 @@ useState<string | null>(null);
     };
 
     fetchData();
-    }, []);
+    }, [API_URL]);
 
     const programCards = program_schedules
   .map((schedule: any) => {
@@ -151,9 +202,11 @@ useState<string | null>(null);
       (p) => p.program_ID === schedule.program_ID
     );
 
-    const matchedAssignment = program_dj_assignments.find(
-  (a) => a.program_ID === schedule.program_ID
-);
+    const matchedAssignment =
+  program_dj_assignments.find(
+    (a) =>
+      a.schedule_ID === schedule.schedule_ID
+  );
 
     const matchedDj = djs.find(
       (d) => d.dj_ID === matchedAssignment?.dj_ID
@@ -182,9 +235,90 @@ useState<string | null>(null);
         return <div>Loading...</div>;
     }
 
+     const handleSaveProfile = async () => {
+
+  try {
+
+    const res = await fetch(
+      `${API_URL}/api/djs/update-profile`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          admin_ID: user?.admin_ID,
+          dj_ID: currentDj?.dj_ID,
+          stage_name: editStageName,
+          username: editUsername,
+          first_name: editFirstName,
+          last_name: editLastName
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success && user) {
+
+      const updatedUser = {
+        ...user,
+        username: editUsername,
+        first_name: editFirstName,
+        last_name: editLastName,
+        stage_name: editStageName
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(updatedUser)
+      );
+
+      setUser(updatedUser);
+
+      setDjs((prev) =>
+        prev.map((dj) =>
+          dj.dj_ID === currentDj?.dj_ID
+            ? {
+                ...dj,
+                stage_name: editStageName
+              }
+            : dj
+        )
+      );
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  }
+};
+
 const currentDj = djs.find(
   (dj) => Number(dj.admin_ID) === Number(user?.admin_ID)
 ) || null;
+
+const handleEditOpen = () => {
+
+  setEditStageName(
+    currentDj?.stage_name || ""
+  );
+
+  setEditUsername(
+    currentAdmin?.username || ""
+  );
+
+  setEditFirstName(
+    currentAdmin?.first_name || ""
+  );
+
+  setEditLastName(
+    currentAdmin?.last_name || ""
+  );
+
+};
 
     return (
         <>
@@ -204,11 +338,17 @@ const currentDj = djs.find(
                             <div className="user-text-info">
                                 <div className="name-row">
                                     <h2 style={{ fontSize: '23px' }}>
-                                        <strong><strong>
+                                        <strong>
   {currentDj?.stage_name || currentAdmin?.username || "Superadmin"}
-</strong></strong>
+</strong>
                                     </h2>
-                                    <Dialog>
+                                    <Dialog
+  onOpenChange={(open) => {
+    if (open) {
+      handleEditOpen();
+    }
+  }}
+>
                                         <DialogTrigger asChild>
                                             <Edit2 size={22} className="edit-pencil" />
                                         </DialogTrigger>
@@ -221,23 +361,53 @@ const currentDj = djs.find(
                                             <div className="profile-dialog-form">
                                                 <div className="profile-dialog-group">
                                                     <Label>Stage Name</Label>
-                                                    <Input defaultValue={currentDj?.stage_name || ""} />
+                                                    <Input
+  value={editStageName}
+  onChange={(e) =>
+    setEditStageName(e.target.value)
+  }
+/>
                                                 </div>
 
                                                 <div className="profile-dialog-group">
                                                     <Label>Full Name</Label>
-                                                    <Input defaultValue={`${currentAdmin?.first_name || ""} ${currentAdmin?.last_name || ""}`} />
+                                                    <Input
+  value={`${editFirstName} ${editLastName}`}
+  onChange={(e) => {
+
+    const parts =
+      e.target.value.split(" ");
+
+    setEditFirstName(parts[0] || "");
+
+    setEditLastName(
+      parts.slice(1).join(" ")
+    );
+
+  }}
+/>
                                                 </div>
 
                                                 <div className="profile-dialog-group">
                                                     <Label>Username</Label>
-                                                    <Input defaultValue={`@${currentAdmin?.username || ""}`} />
+                                                    <Input
+  value={editUsername}
+  onChange={(e) =>
+    setEditUsername(
+      e.target.value.replace("@", "")
+    )
+  }
+/>
                                                 </div>
                                             </div>
 
                                             <DialogFooter>
-                                                <Button variant="outline">Cancel</Button>
-                                                <Button>Save Changes</Button>
+                                                <DialogClose asChild>
+                                                                            <Button variant="outline">
+                                                                              Cancel
+                                                                            </Button>
+                                                                          </DialogClose>
+                                                <Button  onClick={handleSaveProfile}>Save Changes</Button>
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>

@@ -76,6 +76,9 @@ export default function LoginForm() {
 
         setUser(data.user)
 
+        setPassword("")
+        setCredential("")
+
         toast.success("Login successful")
 
         if (data.user.role === "Superadmin") {
@@ -523,25 +526,25 @@ export default function LoginForm() {
 
               <p className="text-center text-[13px]">
 
-                <a
-                  href="#"
-                  className="hover:font-bold no-underline text-black"
+                <button
+                  type="button"
+                  className="hover:font-bold text-black"
                   onClick={() => setView("forgot")}
                 >
                   Forgot password?
-                </a>
+                </button>
 
               </p>
 
               <p className="text-center text-[13px]">
 
-                <a
-                  href="#"
-                  className="hover:font-bold no-underline text-black"
+                <button
+                  type="button"
+                  className="hover:font-bold text-black"
                   onClick={() => setView("request")}
                 >
                   First-time admin? Request access link.
-                </a>
+                </button>
 
               </p>
 
@@ -554,13 +557,13 @@ export default function LoginForm() {
 
             <p className="text-center text-[13px] mt-[25px]">
 
-              <a
-                href="#"
-                className="hover:font-bold no-underline text-black"
+              <button
+                type="button"
+                className="hover:font-bold text-black"
                 onClick={() => setView("login")}
               >
                 Back to Login
-              </a>
+              </button>
 
             </p>
           )}

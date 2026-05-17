@@ -4,12 +4,53 @@ import { Calendar, Search, SlidersHorizontal, Bell } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth"
 
 export default function AdminHome() {
+  const API_URL =
+  import.meta.env.VITE_API_URL
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [
+  readNotifications,
+  setReadNotifications
+] = useState<number[]>([])
+
+useEffect(() => {
+
+  const saved =
+    localStorage.getItem(
+      "readNotifications"
+    )
+
+  if (saved) {
+
+    setReadNotifications(
+      JSON.parse(saved)
+    )
+
+  }
+
+}, [])
+
+useEffect(() => {
+
+  localStorage.setItem(
+    "readNotifications",
+    JSON.stringify(
+      readNotifications
+    )
+  )
+
+}, [readNotifications])
+
   const [programs, setPrograms] = useState<any[]>([]);
   const [program_schedules, setProgramSchedules] = useState<any[]>([]);
   const [djs, setDjs] = useState<any[]>([]);
   const { user } = useAuth()
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] =
+  useState(
+    new Date()
+      .toISOString()
+      .split("T")[0]
+  )
   const [
   program_dj_assignments,
   setProgramDjAssignments
@@ -30,25 +71,55 @@ const [
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const [
+          djsRes,
+          notificationsRes,
+          programsRes,
+          schedulesRes,
+          assignmentsRes
+        ] = await Promise.all([
+         fetch(`${API_URL}/api/djs`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
+         fetch(`${API_URL}/api/notifications`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
+         fetch(`${API_URL}/api/programs`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
+         fetch(`${API_URL}/api/program_schedules`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
+fetch(`${API_URL}/api/program_dj_assignments`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+})
+
+        ])
         const djsJson = await djsRes.json();
 
-        const notificationsRes = await fetch("http://localhost:5000/api/notifications");
         const notificationsJson = await notificationsRes.json();
 
-        const programsRes = await fetch("http://localhost:5000/api/programs");
         const programsJson = await programsRes.json();
 
-        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
         const schedulesJson = await schedulesRes.json();
 
-        const programDjAssignmentsRes =
-  await fetch(
-    "http://localhost:5000/api/program_dj_assignments"
-  );
-
 const programDjAssignmentsJson =
-  await programDjAssignmentsRes.json();
+  await assignmentsRes.json();
 
         if (djsJson.success) {
           setDjs(djsJson.data);
@@ -81,7 +152,7 @@ const programDjAssignmentsJson =
     };
 
     fetchData();
-  }, []);
+  }, [API_URL]);
 
   const currentDj = djs.find(
     (dj) => Number(dj.admin_ID) === Number(user?.admin_ID)
@@ -131,16 +202,46 @@ const programDjAssignmentsJson =
     );
 
    // Handler to navigate and pass notification data
-  const handleNotifClick = (notif: any) => {
-    navigate("/admin-profile", { state: { selectedNotif: notif } });
-  };
+  const handleNotifClick =
+(notif: any) => {
+
+  setReadNotifications((prev) => {
+
+  if (
+    prev.includes(
+      notif.notification_ID
+    )
+  ) {
+    return prev
+  }
+
+  return [
+    ...prev,
+    notif.notification_ID
+  ]
+
+})
+
+  navigate(
+    "/admin-profile",
+    {
+      state: {
+        selectedNotif: notif
+      }
+    }
+  )
+
+}
 
   if (loading) {
     return <div>Loading...</div>;
   } // change to the query
 
-const handleSubmitUnavailable =
-async (program: any) => {
+  const handleAvailabilityUpdate =
+async (
+  program: any,
+  status: "Available" | "Unavailable"
+) => {
 
   try {
 
@@ -149,78 +250,71 @@ async (program: any) => {
         (a) =>
           a.schedule_ID ===
           program.schedule_ID
-      );
+      )
 
     if (!matchedAssignment) {
-
-      alert("Assignment not found");
-
-      return;
-
+      alert("Assignment not found")
+      return
     }
 
     if (
-  !remarks[program.schedule_ID]
-) {
-
-  alert(
-    "Remarks are required."
-  );
-
-  return;
-
-}
+      status === "Unavailable" &&
+      !remarks[program.schedule_ID]
+    ) {
+      alert("Remarks are required.")
+      return
+    }
 
     const res = await fetch(
-      "http://localhost:5000/api/dj-availability",
+       `${API_URL}/api/dj-availability`,
       {
-
         method: "POST",
 
         headers: {
-          "Content-Type":
-            "application/json"
-        },
+  "Content-Type":
+    "application/json",
+
+  Authorization:
+    `Bearer ${localStorage.getItem("token")}`
+},
 
         body: JSON.stringify({
 
           assignment_ID:
             matchedAssignment.assignment_ID,
 
-          broadcast_date:
-            new Date()
-              .toISOString()
-              .split("T")[0],
+          broadcast_date: selectedDate,
 
-          status: "Unavailable",
+          status,
 
           remarks:
-            remarks[
-              program.schedule_ID
-            ]
+            status === "Unavailable"
+              ? remarks[
+                  program.schedule_ID
+                ]
+              : null
 
         })
-
       }
-    );
+    )
 
-    const data = await res.json();
+    const data = await res.json()
 
     if (data.success) {
 
       alert(
-        "Unavailability submitted successfully."
-      );
+        `DJ marked as ${status}`
+      )
 
     }
 
   } catch (err) {
 
-    console.error(err);
+    console.error(err)
 
   }
 
-};
+}
   
   return (
     <>
@@ -245,41 +339,68 @@ async (program: any) => {
               </div>
               <select
   className="status-dropdown"
-  value={selectedStatuses[program.schedule_ID] || "Available"}
-  onChange={(e) =>
+
+  value={
+    selectedStatuses[
+      program.schedule_ID
+    ] || "Available"
+  }
+
+  onChange={(e) => {
+
+    const value = e.target.value
+
     setSelectedStatuses({
       ...selectedStatuses,
-      [program.schedule_ID]: e.target.value
+      [program.schedule_ID]: value
     })
-  }
+
+    // only auto-submit AVAILABLE
+    if (value === "Available") {
+
+      handleAvailabilityUpdate(
+        program,
+        "Available"
+      )
+
+    }
+
+  }}
 >
   <option value="Available">Available</option>
   <option value="Unavailable">Unavailable</option>
 </select>
 
 {selectedStatuses[program.schedule_ID] === "Unavailable" && (
+
   <div style={{ marginTop: "10px" }}>
-    
+
     <textarea
       placeholder="Enter remarks..."
       value={remarks[program.schedule_ID] || ""}
+
       onChange={(e) =>
         setRemarks({
           ...remarks,
-          [program.schedule_ID]: e.target.value
+          [program.schedule_ID]:
+            e.target.value
         })
       }
     />
 
     <button
       onClick={() =>
-        handleSubmitUnavailable(program)
+        handleAvailabilityUpdate(
+          program,
+          "Unavailable"
+        )
       }
     >
       Submit
     </button>
 
   </div>
+
 )}
             </div>
           ))
@@ -292,7 +413,19 @@ async (program: any) => {
           <div className="notifications-header">
             <div className="notif-title">
               <Bell size={18} />
-              <span>Notifications</span>
+              <span>
+  Notifications
+  (
+    {
+      notifications.filter(
+        (n) =>
+          !readNotifications.includes(
+            n.notification_ID
+          )
+      ).length
+    }
+  )
+</span>
             </div>
             <div className="notif-search">
               <input type="text" placeholder="Search..." />
@@ -301,9 +434,26 @@ async (program: any) => {
           </div>
 
           <div className="notif-list">
-            {notifications.map((notif) => (
+            {[...notifications]
+
+  .sort(
+    (a, b) =>
+      new Date(
+        b.notified_at
+      ).getTime()
+      -
+      new Date(
+        a.notified_at
+      ).getTime()
+  )
+
+  .map((notif) => (
               <div className="notif-item clickable" key={notif.notification_ID} onClick={() => handleNotifClick(notif)}>
-              <div className="notif-dot red"></div>
+              {!readNotifications.includes(
+  notif.notification_ID
+) && (
+  <div className="notif-dot red"></div>
+)}
               <div className="notif-content">
                 <p>{notif.message}</p>
                 <span className="notif-time">

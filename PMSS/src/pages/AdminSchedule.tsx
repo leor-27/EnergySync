@@ -17,13 +17,31 @@ type ScheduledProgram = {
     status: "Available" | "Unavailable";
 };
 
+const parseTimeToDecimal = (
+  time: string
+) => {
+
+  const [
+    hour,
+    minute
+  ] = time
+    .split(":")
+    .map(Number)
+
+  return hour + minute / 60
+
+}
+
 export default function AdminSchedule() {
+  const API_URL =
+  import.meta.env.VITE_API_URL
     const navigate = useNavigate();
 
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
+    const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState("month");
-    const { user } = useAuth()
+    const { user } = useAuth();
 
     // const [schedule, setSchedule] = useState<ScheduledProgram[]>([
     //     { 
@@ -59,16 +77,46 @@ export default function AdminSchedule() {
         assignmentsRes,
         djsRes
       ] = await Promise.all([
-        fetch("http://localhost:5000/api/programs"),
-        fetch("http://localhost:5000/api/program_schedules"),
-        fetch("http://localhost:5000/api/program_dj_assignments"),
-        fetch("http://localhost:5000/api/djs")
+         fetch(`${API_URL}/api/programs`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
+         fetch(`${API_URL}/api/program_schedules`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
+         fetch(`${API_URL}/api/program_dj_assignments`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
+         fetch(`${API_URL}/api/djs`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+}),
       ])
 
       const programsJson = await programsRes.json()
       const schedulesJson = await schedulesRes.json()
       const assignmentsJson = await assignmentsRes.json()
       const djsJson = await djsRes.json()
+
+      if (
+  !programsJson.success ||
+  !schedulesJson.success ||
+  !assignmentsJson.success ||
+  !djsJson.success
+) {
+  console.error("Failed to fetch schedule data")
+  return
+}
 
       const currentDj = djsJson.data.find(
         (dj: any) =>
@@ -104,8 +152,15 @@ export default function AdminSchedule() {
             timeSlot:
               `${sched.start_time} - ${sched.end_time}`,
 
-            start: 0,
-            end: 0,
+            start:
+              parseTimeToDecimal(
+                sched.start_time
+              ),
+
+            end:
+              parseTimeToDecimal(
+                sched.end_time
+              ),
 
             dj:
               currentDj?.stage_name ||
@@ -129,7 +184,7 @@ export default function AdminSchedule() {
 
   fetchSchedule()
 
-}, [user])
+}, [user, API_URL])
 
     return (
         <>
@@ -154,7 +209,7 @@ export default function AdminSchedule() {
                                     <CardContent className="p-4">
                                         <div className="ss-avail-info">
                                             <h4>{prog.title}</h4>
-                                            <p>🕒 {prog.timeSlot.split("|")[0]}</p>
+                                            <p>🕒 {prog.timeSlot}</p>
                                         </div>
                                     </CardContent>
                                 </Card>

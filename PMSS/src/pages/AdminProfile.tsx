@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom"
 import { Calendar, Camera, Edit2, Bell } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/contexts/useAuth"
 
 export default function AdminProfile() {
+  const API_URL =
+  import.meta.env.VITE_API_URL
     const location = useLocation();
     const passedNotif = location.state?.selectedNotif;
     const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -26,6 +28,10 @@ export default function AdminProfile() {
 const [editUsername, setEditUsername] = useState("");
 const [editFirstName, setEditFirstName] = useState("");
 const [editLastName, setEditLastName] = useState("");
+const [
+  readNotifications,
+  setReadNotifications
+] = useState<number[]>([])
 
   const currentDj = djs.find(
     (dj) =>
@@ -36,27 +42,61 @@ const [editLastName, setEditLastName] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const adminsRes = await fetch("http://localhost:5000/api/admins");
-        const adminsJson = await adminsRes.json();
 
-        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsRes = await fetch(
+  `${API_URL}/api/djs`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const djsJson = await djsRes.json();
 
-        const notificationsRes = await fetch("http://localhost:5000/api/notifications");
+        const notificationsRes = await fetch(
+  `${API_URL}/api/notifications`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const notificationsJson = await notificationsRes.json();
 
-        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsRes = await fetch(
+  `${API_URL}/api/programs`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const programsJson = await programsRes.json();
 
-        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+       const schedulesRes = await fetch(
+  `${API_URL}/api/program_schedules`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const schedulesJson = await schedulesRes.json();
 
-        const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
+        const programDjAssignmentsRes = await fetch(
+  `${API_URL}/api/program_dj_assignments`,
+  {
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);      
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
-
-        // if (adminsJson.success) {
-        //   setAdmins(adminsJson.data);
-        // }
 
         if (djsJson.success) {
           setDjs(djsJson.data);
@@ -85,7 +125,33 @@ const [editLastName, setEditLastName] = useState("");
     };
 
     fetchData();
-  }, []);
+  }, [API_URL]);
+
+  useEffect(() => {
+
+  const saved =
+    localStorage.getItem(
+      "readNotifications"
+    )
+
+  if (saved) {
+
+    setReadNotifications(
+      JSON.parse(saved)
+    )
+
+  }
+
+}, [])
+
+useEffect(() => {
+
+  localStorage.setItem(
+    "readNotifications",
+    JSON.stringify(readNotifications)
+  )
+
+}, [readNotifications])
 
   useEffect(() => {
 
@@ -106,12 +172,36 @@ const [editLastName, setEditLastName] = useState("");
   if (user?.image_path) {
 
     setProfileImage(
-      `http://localhost:5000/${user.image_path}`
+      `${API_URL}/${user.image_path}`
     );
+    
 
   }
 
-}, [user, currentDj]);
+}, [user, currentDj, API_URL]);
+
+useEffect(() => {
+
+  if (!passedNotif) return
+
+  setReadNotifications((prev) => {
+
+    if (
+      prev.includes(
+        passedNotif.notification_ID
+      )
+    ) {
+      return prev
+    }
+
+    return [
+      ...prev,
+      passedNotif.notification_ID
+    ]
+
+  })
+
+}, [passedNotif])
 
   // const currentAdmin = admins.find(
   //   (admin) => Number(admin.admin_ID) === Number(user?.admin_ID)
@@ -136,10 +226,14 @@ const [editLastName, setEditLastName] = useState("");
     );
 
     const res = await fetch(
-      "http://localhost:5000/api/admins/upload-profile",
+       `${API_URL}/api/admins/upload-profile`,
       {
         method: "POST",
-        body: formData
+    headers: {
+      Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+    },
+    body: formData
       }
     );
 
@@ -160,7 +254,7 @@ const [editLastName, setEditLastName] = useState("");
       setUser(updatedUser);
 
       setProfileImage(
-        `http://localhost:5000/${data.image_path}`
+        `${API_URL}/${data.image_path}`
       );
 
     }
@@ -217,11 +311,13 @@ const [editLastName, setEditLastName] = useState("");
   try {
 
     const res = await fetch(
-      "http://localhost:5000/api/djs/update-profile",
+      `${API_URL}/api/djs/update-profile`,
       {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization:
+    `Bearer ${localStorage.getItem("token")}`
         },
         body: JSON.stringify({
           admin_ID: user?.admin_ID,
@@ -281,7 +377,15 @@ const [editLastName, setEditLastName] = useState("");
           <Card className="info-card border shadow-none">
             <CardContent className="profile-card-content p-0">
               <div className="avatar-circle red-bg" onClick={() => fileInputRef.current?.click()}>
-                  {profileImage ? (<img src={profileImage} alt="Profile" className="profile-avatar-image"/>
+                  {profileImage ? (<img
+  src={profileImage}
+  alt="Profile"
+  className="profile-avatar-image"
+  onError={(e) => {
+    e.currentTarget.src =
+      "/default-profile.png"
+  }}
+/>
                     ) : (<Camera size={35} color="white" />)}
                   <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleImageUpload} />
               </div>
@@ -340,7 +444,11 @@ const [editLastName, setEditLastName] = useState("");
                       </div>
                 
                       <DialogFooter>
-                        <Button variant="outline">Cancel</Button>
+                        <DialogClose asChild>
+                            <Button variant="outline">
+                              Cancel
+                            </Button>
+                          </DialogClose>
                         <Button  onClick={handleSaveProfile}>Save Changes</Button>
                       </DialogFooter>
                     </DialogContent>
@@ -399,12 +507,29 @@ const [editLastName, setEditLastName] = useState("");
                                 </div>
                             </div>
                         )}
-              {notifications.map((notif) => (
+              {[...notifications]
+
+  .sort(
+    (a, b) =>
+      new Date(
+        b.notified_at
+      ).getTime()
+      -
+      new Date(
+        a.notified_at
+      ).getTime()
+  )
+
+  .map((notif) => (
               <div className="notif-card light-grey" key={notif.notification_ID}>
                 <p>{notif.message}</p>
                 <span className="notif-time">
                                     {new Date(notif.notified_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    <span className="unread-dot"></span>
+                                    {!readNotifications.includes(
+  notif.notification_ID
+) && (
+  <span className="unread-dot"></span>
+)}
                                 </span>
               </div>
               ))}

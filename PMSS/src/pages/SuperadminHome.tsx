@@ -4,6 +4,8 @@ import { Calendar, Search, SlidersHorizontal, Bell } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth"
 
 export default function SuperadminHome() {
+    const API_URL =
+  import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     const [notifications, setNotifications] = useState<any[]>([]);
@@ -13,23 +15,53 @@ export default function SuperadminHome() {
     const [program_dj_assignments, setProgramDjAssignments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth()
+    const currentDj = djs.find(
+  (dj) =>
+    Number(dj.admin_ID) ===
+    Number(user?.admin_ID)
+);
 
     useEffect(() => {
     const fetchData = async () => {
       try {
-        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsRes = await fetch(`${API_URL}/api/djs`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+});
         const djsJson = await djsRes.json();
 
-        const notificationsRes = await fetch("http://localhost:5000/api/notifications");
+        const notificationsRes = await fetch(`${API_URL}/api/notifications`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+});
         const notificationsJson = await notificationsRes.json();
 
-        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsRes = await fetch(`${API_URL}/api/programs`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+});
         const programsJson = await programsRes.json();
 
-        const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
+        const schedulesRes = await fetch(`${API_URL}/api/program_schedules`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+});
         const schedulesJson = await schedulesRes.json();
 
-        const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
+        const programDjAssignmentsRes = await fetch(`${API_URL}/api/program_dj_assignments`, {
+  headers: {
+    Authorization:
+      `Bearer ${localStorage.getItem("token")}`
+  }
+});
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
 
         if (djsJson.success) {
@@ -59,7 +91,7 @@ export default function SuperadminHome() {
     };
 
     fetchData();
-    }, []);
+    }, [API_URL, user]);
 
     const programCards = program_schedules.map((schedule: any) => {
         const matchedProgram = programs.find(p => p.program_ID === schedule.program_ID);
@@ -91,7 +123,7 @@ export default function SuperadminHome() {
     return (
         <>
             <div className="welcome-section">
-                <h1 className="welcome-text">Welcome, {user?.stage_name || "DJ"}!</h1>
+                <h1 className="welcome-text">Welcome, {currentDj?.stage_name || user?.username || "Superadmin"}!</h1>
             </div>
 
             <div className="dashboard-grid">

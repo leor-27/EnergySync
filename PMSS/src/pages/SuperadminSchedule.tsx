@@ -37,7 +37,14 @@ substitute_dj?: string;
 };
 
 export default function SuperadminSchedule() {
+  const API_URL =
+  import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
+
+    const [selectedProgramId, setSelectedProgramId] = useState("");
+const [startTime, setStartTime] = useState("");
+const [endTime, setEndTime] = useState("");
+const [selectedDayType, setSelectedDayType] = useState("");
 
     // const [schedule, setSchedule] = useState<ScheduledProgram[]>([
     // { 
@@ -96,14 +103,25 @@ export default function SuperadminSchedule() {
     useEffect(() => {
     const fetchData = async () => {
       try {
-        const djsRes = await fetch("http://localhost:5000/api/djs");
+        const djsRes = await fetch(
+  `${API_URL}/api/djs`,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const djsJson = await djsRes.json();
 
-        const programsRes = await fetch("http://localhost:5000/api/programs");
+        const programsRes = await fetch(
+  `${API_URL}/api/programs`,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const programsJson = await programsRes.json();
-
-        // const schedulesRes = await fetch("http://localhost:5000/api/program_schedules");
-        // const schedulesJson = await schedulesRes.json();
 
         const formattedSelectedDate =
 selectedDate
@@ -112,7 +130,7 @@ selectedDate
 
 const schedulesRes =
 await fetch(
-  `http://localhost:5000/api/schedule-by-date/${formattedSelectedDate}`
+  `${API_URL}/api/schedule-by-date/${formattedSelectedDate}`
 );
 
 const schedulesJson =
@@ -126,18 +144,40 @@ if (schedulesJson.success) {
 
 }
 
-        const programDjAssignmentsRes = await fetch("http://localhost:5000/api/program_dj_assignments");
+const programDjAssignmentsRes = await fetch(
+  `${API_URL}/api/program_dj_assignments`,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
+
         const programDjAssignmentsJson = await programDjAssignmentsRes.json();
 
-        const scheduleDayTypesRes = await fetch("http://localhost:5000/api/schedule_day_types");
+        const scheduleDayTypesRes = await fetch(
+  `${API_URL}/api/schedule_day_types`,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const scheduleDayTypesJson = await scheduleDayTypesRes.json();
 
-        const substitutionsRes = await fetch("http://localhost:5000/api/substitutions");
+        const substitutionsRes = await fetch(
+  `${API_URL}/api/substitutions`,
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  }
+);
         const substitutionsJson = await substitutionsRes.json();
 
         const pendingRes =
   await fetch(
-    "http://localhost:5000/api/dj_availability/pending-unavailability"
+    `${API_URL}/api/dj_availability/pending-unavailability`
   );
 
 const pendingJson =
@@ -190,7 +230,7 @@ if (pendingJson.success) {
 
     const handleCreate = () => alert("Open Create Schedule Form");
     const handleEdit = (id: number) => {
-        const selectedProgram = programSchedules.find(
+        const selectedProgram = formattedProgramSchedules.find(
             (prog: any) => prog.schedule_ID === id
         );
 
@@ -208,7 +248,7 @@ if (pendingJson.success) {
 
     const response =
       await fetch(
-        "http://localhost:5000/api/dj_availability/approve",
+        `${API_URL}/api/dj_availability/approve`,
         {
           method: "PUT",
 
@@ -219,7 +259,7 @@ if (pendingJson.success) {
 
           body: JSON.stringify({
             availability_ID,
-            superadmin_ID: 1
+            superadmin_ID: user?.admin_ID
           })
         }
       );
@@ -249,7 +289,7 @@ const handleReject = async (
 
     const response =
       await fetch(
-        "http://localhost:5000/api/dj_availability/reject",
+        `${API_URL}/api/dj_availability/reject`,
         {
           method: "PUT",
 
@@ -260,7 +300,7 @@ const handleReject = async (
 
           body: JSON.stringify({
             availability_ID,
-            superadmin_ID: 1
+            superadmin_ID: user?.admin_ID
           })
         }
       );
@@ -296,7 +336,7 @@ const handleAssignDJ = async (
   try {
 
     const response = await fetch(
-      "http://localhost:5000/api/program_dj_assignments/assign-dj",
+      `${API_URL}/api/program_dj_assignments/assign-dj`,
       {
         method: "POST",
 
@@ -307,7 +347,7 @@ const handleAssignDJ = async (
         body: JSON.stringify({
           dj_ID: selectedDjId,
           program_ID,
-          admin_ID: 1,
+          admin_ID: user?.admin_ID,
           start_date: new Date()
             .toISOString()
             .split("T")[0]
@@ -338,7 +378,7 @@ const handleAssignDJ = async (
 
     try {
         const response = await fetch(
-            `http://localhost:5000/api/program_schedules/${id}`,
+            `${API_URL}/api/program_schedules/${id}`,
             {
                 method: "DELETE",
             }
@@ -359,7 +399,7 @@ const handleAssignDJ = async (
 };
 
     const handleAssignSub = (id: number) => {
-        const selectedProgram = programSchedules.find((prog) => prog.schedule_ID === id);
+        const selectedProgram = formattedProgramSchedules.find((prog) => prog.schedule_ID === id);
 
         if (selectedProgram) {
             setEditingProgram(selectedProgram);
@@ -376,7 +416,7 @@ async (
   try {
 
     const res = await fetch(
-      "http://localhost:5000/api/substitutions/assign-substitute",
+      `${API_URL}/api/substitutions/assign-substitute`,
       {
 
         method: "POST",
@@ -423,7 +463,7 @@ async (
 
 };
 
-    const programSchedules: ScheduledProgram[] = programs
+    const formattedProgramSchedules: ScheduledProgram[] = programs
     .map((program: any) => {
         const matchedSchedules = program_schedules.filter(
             (schedule: any) =>
@@ -510,6 +550,10 @@ substitute_dj:
         };
     })
     .filter(Boolean) as ScheduledProgram[];
+
+    if (loading) {
+  return <div>Loading...</div>;
+}
     
     return (
         <>
@@ -529,7 +573,7 @@ substitute_dj:
                         <Card className="ss-availability-widget">
                             <CardContent>
                                 <div className="ss-avail-list">
-                                    {programSchedules.map(prog => (
+                                    {formattedProgramSchedules.map(prog => (
                                         <Card key={prog.schedule_ID} className="ss-avail-item">
                                             <CardContent className="p-4">
                                                 <div className="ss-avail-info">
@@ -761,10 +805,26 @@ substitute_dj:
                                             <div className="ss-dialog-form">
                                                 <div className="ss-form-group">
                                                     <Label>Program</Label>
-                                                    <select className="ss-program-select">
-                                                        <option>Harambogan Sa Radyo</option>
-                                                        <option>Kumpletos Rekados</option>
-                                                    </select>
+                                                    <select
+  className="ss-program-select"
+  value={selectedProgramId}
+  onChange={(e) =>
+    setSelectedProgramId(e.target.value)
+  }
+>
+  <option value="">
+    Select Program
+  </option>
+
+  {programs.map((program) => (
+    <option
+      key={program.program_ID}
+      value={program.program_ID}
+    >
+      {program.program_name}
+    </option>
+  ))}
+</select>
                                                 </div>
 
                                                 <div className="ss-form-group">
@@ -780,41 +840,50 @@ substitute_dj:
                                                     <Label>Time Slot</Label>
 
                                                     <div className="ss-time-slot-row">
-                                                        <select className="ss-time-dropdown">
-                                                            <option>9:00</option>
-                                                            <option>10:00</option>
-                                                            <option>11:00</option>
-                                                        </select>
-
-                                                        <select className="ss-ampm-dropdown">
-                                                            <option>AM</option>
-                                                            <option>PM</option>
-                                                        </select>
+                                                       <Input
+                                                          type="time"
+                                                          value={startTime}
+                                                          onChange={(e) =>
+                                                            setStartTime(e.target.value)
+                                                          }
+                                                        />
 
                                                         <span className="ss-time-dash">-</span>
 
                                                         {/* END TIME */}
-                                                        <select className="ss-time-dropdown">
-                                                            <option>9:00</option>
-                                                            <option>10:00</option>
-                                                            <option>11:00</option>
-                                                        </select>
-
-                                                        <select className="ss-ampm-dropdown">
-                                                            <option>AM</option>
-                                                            <option>PM</option>
-                                                        </select>
+                                                        <Input
+                                                          type="time"
+                                                          value={endTime}
+                                                          onChange={(e) =>
+                                                            setEndTime(e.target.value)
+                                                          }
+                                                        />
                                                     </div>
                                                 </div>
 
                                                 <div className="ss-form-group">
                                                     <Label>Day</Label>
 
-                                                    <select className="ss-day-select">
-                                                        <option>WEEKDAYS</option>
-                                                        <option>SATURDAY</option>
-                                                        <option>SUNDAY</option>
-                                                    </select>
+                                                    <select
+  className="ss-day-select"
+  value={selectedDayType}
+  onChange={(e) =>
+    setSelectedDayType(e.target.value)
+  }
+>
+  <option value="">
+    Select Day Type
+  </option>
+
+  {schedule_day_types.map((day) => (
+    <option
+      key={day.schedule_day_type_ID}
+      value={day.schedule_day_type_ID}
+    >
+      {day.schedule_day_type}
+    </option>
+  ))}
+</select>
                                                 </div>
                                             </div>
 
@@ -827,7 +896,7 @@ substitute_dj:
     onClick={async () => {
         try {
             const response = await fetch(
-                "http://localhost:5000/api/program_schedules",
+                `${API_URL}/api/program_schedules`,
                 {
                     method: "POST",
                     headers: {
@@ -962,7 +1031,7 @@ substitute_dj:
                                     </div>
 
                                     <div className="ss-schedule-content">
-                                        {programSchedules.map(prog => {
+                                        {formattedProgramSchedules.map(prog => {
                                             const top = (prog.start - 8) * 90;
                                             const height = (prog.end - prog.start) * 90;
 
@@ -1047,7 +1116,7 @@ prog.approval_status === "Approved" && (
                                         </TableHeader>
 
                                         <TableBody>
-                                            {programSchedules.map((prog) => (
+                                            {formattedProgramSchedules.map((prog) => (
                                                 <TableRow key={prog.schedule_ID}>
                                                     <TableCell>{prog.program_name}</TableCell>
                                                     <TableCell>{prog.dj_name}</TableCell>

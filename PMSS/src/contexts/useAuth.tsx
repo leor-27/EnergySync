@@ -233,6 +233,45 @@ export function AuthProvider({
 
   useEffect(() => {
 
+    const validateToken = async () => {
+  const token = localStorage.getItem("token")
+
+  if (!token) {
+    setAuthLoading(false)
+    return
+  }
+
+  try {
+    const res = await fetch(
+      "http://localhost:5000/api/auth/me",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+
+    const data = await res.json()
+
+    if (data.success) {
+      setUser(data.user)
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      )
+    } else {
+      logout()
+    }
+
+  } catch {
+    logout()
+  } finally {
+    setAuthLoading(false)
+  }
+}
+
+validateToken();
+
     const storedUser =
       localStorage.getItem("user")
 
