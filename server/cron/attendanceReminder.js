@@ -1,6 +1,6 @@
 const cron = require("node-cron");
 
-const db = require("../models");
+const { sequelize } = require("../models");
 
 cron.schedule(
   "0 0 * * *",
@@ -13,7 +13,7 @@ cron.schedule(
       );
 
       const [rows] =
-      await db.query(`
+      await sequelize.query(`
 
         SELECT
           a.admin_ID,
@@ -43,36 +43,31 @@ cron.schedule(
 
       for (const row of rows) {
 
-        await db.query(`
+        await sequelize.query(
 
-          INSERT INTO Notifications (
+          `
+            INSERT INTO Notifications (
+              admin_ID,
+              message,
+              is_read,
+              notified_at
+            )
+            VALUES (
+              ?,
+              ?,
+              0,
+              NOW()
+            )
+          `,
 
-            admin_ID,
-            message,
-            is_read,
-            notified_at
+          {
+            replacements: [
+              row.admin_ID,
+              `Reminder: Please confirm your attendance for ${row.program_name}.`
+            ]
+          }
 
-          )
-
-          VALUES (
-
-            ?,
-
-            ?,
-
-            0,
-
-            NOW()
-
-          )
-
-        `, [
-
-          row.admin_ID,
-
-          `Reminder: Please confirm your attendance for ${row.program_name}.`
-
-        ]);
+        );
 
       }
 

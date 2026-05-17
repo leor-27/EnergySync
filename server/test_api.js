@@ -1,1 +1,0 @@
-// fetch('http://localhost:5000/api/users').then(res => res.json()).then(data => console.log(JSON.stringify(data.data[0], null, 2)));

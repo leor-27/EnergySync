@@ -36,7 +36,7 @@ module.exports = {
         allowNull: false
       },
       approval_status: {
-        type: Sequelize.ENUM('Pending', 'Accepted', 'Rejected'),
+        type: Sequelize.ENUM('Pending', 'Approved', 'Rejected'),
         defaultValue: 'Pending'
       },
       reviewed_at: {
@@ -57,7 +57,16 @@ module.exports = {
           fields: ['assignment_ID', 'broadcast_date']
       }
     }
-    });
+    })
+    await queryInterface.sequelize.query(`
+      ALTER TABLE DJ_Availability
+      ADD CONSTRAINT check_review_fields
+      CHECK (
+        (reviewed_at IS NULL AND reviewed_by_admin_ID IS NULL)
+        OR
+        (reviewed_at IS NOT NULL AND reviewed_by_admin_ID IS NOT NULL)
+      )
+    `);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('DJ_Availability');

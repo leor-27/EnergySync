@@ -10,7 +10,25 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+       Program_DJ_Assignment.belongsTo(models.DJ, {
+    foreignKey: "dj_ID"
+  });
+
+  Program_DJ_Assignment.belongsTo(models.Program, {
+    foreignKey: "program_ID"
+  });
+
+  Program_DJ_Assignment.belongsTo(models.Admin, {
+    foreignKey: "assigned_by_admin_ID"
+  });
+
+  Program_DJ_Assignment.hasMany(models.DJ_Availability, {
+    foreignKey: "assignment_ID"
+  });
+
+  Program_DJ_Assignment.hasMany(models.Substitutions, {
+    foreignKey: "assignment_ID"
+  });
     }
   }
   Program_DJ_Assignment.init({

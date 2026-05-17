@@ -1,3 +1,4 @@
+require("dotenv").config();
 // server/server.js
 const express = require('express');
 const cors = require('cors');
@@ -19,8 +20,9 @@ const app = express();
 require("./cron/attendanceReminder");
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/admins', adminRouter);
 app.use('/api/dj_availabilities', djAvailabilityRouter);

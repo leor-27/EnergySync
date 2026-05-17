@@ -169,6 +169,18 @@ router.post("/set-credentials", async (req, res) => {
       });
     }
 
+    const existingUsername =
+  await Admin.findOne({
+    where: { username }
+  });
+
+if (existingUsername) {
+  return res.status(400).json({
+    success: false,
+    message: "Username already taken"
+  });
+}
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await admin.update({
@@ -180,6 +192,18 @@ router.post("/set-credentials", async (req, res) => {
     });
 
     if (also_dj && stage_name) {
+
+      const existingStageName =
+  await DJ.findOne({
+    where: { stage_name }
+  });
+
+if (existingStageName) {
+  return res.status(400).json({
+    success: false,
+    message: "Stage name already taken"
+  });
+}
 
       await DJ.create({
         admin_ID: admin.admin_ID,

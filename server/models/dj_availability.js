@@ -10,7 +10,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      DJ_Availability.belongsTo(models.Program_DJ_Assignment, {
+    foreignKey: "assignment_ID"
+  });
+
+  DJ_Availability.belongsTo(models.Admin, {
+    foreignKey: "reviewed_by_admin_ID"
+  });
     }
   }
   DJ_Availability.init({
@@ -23,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     assignment_ID: DataTypes.INTEGER,
     broadcast_date: DataTypes.DATEONLY,
     remarks: DataTypes.STRING,
-    confirmed_at: DataTypes.DATE,
+    declared_at: DataTypes.DATE,
     status: DataTypes.ENUM('Available', 'Unavailable'),
     approval_status: DataTypes.ENUM('Pending', 'Accepted', 'Rejected'),
     reviewed_at: DataTypes.DATE,

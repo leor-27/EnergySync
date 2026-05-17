@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { DJ_Availability } = require('../models'); // Import Sequelize Model
+const db = require('../models');
+
+const DJ_Availability = db.DJ_Availability;
 
 router.get('/', async (req, res) => {
   try {
@@ -44,7 +46,7 @@ router.post(
         status,
         remarks,
         approval_status: "Pending",
-        confirmed_at: new Date()
+        declared_at: new Date()
       });
 
       res.json({
@@ -71,7 +73,7 @@ router.get(
     try {
 
       const [results] =
-        await db.query(`
+        await db.sequelize.query(`
           SELECT
             av.availability_ID,
             dj.stage_name,
@@ -111,7 +113,7 @@ router.put("/approve", async (req, res) => {
 
   try {
 
-    await db.query(
+    await db.sequelize.query(
       "CALL sp_ApproveUnavailability(?, ?)",
       {
         replacements: [
@@ -142,7 +144,7 @@ router.put("/reject", async (req, res) => {
 
   try {
 
-    await db.query(
+    await db.sequelize.query(
       "CALL sp_RejectUnavailability(?, ?)",
       {
         replacements: [

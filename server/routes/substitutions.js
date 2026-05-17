@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { Substitutions } = require('../models'); // Import Sequelize Model
+const db = require('../models');
+
+const Substitutions = db.Substitutions;
 
 router.get('/', async (req, res) => {
   try {
@@ -32,17 +34,18 @@ router.post("/assign-substitute", async (req, res) => {
     assignment_ID,
     substitute_dj_ID,
     broadcast_date,
-    admin_ID
+    assigned_by_admin_ID
   } = req.body;
 
   try {
 
-    await db.query(
-      "CALL sp_AssignSubDJ(?, ?, ?)",
+    await db.sequelize.query(
+      "CALL sp_AssignSubDJ(?, ?, ?, ?)",
       {
         replacements: [
           assignment_ID,
           substitute_dj_ID,
+          broadcast_date,
           assigned_by_admin_ID
         ]
       }
@@ -57,7 +60,8 @@ router.post("/assign-substitute", async (req, res) => {
     console.error(err);
 
     res.status(500).json({
-      success: false
+      success: false,
+      message: err.message
     });
 
   }

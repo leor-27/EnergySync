@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const { Program_DJ_Assignment } = require('../models');
+const db = require('../models');
+
+const Program_DJ_Assignment =
+  db.Program_DJ_Assignment;
 
 router.get('/', async (req, res) => {
   try {
@@ -59,7 +62,7 @@ router.post("/assign-dj", async (req, res) => {
 
   try {
 
-    await db.query(
+    await db.sequelize.query(
       "CALL sp_AdminAssignDJ(?, ?, ?, ?)",
       {
         replacements: [

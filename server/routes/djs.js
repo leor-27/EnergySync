@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const { DJ } = require('../models');
+const db = require('../models');
+
+const DJ = db.DJ;
 
 
 // GET DJS

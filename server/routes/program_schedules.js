@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const { Program_Schedule } = require('../models');
+const db = require('../models');
+
+const Program_Schedule =
+  db.Program_Schedule;
 
 // GET PROGRAM SCHEDULES
 // router.get('/', async (req, res) => {
@@ -35,7 +38,7 @@ router.get(
 
       const { date } = req.params;
 
-      const [results] = await db.query(`
+      const [results] = await db.sequelize.query(`
         SELECT
           ps.schedule_ID,
           ps.program_ID,
