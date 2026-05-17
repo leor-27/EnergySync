@@ -32,15 +32,8 @@ module.exports = {
         allowNull: false, 
         defaultValue: false
       },
-      invite_token_hash: {
-        type: Sequelize.STRING(255),
-        unique: true
-      },
-      invite_token_expires: {
-        type: Sequelize.DATE
-      },
       reset_token_hash: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.CHAR(64),
         unique: true
       },
       reset_token_expires: {
@@ -52,14 +45,6 @@ module.exports = {
       role_type: {
         type: Sequelize.ENUM('Superadmin', 'Admin'),
         allowNull: false
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     });
   },

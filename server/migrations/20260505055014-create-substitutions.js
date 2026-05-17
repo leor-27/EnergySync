@@ -31,8 +31,9 @@ module.exports = {
         onDelete: 'RESTRICT'
       },
       status: {
-        type: Sequelize.ENUM('Accepted', 'Pending', 'Rejected'),
-        allowNull: false
+        type: Sequelize.ENUM('Assigned', 'Cancelled'),
+        allowNull: false,
+        defaultValue: 'Assigned'
       },
       broadcast_date: {
         type: Sequelize.DATEONLY,
@@ -40,7 +41,8 @@ module.exports = {
       },
       assigned_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       assigned_by_admin_ID: {
         type: Sequelize.INTEGER,
@@ -51,14 +53,16 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+      }
+       }, {
+      uniqueKeys: {
+        unique_substitution: {
+          fields: [
+            'assignment_ID',
+            'substitute_dj_ID',
+            'broadcast_date'
+          ]
+        }
       }
     });
   },

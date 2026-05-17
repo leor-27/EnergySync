@@ -22,14 +22,6 @@ module.exports = {
       stage_name: {
         type: Sequelize.STRING(30),
         unique: true
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     });
   },

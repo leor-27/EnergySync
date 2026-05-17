@@ -31,7 +31,8 @@ module.exports = {
       },
       effective_start_date: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       effective_end_date: {
         type: Sequelize.DATE
@@ -45,14 +46,6 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     });
 
@@ -63,6 +56,6 @@ module.exports = {
     `);
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Program_DJ_Assignments');
+    await queryInterface.dropTable('Program_DJ_Assignment');
   }
 };

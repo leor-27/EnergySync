@@ -39,7 +39,8 @@ module.exports = {
       },
       effective_start_date: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       effective_end_date: {
         type: Sequelize.DATE
@@ -53,14 +54,6 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     }, {
     uniqueKeys: {
@@ -69,11 +62,19 @@ module.exports = {
       }
     }
   });
-    /* UNIQUE(program_ID, schedule_day_type_ID, effective_start_date)*/
     await queryInterface.sequelize.query(`
-      ALTER TABLE Program_DJ_Assignment
-      ADD CONSTRAINT check_schedule_end_date
-      CHECK (effective_end_date IS NULL OR effective_end_date > effective_start_date)
+      ALTER TABLE Program_Schedule
+      ADD CONSTRAINT check_schedule_time
+      CHECK (end_time > start_time)
+    `);
+
+    await queryInterface.sequelize.query(`
+      ALTER TABLE Program_Schedule
+      ADD CONSTRAINT check_program_schedule_end_date
+      CHECK (
+        effective_end_date IS NULL OR
+        effective_end_date > effective_start_date
+      )
     `);
   },
   async down(queryInterface, Sequelize) {

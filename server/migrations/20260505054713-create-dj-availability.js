@@ -26,9 +26,10 @@ module.exports = {
       remarks: {
         type: Sequelize.STRING(500)
       },
-      confirmed_at: {
+      declared_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       status: {
         type: Sequelize.ENUM('Available', 'Unavailable'),
@@ -36,28 +37,19 @@ module.exports = {
       },
       approval_status: {
         type: Sequelize.ENUM('Pending', 'Accepted', 'Rejected'),
-        allowNull: false
+        defaultValue: 'Pending'
       },
       reviewed_at: {
         type: Sequelize.DATE
       },
       reviewed_by_admin_ID: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'Admin',
           key: 'admin_ID'
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     }, {
     uniqueKeys: {

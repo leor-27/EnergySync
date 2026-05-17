@@ -6,36 +6,6 @@ module.exports = {
         await queryInterface.bulkInsert('Notifications', [
       {
         admin_ID: 1,
-        message: 'You assigned yourself to host Harambogan…',
-        is_read: 1,
-        notified_at: '2026-01-15 22:49:41'
-      },
-      {
-        admin_ID: 4,
-        message: 'DJ Makisig assigned you to host…',
-        is_read: 1,
-        notified_at: '2026-01-15 22:50:11'
-      },
-      {
-        admin_ID: 3,
-        message: 'DJ Makisig assigned you to host…',
-        is_read: 1,
-        notified_at: '2026-01-15 22:51:19'
-      },
-      {
-        admin_ID: 1,
-        message: 'You confirmed your attendance…',
-        is_read: 1,
-        notified_at: '2026-01-16 06:11:31'
-      },
-      {
-        admin_ID: 1,
-        message: 'Papa Gats confirmed his attendance…',
-        is_read: 1,
-        notified_at: '2026-01-16 07:02:51'
-      },
-      {
-        admin_ID: 1,
         message: 'Admin Ruel Viñas assigned you as a substitute DJ for “LOVELINES“ at 12:00 PM - 02:00 PM today, April 22, 2026',
         is_read: 0,
         notified_at: '2026-04-22 21:36:21'
