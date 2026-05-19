@@ -15,6 +15,7 @@ const scheduleDayTypeRouter = require('./routes/schedule_day_types');
 const substitutionRouter = require('./routes/substitutions');
 const activityLogRouter = require('./routes/activity_logs');
 const authRouter = require('./routes/auth');
+const reportsRouter = require('./routes/reports');
 
 const app = express();
 require("./cron/attendanceReminder");
@@ -36,6 +37,7 @@ app.use('/api/substitutions', substitutionRouter);
 app.use('/api/activity_logs', activityLogRouter);
 app.use('/api/auth', authRouter);
 app.use("/uploads", express.static("uploads"));
+app.use('/api/reports', reportsRouter);
 
 db.sequelize.authenticate()
   .then(() => {
